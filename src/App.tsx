@@ -4,6 +4,9 @@ import Navbar from './components/ui/Navbar/ClienteNavbar';
 import Footer from './components/ui/Footer';
 import ProductoCatalogoCard from './components/ui/CardList/ProductoCatalogoCard';
 import './App.css';
+import { AdminScreen } from './components/screen/AdminScreen';
+import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
+import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
 
 // Mock data for demonstration
 const mockProducts = [
@@ -38,15 +41,33 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        <Navbar logo="/images/reactors-logo.png" />
         
         <main className="flex-grow container mx-auto py-8 px-4">
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            {/* Add other routes here */}
-          </Routes>
+  <Route path="/" element={
+    <div className="flex flex-col min-h-screen">
+      <Navbar logo="/images/reactors-logo.png" />
+      <HomePage />
+    </div>
+  } />
+</Routes>
         </main>
         
+        <Routes>
+          <Route path="/admin" element={
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full bg-[#183B4E] -mt-16">
+        <AdminNavBar />
+      </div>
+      <div className="w-full bg-[#183B4E] -mt-1">
+        <AdminSubNavBar />
+      </div>
+      <div className="-py-8">
+        <AdminScreen />
+      </div>
+    </div>
+  } />
+        </Routes>
         <Footer />
       </div>
     </Router>
