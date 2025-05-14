@@ -7,6 +7,8 @@ import './App.css';
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
+import { SignInScreen } from './components/screen/SignInScreen';
+import { LogInScreen } from './components/screen/LogInScreen';
 
 // Un ejemplo
 const mockProducts = [
@@ -67,6 +69,26 @@ const App: React.FC = () => {
       </div>
     </div>
   } />
+  <Route path="/login" element={
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow container mx-auto -mt-16">
+        <Navbar logo="" />
+      </div>
+      <div className='flex-grow container items-center'>
+        <LogInScreen />
+      </div>
+      </div>
+  }/>
+  <Route path="/signin" element={
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow container mx-auto -mt-16">
+        <Navbar logo="" />
+      </div>
+      <div className='flex-grow container items-center'>
+        <SignInScreen />
+      </div>
+      </div>
+  }/>
         </Routes>
         <Footer />
       </div>
