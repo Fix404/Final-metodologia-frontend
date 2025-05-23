@@ -7,7 +7,7 @@ import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
-
+import DetalleScreen from './components/screen/DetalleScreen';
 
 export const AppRouter = () => {
     return (
@@ -21,9 +21,10 @@ export const AppRouter = () => {
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/galeria" element={<CatalogoScreen />} />
+                    <Route path="/producto/:id" element={<DetalleScreen />} />
                 </Route>
 
-                 {/* Rutas SIN Navbar/Footer */}
+                {/* Rutas SIN Navbar/Footer */}
                 <Route path="/admin" element={
                     <div className="flex flex-col min-h-screen">
                         <div className="w-full bg-[#183B4E] -mt-16">
