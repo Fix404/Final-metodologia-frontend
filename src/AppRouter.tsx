@@ -6,6 +6,7 @@ import { LoginScreen } from './components/screen/LoginScreen';
 import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
+import { CatalogoScreen } from './components/screen/CatalogoScreen';
 
 
 export const AppRouter = () => {
@@ -19,6 +20,7 @@ export const AppRouter = () => {
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
+                    <Route path="/galeria" element={<CatalogoScreen />} />
                 </Route>
 
                  {/* Rutas SIN Navbar/Footer */}
