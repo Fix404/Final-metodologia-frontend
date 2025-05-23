@@ -1,32 +1,49 @@
 import ProductoCatalogoCard from '../../components/ui/CardList/ProductoCatalogoCard'
+import { IColor } from '../../types/IColor';
+import { IDetalleProducto } from '../../types/IDetalleProducto';
+import { IPrecio } from '../../types/IPrecio';
+import { IProducto } from '../../types/IProducto';
+import { ITalle } from '../../types/ITalle';
 
-const mockProducts = [
-  {
-    id: 1,
-    name: 'Crocs',
-    price: 3499.99,
-    image: '/images/zapasAzules.jpg',
-    colors: ['Marrón', 'Negro', 'Azul'],
-    size: '40-45'
-  },
-  {
-    id: 2,
-    name: 'Reactors Running',
-    price: 7999.99,
-    image: '/images/images.png',
-    colors: ['Celeste/Rojo', 'Negro/Blanco'],
-    size: '38-44',
-    discount: 15
-  },
-  {
-    id: 3,
-    name: 'Zapatillas Urban',
-    price: 5999.99,
-    image: '/images/images.png',
-    colors: ['Gris', 'Negro', 'Blanco'],
-    size: '36-45'
-  },
-];
+    const productos: IProducto[] = [
+        { id: 1, name: "Zapatillas", description: "Calzado deportivo", category: "deportivo", type: "calzado", sex: "mujer", image: "" },
+        { id: 2, name: "Conjunto", description: "Conjunto de invierno", category: "mujer", type: "ropa", sex: "mujer", image: "" },
+        { id: 3, name: "Remera", description: "Remera casual", category: "infantil", type: "ropa", sex: "mujer", image: "" },
+        { id: 4, name: "Pantalón deportivo", description: "Pantalón deportivo", category: "deportivo", type: "calzado", sex: "hombre", image: "" },
+        { id: 5, name: "Remera estampada", description: "Remera con estampado", category: "mujer", type: "ropa", sex: "mujer", image: "" },
+        { id: 6, name: "Zapatillas de lona", description: "Calzado casual", category: "hombre", type: "calzado", sex: "hombre", image: "" },
+    ];
+
+    const colores: IColor[] = [
+        { id: 1, color: "Negro" },
+        { id: 2, color: "Blanco" },
+        { id: 3, color: "Rojo" },
+    ];
+
+    const talles: ITalle[] = [
+        { id: 1, size: "S" },
+        { id: 2, size: "M" },
+        { id: 3, size: "L" },
+    ];
+
+    const precios: IPrecio[] = [
+        { id: 1, purchasePrice: 7000, salePrice: 10000 },
+        { id: 2, purchasePrice: 9000, salePrice: 12000 },
+        { id: 3, purchasePrice: 6000, salePrice: 9500 },
+        { id: 4, purchasePrice: 8000, salePrice: 11000 },
+        { id: 5, purchasePrice: 8500, salePrice: 11500 },
+        { id: 6, purchasePrice: 7500, salePrice: 10500 },
+    ];
+
+    const detalleProductos: IDetalleProducto[] = productos.map((producto, index) => ({
+        id: index + 1,
+        product: producto,
+        price: precios[index],
+        colors: [colores[index % colores.length]],
+        size: talles[index % talles.length],
+        stock: 10 + index,
+        state: "activo",
+    }));
 
 export const HomeScreen: React.FC = () => {
   return (
@@ -55,16 +72,8 @@ export const HomeScreen: React.FC = () => {
       <section>
         <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockProducts.map(product => (
-            <ProductoCatalogoCard 
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              price={product.price}
-              image={product.image}
-              size={product.size}
-              colors={product.colors}
-              discount={product.discount}
+          {detalleProductos.map(producto => (
+            <ProductoCatalogoCard key={producto.id} detalleProducto={producto}           
             />
           ))}
         </div>
