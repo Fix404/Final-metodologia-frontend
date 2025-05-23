@@ -15,8 +15,8 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
   const finalPrice = product.discount ? price.salePrice - (price.salePrice * product.discount.percentage / 100) : price.salePrice;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:shadow-xl hover:scale-105">
-      <div className="p-2">
+    <div className="bg-white rounded-lg shadow-xl overflow-hidden transition-transform hover:shadow-xl hover:scale-105 ">
+      <div className="p-2 ">
         {/* Product Name */}
         <h3 className="text-gray-700 font-semibold text-center mb-1">{product.name}</h3>
 
@@ -65,12 +65,12 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
         <div className="flex mt-3">
           <Link
             to={`/producto/${product.id}`}
-            className="bg-blue-700 text-white text-center py-2 flex-1 mr-1 rounded hover:bg-blue-800 transition-colors"
+            className="bg-[#1c4577] text-white text-center py-2 flex-1 mr-1 rounded hover:bg-blue-800 transition-colors"
           >
             Ver Más
           </Link>
           <button
-            className="bg-blue-700 text-white text-center py-2 flex-1 ml-1 rounded hover:bg-blue-800 transition-colors"
+            className="bg-[#1c4577] text-white text-center py-2 flex-1 ml-1 rounded hover:bg-blue-800 transition-colors"
             onClick={() => {
               // Add to cart functionality would go here
               console.log(`Added product ${product.id} to cart`);

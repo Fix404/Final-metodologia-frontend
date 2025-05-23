@@ -1,3 +1,4 @@
+
 import { IDetalleProducto } from "../../../types/IDetalleProducto";
 import ProductoCatalogoCard from "../CardList/ProductoCatalogoCard"
 

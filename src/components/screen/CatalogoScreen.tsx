@@ -62,12 +62,12 @@ export const CatalogoScreen = () => {
 
     return (
 
-        <div className="min-h-s0 left-0 right-0">
-            <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="min-h-s0 left-0 right-0 bg-[#fdfae8] ">
+            <main className="container mx-auto px-4 py-8 max-w-7xl ">
 
-                <div className="ml-4">
+                <div>
                     <select
-                        className="border border-gray-600 focus:border-gray-800 focus:ring-0 focus:outline-none rounded-md mb-4 p-1.5"
+                        className="bg-white border border-gray-400 focus:border-gray-600 focus:ring-0 focus:outline-none rounded-md mb-5 p-1.5 "
                         defaultValue=""
                         onChange={handleCategoryChange}
                     >
