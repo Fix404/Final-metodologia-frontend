@@ -5,6 +5,7 @@ import { IDescuento } from '../../types/IDescuento';
 import { ITalle } from '../../types/ITalle';
 import { IColor } from '../../types/IColor';
 import { IPrecio } from '../../types/IPrecio';
+import { FaCartPlus } from 'react-icons/fa';
 interface DetalleScreenProps {
     detalleProducto?: IDetalleProducto;
 }
@@ -239,12 +240,12 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={!selectedSize || producto.stock === 0}
-                                    className={`w-44 h-10 py-1 px-4 lg:px-6 rounded-lg font-semibold text-white text-sm lg:text-base transition-colors ${selectedSize && producto.stock > 0
+                                    className={`w-50 h-10 py-1 px-4 lg:px-6 rounded-lg font-semibold text-white text-sm lg:text-base transition-colors flex items-center justify-center gap-2 ${selectedSize && producto.stock > 0
                                         ? 'bg-[#1c4577] hover:bg-blue-700 active:bg-blue-800'
                                         : 'bg-gray-400 cursor-not-allowed'
                                         }`}
                                 >
-                                    {producto.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
+                                    {producto.stock === 0 ? 'Sin stock' : <>Agregar al carrito <FaCartPlus /></>}
                                 </button>
 
                             </div>
