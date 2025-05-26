@@ -9,7 +9,7 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
-export const LoginScreen = () => {
+export const LogInScreen = () => {
   const {
     register,
     handleSubmit,
