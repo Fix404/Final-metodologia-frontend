@@ -2,12 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
-import { LogInScreen } from './components/screen/LogInScreen';
 import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
 import DetalleScreen from './components/screen/DetalleScreen';
+import { LoginScreen } from './components/screen/LoginScreen';
 
 export const AppRouter = () => {
     return (
@@ -17,8 +17,7 @@ export const AppRouter = () => {
                 {/* Rutas CON Navbar/Footer */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomeScreen />} />
-                    <Route path="/login" element={<LogInScreen />} />
-                    <Route path="/login" element={<LogInScreen />} />
+                    <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/galeria" element={<CatalogoScreen />} />
                     <Route path="/producto/:id" element={<DetalleScreen />} />
