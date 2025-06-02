@@ -1,23 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
-import { LoginScreen } from './components/screen/LoginScreen';
 import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
 import DetalleScreen from './components/screen/DetalleScreen';
+import { LoginScreen } from './components/screen/LoginScreen';
 
 export const AppRouter = () => {
     return (
-        <BrowserRouter>
+        <Router>
             <Routes>
 
                 {/* Rutas CON Navbar/Footer */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomeScreen />} />
-                    <Route path="/login" element={<LoginScreen />} />
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/galeria" element={<CatalogoScreen />} />
@@ -40,7 +39,7 @@ export const AppRouter = () => {
                 } />
 
             </Routes>
-        </BrowserRouter>
+        </Router>
     )
 }
 
