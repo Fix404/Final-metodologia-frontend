@@ -1,12 +1,14 @@
+import { ICategoria } from "./ICategoria"
 import { IDescuento } from "./IDescuento"
+import { IImagen } from "./IImagen"
 
 export interface IProducto {
     id: number
-    name: string
-    description: string
-    category: string
-    type: string
-    sex: string
-    discount?: IDescuento
-    image: string
+    nombre: string
+    descripcion: string
+    categoria: ICategoria
+    tipo: string
+    sexoProducto: string
+    descuento?: IDescuento
+    imagen: IImagen
 }

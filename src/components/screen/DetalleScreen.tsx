@@ -1,280 +1,214 @@
-import React, { useState } from 'react';
-import { IDetalleProducto } from '../../types/IDetalleProducto';
-import { IProducto } from '../../types/IProducto';
-import { IDescuento } from '../../types/IDescuento';
+import React, { useState, useEffect } from 'react';
+import { FaCartPlus } from 'react-icons/fa';
+import { IDetalle } from '../../types/IDetalle';
 import { ITalle } from '../../types/ITalle';
 import { IColor } from '../../types/IColor';
-import { IPrecio } from '../../types/IPrecio';
-import { FaCartPlus } from 'react-icons/fa';
+
 interface DetalleScreenProps {
-    detalleProducto?: IDetalleProducto;
+    detalleProducto?: IDetalle[];
 }
 
 const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
-    const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-    const [selectedSize, setSelectedSize] = useState<string>('');
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    // Mock data para demostración
-    const mockDescuento: IDescuento = {
-        id: 1,
-        startDate: '2025-01-01',
-        closeDate: '2025-12-31',
-        percentage: 15
-    };
-
-    const mockProducto: IProducto = {
-        id: 1,
-        name: 'CONJUNTO NOMBRE',
-        description: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.',
-        category: 'Ropa',
-        type: 'Conjunto',
-        sex: 'Mujer',
-        discount: mockDescuento,
-        image: 'https://via.placeholder.com/400x500/f5f5dc/333?text=Conjunto'
-    };
-
-    const mockPrecio: IPrecio = {
-        id: 1,
-        purchasePrice: 10000,
-        salePrice: 15900
-    };
-
-    const mockColores: IColor[] = [
-        { id: 1, color: 'Blanco' },
-        { id: 2, color: 'Marrón' },
-        { id: 3, color: 'Negro' }
+    const mockDetalles: IDetalle[] = [
+        {
+            id: 1,
+            color: [
+                { id: 1, color: 'Blanco' },
+                { id: 2, color: 'Negro' }
+            ],
+            talle: [
+                { id: 1, talle: 'M' },
+                { id: 2, talle: 'L' }
+            ],
+            precio: { id: 1, precioCompra: 60000, precioVenta: 150000 },
+            stock: 5,
+            producto: {
+                id: 1,
+                nombre: 'ZAPATILLAS DEPORTIVAS',
+                descripcion: 'Descripción de ejemplo ',
+                categoria: { id: 1, nombre: 'Ropa' },
+                tipo: 'Conjunto',
+                sexoProducto: 'Mujer',
+                descuento: { id: 1, fechaInicio: '2025-01-01', fechaFin: '2025-12-31', porcentaje: 15 },
+                imagen: { id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: 'Conjunto' }
+            }
+        },
+        {
+            id: 2,
+            color: [
+                { id: 3, color: 'Marrón' }
+            ],
+            talle: [
+                { id: 2, talle: 'L' },
+                { id: 3, talle: 'XL' }
+            ],
+            precio: { id: 2, precioCompra: 70000, precioVenta: 110000 },
+            stock: 2,
+            producto: {
+                id: 1,
+                nombre: 'CONJUNTO NOMBRE',
+                descripcion: 'Descripción',
+                categoria: { id: 1, nombre: 'Ropa' },
+                tipo: 'Conjunto',
+                sexoProducto: 'Mujer',
+                descuento: { id: 1, fechaInicio: '2025-01-01', fechaFin: '2025-12-31', porcentaje: 15 },
+                imagen: { id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: 'Conjunto' }
+            }
+        }
     ];
 
-    const mockTalle: ITalle = {
-        id: 1,
-        size: 'M'
-    };
+    const detalles = detalleProducto ?? mockDetalles;
+    const producto = detalles[0]?.producto;
 
-    const mockDetalleProducto: IDetalleProducto = {
-        id: 1,
-        size: mockTalle,
-        colors: mockColores,
-        price: mockPrecio,
-        stock: 10,
-        state: 'active',
-        product: mockProducto
-    };
+    const coloresDisponibles: IColor[] = Array.from(
+        new Map(detalles.flatMap(d => d.color).map(c => [c.color, c])).values()
+    );
 
-    const producto = detalleProducto || mockDetalleProducto;
-    const availableSizes = ['S', 'M', 'L'];
+    const tallesDisponibles: ITalle[] = Array.from(
+        new Map(detalles.flatMap(d => d.talle).map(t => [t.talle, t])).values()
+    );
 
-    // Mapeo de colores a valores hex para mostrar
+    const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [selectedTalle, setSelectedTalle] = useState<string | null>(null);
+
+    useEffect(() => {
+        setSelectedColor(coloresDisponibles[0]?.color ?? null);
+        setSelectedTalle(tallesDisponibles[0]?.talle ?? null);
+    }, [detalleProducto]);
+
+    const detalleSeleccionado = detalles.find(d =>
+        d.color.some(c => c.color === selectedColor) &&
+        d.talle.some(t => t.talle === selectedTalle)
+    );
+
     const getColorHex = (colorName: string): string => {
         const colorMap: { [key: string]: string } = {
-            'Blanco': '#FFFFFF',
-            'Marrón': '#8B4513',
-            'Negro': '#000000',
-            'Rojo': '#FF0000',
-            'Azul': '#0000FF',
-            'Verde': '#008000',
-            'Rosa': '#FFC0CB',
-            'Gris': '#808080',
-            'Amarillo': '#FFFF00',
-            'Naranja': '#FFA500'
+            'Blanco': '#FFFFFF', 'Negro': '#000000', 'Rojo': '#FF0000',
+            'Azul': '#0000FF', 'Verde': '#008000', 'Rosa': '#FFC0CB',
+            'Gris': '#808080', 'Amarillo': '#FFFF00', 'Naranja': '#FFA500',
+            'Marrón': '#8B4513'
         };
         return colorMap[colorName] || '#CCCCCC';
     };
 
-    // Calcular precio con descuento si existe
-    const calculateFinalPrice = (): number => {
-        const basePrice = producto.price.salePrice;
-        if (producto.product.discount) {
-            const discount = producto.product.discount.percentage / 100;
-            return Math.round(basePrice * (1 - discount));
-        }
-        return basePrice;
+    const calculateFinalPrice = () => {
+        const base = detalleSeleccionado?.precio?.precioVenta || 0;
+        const descuento = producto?.descuento?.porcentaje ?? 0;
+        return Math.round(base * (1 - descuento / 100));
     };
 
     const handleAddToCart = () => {
+        if (!detalleSeleccionado) return;
         console.log('Agregado al carrito:', {
-            productId: producto.id,
-            selectedColor: producto.colors[selectedColorIndex],
-            selectedSize,
+            productId: detalleSeleccionado.producto.id,
+            color: selectedColor,
+            talle: selectedTalle,
             price: calculateFinalPrice()
         });
     };
 
-    const nextImage = () => {
-        // En este caso solo tenemos una imagen, pero mantenemos la funcionalidad
-        setCurrentImageIndex(0);
-    };
-
-    const prevImage = () => {
-        // En este caso solo tenemos una imagen, pero mantenemos la funcionalidad
-        setCurrentImageIndex(0);
-    };
-
     return (
-        <div className="h-screen bg-gradient-to-b bg-[#fdfae8] overflow-hidden">
-            <div className="h-full flex items-center justify-center p-5 mt-4 mx-6">
-                <div className="flex flex-col lg:flex-row gap-6 max-w-7xl w-full h-full max-h-[calc(100vh-2rem)]">
-                    {/* Sección de imágenes */}
-                    <div className="lg:w-1/2 h-full flex items-start">            <div className="relative bg-gray-200 rounded-lg overflow-hidden w-full" style={{ aspectRatio: '1/1', maxHeight: '70vh' }}>
-                        {producto.product.image ? (
+        <div
+            className="bg-[#fdfae8] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
+            <div className="max-w-5xl w-full flex flex-col lg:flex-row gap-10 h-full">
+                {/* Imagen */}
+                <div className="w-full lg:w-1/2">
+                    <img
+                        src={producto?.imagen?.url}
+                        alt={producto?.imagen?.altDescripcion}
+                        className="max-h-screen h-auto w-auto mx-auto"
+                    />
+                </div>
+
+                {/* Detalles */}
+                <div className="pl-5 w-full lg:w-1/2 flex flex-col justify-between flex-1 max-h-screen overflow-auto">
+                    {/* Contenido superior - información del producto */}
+                    <div className="space-y-4">
+                        <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre}</h1>
+                        <p className="text-lg text-gray-600">{producto?.descripcion}</p>
+
+                        {/* Colores */}
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-700">Color</h3>
+                            <div className="flex gap-2 mt-1">
+                                {coloresDisponibles.map((color, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedColor(color.color)}
+                                        style={{ backgroundColor: getColorHex(color.color) }}
+                                        className={`w-12 h-12 rounded-full border-4 transition-all ${selectedColor === color.color
+                                            ? 'border-gray-600 scale-110'
+                                            : 'border-gray-300 hover:border-gray-400'
+                                            }`}
+                                        title={color.color}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Talles */}
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-700">Talle</h3>
+                            <div className="flex gap-2 mt-1">
+                                {tallesDisponibles.map((talle, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedTalle(talle.talle)}
+                                        className={`px-4 py-2 rounded border text-sm font-semibold ${selectedTalle === talle.talle
+                                            ? 'bg-[#27548ad5] text-white border-blue-600'
+                                            : 'bg-white border-gray-300 text-gray-700 hover:border-gray-400'
+                                            }`}
+                                    >
+                                        {talle.talle}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Contenido inferior - precio, stock y botón */}
+                    <div className="space-y-4">
+                        {/* Precio y stock */}
+                        {detalleSeleccionado && (
                             <>
-                                <img
-                                    src={producto.product.image}
-                                    alt={producto.product.name}
-                                    className="w-full h-full object-cover"
-                                />
-
-                                {/* Controles de navegación personalizados */}
-                                <button
-                                    onClick={prevImage}
-                                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-colors"
-                                >
-                                    <span className="text-gray-700 text-xl font-bold">‹</span>
-                                </button>
-
-                                <button
-                                    onClick={nextImage}
-                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-colors"
-                                >
-                                    <span className="text-gray-700 text-xl font-bold">›</span>
-                                </button>
-                            </>
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                                <span className="text-gray-500">Imagen no disponible</span>
-                            </div>
-                        )}
-                    </div>
-                    </div>
-
-                    {/* Sección de detalles */}
-                    <div className="lg:w-1/2 h-full overflow-y-auto">
-                        <div className="space-y-4 px-1 ">
-                            {/* Título */}
-                            <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">
-                                {producto.product.name}
-                            </h1>
-
-                            {/* Descripción */}
-                            <div>
-                                <h2 className="text-base lg:text-lg font-semibold text-gray-700 mb-2">
-                                    Descripción
-                                </h2>
-                                <p className="text-sm lg:text-base text-gray-600 leading-relaxed">
-                                    {producto.product.description}
-                                </p>
-                            </div>
-                            {/* Selector de color */}
-                            <div>
-                                <h3 className="text-base lg:text-lg font-semibold text-gray-700 mb-2">
-                                    Color
-                                </h3>
-                                <div className="flex gap-2">
-                                    {producto.colors.map((color, index) => (
-                                        <button
-                                            key={color.id}
-                                            onClick={() => setSelectedColorIndex(index)}
-                                            className={`w-9 h-9 lg:w-12 lg:h-12 rounded-full border-4 transition-all ${selectedColorIndex === index
-                                                ? 'border-gray-400 scale-110'
-                                                : 'border-gray-200 hover:border-gray-300'
-                                                }`}
-                                            style={{ backgroundColor: getColorHex(color.color) }}
-                                            title={color.color}
-                                        />
-                                    ))}
-                                </div>
-                                <p className="text-xs lg:text-sm text-gray-600 mt-1">
-                                    Seleccionado: {producto.colors[selectedColorIndex]?.color}
-                                </p>
-                            </div>
-                            {/* Selector de talle */}
-                            <div>
-                                <h3 className="text-base lg:text-lg font-semibold text-gray-700 mb-2">
-                                    Talle
-                                </h3>
-                                <div className="flex items-center gap-2">
-                                    {availableSizes.map((size) => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setSelectedSize(size)}
-                                            className={`w-10 h-10 lg:w-11.5 lg:h-11.5 rounded-full border-2 font-semibold text-sm lg:text-base transition-colors ${selectedSize === size
-                                                ? 'border-blue-500 bg-[#27548ad5] text-white'
-                                                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                                                }`}
-                                        >
-                                            {size}
-                                        </button>
-
-                                    ))}
-                                    {!selectedSize && producto.stock > 0 && (
-                                        <p className="text-xs lg:text-sm text-red-500 mt-1">
-                                            Selecciona un talle para continuar
-                                        </p>
+                                <div>
+                                    {producto?.descuento ? (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-3xl font-bold text-black">
+                                                ${calculateFinalPrice().toLocaleString()}
+                                            </span>
+                                            <span className="text-xl line-through text-gray-500">
+                                                ${detalleSeleccionado.precio.precioVenta.toLocaleString()}
+                                            </span>
+                                            <span className="text-xl text-green-700 font-semibold">
+                                                -{producto.descuento.porcentaje}%
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className="text-2xl font-bold text-gray-800">
+                                            ${detalleSeleccionado.precio.precioVenta.toLocaleString()}
+                                        </span>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* Precio y descuento */}
-                            <div className='flex flex-row justify-between w-full items-end'>
-                                {producto.product.discount ? (
-                                    <div className="flex flex-row gap-1.5 mb-2">
-
-                                        <div className="text-2xl lg:text-3xl font-bold text-black">
-                                            ${calculateFinalPrice().toLocaleString()}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="12px lg:text-xl line-through text-gray-500">
-                                                ${producto.price.salePrice.toLocaleString()}
-                                            </span>
-                                            <span className="text-green-800 py-1 rounded text-base font-semibold">
-                                                -{producto.product.discount.percentage}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
-                                        ${producto.price.salePrice.toLocaleString()}
-                                    </div>
-                                )}
-
-                                <button
-                                    onClick={handleAddToCart}
-                                    disabled={!selectedSize || producto.stock === 0}
-                                    className={`w-50 h-10 py-1 px-4 lg:px-6 rounded-lg font-semibold text-white text-sm lg:text-base transition-colors flex items-center justify-center gap-2 ${selectedSize && producto.stock > 0
-                                        ? 'bg-[#1c4577] hover:bg-blue-700 active:bg-blue-800'
-                                        : 'bg-gray-400 cursor-not-allowed'
-                                        }`}
-                                >
-                                    {producto.stock === 0 ? 'Sin stock' : <>Agregar al carrito <FaCartPlus /></>}
-                                </button>
-
-                            </div>
-
-                            {/* Información de stock */}
-                            {producto.stock <= 5 && producto.stock > 0 && (
-                                <div className="text-xs lg:text-sm text-orange-600 bg-orange-50 p-2 lg:p-3 rounded-lg">
-                                    ⚠️ ¡Solo quedan {producto.stock} unidades disponibles!
+                                <div className="text-base text-gray-600">
+                                    Stock disponible: {detalleSeleccionado.stock}
                                 </div>
-                            )}
+                            </>
+                        )}
 
-                            {producto.stock === 0 && (
-                                <div className="text-xs lg:text-sm text-red-600 font-semibold bg-red-50 p-2 lg:p-3 rounded-lg">
-                                    ❌ Producto agotado
-                                </div>
-                            )}
-
-                            {/* Información del descuento si existe */}
-                            {producto.product.discount && (
-                                <div className="bg-white p-2 lg:p-3 rounded-lg">
-                                    <p className="text-xs lg:text-sm text-green-700">
-                                        🎉 <span className="font-semibold">Oferta especial:</span> {producto.product.discount.percentage}% de descuento
-                                    </p>
-                                    <p className="text-xs text-green-600 mt-1">
-                                        Válido hasta: {new Date(producto.product.discount.closeDate).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
+                        {/* Botón */}
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={!detalleSeleccionado || detalleSeleccionado.stock === 0}
+                            className={`w-full py-3 rounded-lg font-semibold text-white flex items-center justify-center gap-2 ${detalleSeleccionado && detalleSeleccionado.stock > 0
+                                ? 'bg-[#1c4577] hover:bg-blue-700'
+                                : 'bg-gray-400 cursor-not-allowed'
+                                }`}
+                        >
+                            {detalleSeleccionado?.stock === 0
+                                ? 'Sin stock'
+                                : <>Agregar al carrito <FaCartPlus /></>}
+                        </button>
                     </div>
                 </div>
             </div>

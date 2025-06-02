@@ -1,6 +1,6 @@
 export interface IDescuento {
     id?:number
-    startDate: string
-    closeDate: string
-    percentage: number
+    fechaInicio: string
+    fechaFin: string
+    porcentaje: number
 }

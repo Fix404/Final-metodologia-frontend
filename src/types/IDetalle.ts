@@ -3,12 +3,12 @@ import { IPrecio } from "./IPrecio"
 import { IProducto } from "./IProducto"
 import { ITalle } from "./ITalle"
 
-export interface IDetalleProducto {
+export interface IDetalle {
     id: number
-    size?: ITalle
-    colors: IColor[]
-    price: IPrecio 
+    talle: ITalle[]
+    color: IColor[]
+    precio: IPrecio 
     stock: number
-    state?: string 
-    product: IProducto
+    estado?: string 
+    producto: IProducto
 }

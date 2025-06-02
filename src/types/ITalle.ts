@@ -1,4 +1,4 @@
 export interface ITalle {
     id: number
-    size: string
+    talle: string
 }

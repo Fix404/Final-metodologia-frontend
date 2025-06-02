@@ -1,5 +1,5 @@
 export interface IPrecio {
     id: number
-    purchasePrice: number
-    salePrice:number
+    precioCompra: number
+    precioVenta:number
 }

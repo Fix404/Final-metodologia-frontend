@@ -1,49 +1,61 @@
 import ProductoCatalogoCard from '../../components/ui/CardList/ProductoCatalogoCard'
+import { ICategoria } from '../../types/ICategoria';
 import { IColor } from '../../types/IColor';
-import { IDetalleProducto } from '../../types/IDetalleProducto';
+import { IDetalle } from '../../types/IDetalle';
+import { IImagen } from '../../types/IImagen';
 import { IPrecio } from '../../types/IPrecio';
 import { IProducto } from '../../types/IProducto';
 import { ITalle } from '../../types/ITalle';
 
-    const productos: IProducto[] = [
-        { id: 1, name: "Zapatillas", description: "Calzado deportivo", category: "deportivo", type: "calzado", sex: "mujer", image: "" },
-        { id: 2, name: "Conjunto", description: "Conjunto de invierno", category: "mujer", type: "ropa", sex: "mujer", image: "" },
-        { id: 3, name: "Remera", description: "Remera casual", category: "infantil", type: "ropa", sex: "mujer", image: "" },
-        { id: 4, name: "Pantalón deportivo", description: "Pantalón deportivo", category: "deportivo", type: "calzado", sex: "hombre", image: "" },
-        { id: 5, name: "Remera estampada", description: "Remera con estampado", category: "mujer", type: "ropa", sex: "mujer", image: "" },
-        { id: 6, name: "Zapatillas de lona", description: "Calzado casual", category: "hombre", type: "calzado", sex: "hombre", image: "" },
-    ];
 
-    const colores: IColor[] = [
-        { id: 1, color: "Negro" },
-        { id: 2, color: "Blanco" },
-        { id: 3, color: "Rojo" },
-    ];
+const mockImagen: IImagen = {
+  id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: ""
+}
 
-    const talles: ITalle[] = [
-        { id: 1, size: "S" },
-        { id: 2, size: "M" },
-        { id: 3, size: "L" },
-    ];
+const mockCategoria: ICategoria = {
+  id:1, nombre: "categoría"
+}
 
-    const precios: IPrecio[] = [
-        { id: 1, purchasePrice: 7000, salePrice: 10000 },
-        { id: 2, purchasePrice: 9000, salePrice: 12000 },
-        { id: 3, purchasePrice: 6000, salePrice: 9500 },
-        { id: 4, purchasePrice: 8000, salePrice: 11000 },
-        { id: 5, purchasePrice: 8500, salePrice: 11500 },
-        { id: 6, purchasePrice: 7500, salePrice: 10500 },
-    ];
+const productos: IProducto[] = [
+  { id: 1, nombre: "Zapatillas", descripcion: "Calzado deportivo", categoria: mockCategoria ,tipo: "calzado", sexoProducto: "mujer", imagen: mockImagen},
+  { id: 3, nombre: "Remera", descripcion: "Remera casual", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria, imagen: mockImagen },
+  { id: 4, nombre: "Pantalón deportivo", descripcion: "Pantalón deportivo", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria, imagen: mockImagen },
+  { id: 5, nombre: "Remera estampada", descripcion: "Remera con estampado", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria, imagen: mockImagen },
+  { id: 6, nombre: "Zapatillas de lona", descripcion: "Calzado casual", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria, imagen: mockImagen },
+];
 
-    const detalleProductos: IDetalleProducto[] = productos.map((producto, index) => ({
-        id: index + 1,
-        product: producto,
-        price: precios[index],
-        colors: [colores[index % colores.length]],
-        size: talles[index % talles.length],
-        stock: 10 + index,
-        state: "activo",
-    }));
+const colores: IColor[] = [
+  { id: 1, color: "Rojo" },
+  { id: 2, color: "Negro" },
+  { id: 3, color: "Blanco" }
+]
+
+const talles: ITalle[] = [
+  { id: 1, talle: "S" },
+  { id: 2, talle: "M" },
+  { id: 3, talle: "L" },
+];
+
+
+
+const precios: IPrecio[] = [
+  { id: 1, precioCompra: 7000, precioVenta: 10000 },
+  { id: 2, precioCompra: 9000, precioVenta: 12000 },
+  { id: 3, precioCompra: 6000, precioVenta: 9500 },
+  { id: 4, precioCompra: 8000, precioVenta: 11000 },
+  { id: 5, precioCompra: 8500, precioVenta: 11500 },
+  { id: 6, precioCompra: 7500, precioVenta: 10500 },
+];
+
+const detalleProductos: IDetalle[] = productos.map((producto, index) => ({
+  id: index + 1,
+  producto: producto,
+  precio: precios[index],
+  color: [colores[index % colores.length]],
+  talle: [talles[index % talles.length]],
+  stock: 10 + index,
+  estado: "activo",
+}));
 
 export const HomeScreen: React.FC = () => {
   return (
@@ -59,21 +71,21 @@ export const HomeScreen: React.FC = () => {
             </button>
           </div>
           <div className="md:w-1/2 flex justify-center">
-            <img 
-              src="/images/featured-shoe.png" 
-              alt="Featured Shoe" 
+            <img
+              src="/images/featured-shoe.png"
+              alt="Featured Shoe"
               className="max-w-xs md:max-w-sm"
             />
           </div>
         </div>
       </section>
-      
+
       {/* Featured Products Section */}
       <section>
         <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {detalleProductos.map(producto => (
-            <ProductoCatalogoCard key={producto.id} detalleProducto={producto}           
+            <ProductoCatalogoCard key={producto.id} detalleProducto={producto}
             />
           ))}
         </div>
