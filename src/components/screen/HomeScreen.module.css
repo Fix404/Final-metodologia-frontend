@@ -1,0 +1,8 @@
+.ocultarScrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ocultarScrollbar::-webkit-scrollbar {
+  display: none; 
+}

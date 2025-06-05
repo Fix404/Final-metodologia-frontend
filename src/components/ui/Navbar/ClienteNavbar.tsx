@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 interface NavbarProps {
   logo?: string;
 }
 
 const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) => {
+
   const [searchQuery, setSearchQuery] = useState('');
+  const cantidadEnCarrito = useSelector((state: RootState) => state.carrito.items.length);
 
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-green-400 text-white p-4 sticky top-0 z-50">
@@ -26,9 +30,7 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
 
-        {/* Search + Cart + Mobile */}
         <div className="flex items-center space-x-4">
-          {/* Search bar */}
           <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
             <input
               type="text"
@@ -44,25 +46,18 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
             </button>
           </div>
 
-          {/* Cart button */}
+          {/* Carrito */}
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h11L17 13M9 21h0M15 21h0" />
             </svg>
 
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {/*ACÁ HAY QUE MANEJAR LOS NÚMEROS DE PRODUCTOS AGREGADOS*/}
-            </span>
+            {cantidadEnCarrito > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cantidadEnCarrito}
+              </span>
+            )}
           </Link>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button className="text-white focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
     </nav>

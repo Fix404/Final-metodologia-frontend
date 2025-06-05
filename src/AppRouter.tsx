@@ -8,6 +8,7 @@ import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
 import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
+import { CarritoScreen } from './components/screen/CarritoScreen';
 
 export const AppRouter = () => {
     return (
@@ -21,6 +22,7 @@ export const AppRouter = () => {
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/galeria" element={<CatalogoScreen />} />
                     <Route path="/producto/:id" element={<DetalleScreen />} />
+                    <Route path="/carrito" element={<CarritoScreen />} />
                 </Route>
 
                 {/* Rutas SIN Navbar/Footer */}

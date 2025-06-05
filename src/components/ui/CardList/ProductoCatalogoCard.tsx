@@ -53,19 +53,17 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
           </p>
 
           {/* Size if available */}
-          {talle.length > 0 && (
-            <p className="text-gray-800">
-              <span className="font-bold">Talles: </span>
-              <span>{talle.map(t => t.talle).join(", ")}</span>
-            </p>
-          )}
 
-          {color.length > 0 && (
             <p className="text-gray-800">
-              <span className="font-bold">Colores: </span>
-              <span>{color.map(c => c.color).join(", ")}</span>
+              <span className="font-bold">Talle: </span>
+              <span>{talle.talle}</span>
+               </p>
+
+            <p className="text-gray-800">
+              <span className="font-bold">Color: </span>
+              <span>{color.color}</span>
             </p>
-          )}
+
 
 
         </div>
