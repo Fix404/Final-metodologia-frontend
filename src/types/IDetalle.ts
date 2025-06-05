@@ -5,8 +5,8 @@ import { ITalle } from "./ITalle"
 
 export interface IDetalle {
     id: number
-    talle: ITalle[]
-    color: IColor[]
+    talle: ITalle
+    color: IColor
     precio: IPrecio 
     stock: number
     estado?: string 

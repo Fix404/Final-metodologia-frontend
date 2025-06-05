@@ -2,7 +2,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { ProductoCatalogoCardList } from "../ui/Lists/ProductoCatalogoCardList";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { fetchDetalleProducto } from "../../redux/slices/detalleProductoReducer";
+import { fetchDetalleProducto } from "../../redux/slices/detalleProductoSlice";
 import { IDetalle } from "../../types/IDetalle";
 import { IPrecio } from "../../types/IPrecio";
 import { ITalle } from "../../types/ITalle";
@@ -62,8 +62,8 @@ export const CatalogoScreen = () => {
         id: index + 1,
         producto: producto,
         precio: precios[index],
-        color: [colores[index % colores.length]],
-        talle: [talles[index % talles.length]],
+        color: colores[1],
+        talle: talles[2],
         stock: 10 + index,
         estado: "activo",
     }));
