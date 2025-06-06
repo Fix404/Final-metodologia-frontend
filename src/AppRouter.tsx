@@ -28,7 +28,7 @@ export const AppRouter = () => {
                 {/* Rutas SIN Navbar/Footer */}
                 <Route path="/admin" element={
                     <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E] -mt-16">
+                        <div className="w-full bg-[#183B4E]">
                             <AdminNavBar />
                         </div>
                         <div className="w-full bg-[#183B4E] -mt-1">

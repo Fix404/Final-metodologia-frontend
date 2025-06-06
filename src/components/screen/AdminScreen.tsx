@@ -3,8 +3,9 @@ import { TablaAdmin } from "../ui/TablasAdmin/TablaAdmin";
 import { MdOutlineSearch } from "react-icons/md";
 
 export const AdminScreen = () => {
-  return (
-    <div className="flex flex-col items-center relative">
+  const activemenu="USUARIOS"
+  return (<>
+  {activeMenu && <div className="flex flex-col items-center relative">
       <div className="mt-8 text-2xl">
         <h1>CLIENTES</h1>
       </div>
@@ -18,6 +19,9 @@ export const AdminScreen = () => {
         <div className="mt-30">
           <TablaAdmin />
         </div>
-    </div>
+    </div>}
+  </>
+  
+    
   )
 }
