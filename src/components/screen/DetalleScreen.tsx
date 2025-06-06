@@ -3,13 +3,18 @@ import { FaCartPlus } from 'react-icons/fa';
 import { IDetalle } from '../../types/IDetalle';
 import { ITalle } from '../../types/ITalle';
 import { IColor } from '../../types/IColor';
+import { useParams } from 'react-router-dom';
 
 interface DetalleScreenProps {
     detalleProducto?: IDetalle[];
 }
 
 const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
-    const mockDetalles: IDetalle[] = [
+ 
+    // Este console.log no está recibiendo el detalle producto, hay que hacer unos pasos
+ console.log("Detalle recibido:", detalleProducto);
+      
+    /*const mockDetalles: IDetalle[] = [
         {
             id: 1,
             color: [
@@ -55,31 +60,47 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
                 imagen: { id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: 'Conjunto' }
             }
         }
-    ];
+    ];*/
 
-    const detalles = detalleProducto ?? mockDetalles;
-    const producto = detalles[0]?.producto;
+   // const detalles = detalleProducto ?? []; // ?? mockProductos
 
-    const coloresDisponibles: IColor[] = Array.from(
-        new Map(detalles.flatMap(d => d.color).map(c => [c.color, c])).values()
-    );
 
-    const tallesDisponibles: ITalle[] = Array.from(
-        new Map(detalles.flatMap(d => d.talle).map(t => [t.talle, t])).values()
-    );
+    //const producto = detalles[0]?.producto;
 
-    const [selectedColor, setSelectedColor] = useState<string | null>(null);
-    const [selectedTalle, setSelectedTalle] = useState<string | null>(null);
+    /* const coloresDisponibles: IColor[] = Array.from(
+         new Map(detalles.flatMap(d => d.color).map(c => [c.color, c])).values()
+     );
+ 
+     const tallesDisponibles: ITalle[] = Array.from(
+         new Map(detalles.flatMap(d => d.talle).map(t => [t.talle, t])).values()
+     );*/
 
-    useEffect(() => {
+  /*  const coloresDisponibles: IColor[] = Array.from(
+        new Map(detalles.map(d => [d.color.color, d.color])).values()
+    );*/
+
+
+    /*const tallesDisponibles: ITalle[] = Array.from(
+        new Map(detalles.map(d => [d.talle.talle, d.talle])).values()
+    );*/
+
+
+    /*const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [selectedTalle, setSelectedTalle] = useState<string | null>(null);*/
+
+   /* useEffect(() => {
         setSelectedColor(coloresDisponibles[0]?.color ?? null);
         setSelectedTalle(tallesDisponibles[0]?.talle ?? null);
-    }, [detalleProducto]);
+    }, [detalleProducto]);*/
 
-    const detalleSeleccionado = detalles.find(d =>
+    /*const detalleSeleccionado = detalles.find(d =>
         d.color.some(c => c.color === selectedColor) &&
         d.talle.some(t => t.talle === selectedTalle)
+    );*/
+    const detalleSeleccionado = detalles.find(
+        d => d.color.color === selectedColor && d.talle.talle === selectedTalle
     );
+
 
     const getColorHex = (colorName: string): string => {
         const colorMap: { [key: string]: string } = {

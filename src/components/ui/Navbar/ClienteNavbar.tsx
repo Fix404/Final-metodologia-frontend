@@ -20,7 +20,7 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
         {/* Navigation links */}
         <div className="hidden md:flex space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
-          <Link to="/galeria" className="hover:text-gray-200 transition-colors">Galería</Link>
+          <Link to="/detalle" className="hover:text-gray-200 transition-colors">Galería</Link>
           <Link to="/shop" className="hover:text-gray-200 transition-colors">Shop</Link>
           <Link to="/contacto" className="hover:text-gray-200 transition-colors">Contacto</Link>
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>

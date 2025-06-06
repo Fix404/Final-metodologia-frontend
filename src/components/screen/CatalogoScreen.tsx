@@ -13,7 +13,7 @@ import { ICategoria } from "../../types/ICategoria";
 
 export const CatalogoScreen = () => {
 
-    const mockImagen: IImagen = {
+   /* const mockImagen: IImagen = {
         id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: ""
     }
 
@@ -66,17 +66,10 @@ export const CatalogoScreen = () => {
         talle: [talles[index % talles.length]],
         stock: 10 + index,
         estado: "activo",
-    }));
+    }));*/
 
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const filteredProducts: IDetalle[] = selectedCategory
-        ? detalleProductos.filter(detalle => detalle.producto.categoria.nombre === selectedCategory)
-        : detalleProductos;
-
-    const handleCategoryChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-        setSelectedCategory(event.target.value);
-    };
-    /*// Redux
+ 
+    //Redux
     const productos = useSelector((state: any) => state.detalleProductoReducer.productos);
 
     const dispatch = useDispatch();
@@ -142,7 +135,7 @@ export const CatalogoScreen = () => {
                 </div>
             </div>
         );
-    }*/
+    }
 
     return (
         <div className="min-h-screen left-0 right-0 bg-[#fdfae8]">
