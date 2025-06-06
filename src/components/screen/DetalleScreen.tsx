@@ -3,9 +3,10 @@ import { FaCartPlus } from 'react-icons/fa';
 import { IDetalle } from '../../types/IDetalle';
 import { ITalle } from '../../types/ITalle';
 import { IColor } from '../../types/IColor';
-import { useDispatch } from 'react-redux';
-import { agregarAlCarrito } from '../../redux/slices/CarritoSlice';
-import { descontarStock } from '../../redux/slices/detalleProductoSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { agregarAlCarrito, quitarDelCarrito } from '../../redux/slices/CarritoSlice';
+import { descontarStock, restaurarStock } from '../../redux/slices/detalleProductoSlice';
+import { RootState } from '../../redux/store';
 
 interface DetalleScreenProps {
   detalleProducto?: IDetalle[];
@@ -90,7 +91,7 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
           altDescripcion: 'Conjunto'
         }
       }
-    },{
+    }, {
       id: 4,
       color: { id: 4, color: 'Blanco' },
       talle: { id: 4, talle: 'L' },
@@ -117,11 +118,10 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
       }
     }
   ];
-
   const detalles = detalleProducto ?? mockDetalles;
   const producto = detalles[0]?.producto;
 
-  // Extraer colores y talles únicos
+  // Colores y talles únicos
   const coloresDisponibles: IColor[] = Array.from(
     new Map(detalles.map(d => [d.color.color, d.color])).values()
   );
@@ -134,19 +134,36 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
 
   const dispatch = useDispatch();
 
+  const carritoItems = useSelector((state: RootState) => state.carrito.items);
+
   const detalleSeleccionado = detalles.find(
     d => d.color.color === selectedColor && d.talle.talle === selectedTalle
   );
 
+  const cantidadEnCarrito = carritoItems.find(
+    item => item.detalle.id === detalleSeleccionado?.id)
+    ?.cantidad || 0;
+
   const handleAgregarAlCarrito = () => {
-    if (!detalleSeleccionado) return;
-    dispatch(agregarAlCarrito(detalleSeleccionado));  
+    if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
+    if (cantidadEnCarrito >= detalleSeleccionado.stock) return; // No agregar si ya no hay stock
+
+    dispatch(agregarAlCarrito(detalleSeleccionado));
     dispatch(descontarStock(detalleSeleccionado.id));
   };
 
+  {/*const handleQuitarDelCarrito = () => {
+    if (!detalleSeleccionado) return;
+    dispatch(quitarDelCarrito(detalleSeleccionado.id));
+    const cantidadQuitada = carritoItems.find(item => item.detalle.id === detalleSeleccionado.id)?.cantidad || 0;
+    for (let i = 0; i < cantidadQuitada; i++) {
+      dispatch(restaurarStock(detalleSeleccionado.id));
+    }
+  };*/}
+
   useEffect(() => {
-    setSelectedColor(coloresDisponibles[0]?.color ?? null);
-    setSelectedTalle(tallesDisponibles[0]?.talle ?? null);
+    if (coloresDisponibles.length > 0) setSelectedColor(coloresDisponibles[0].color);
+    if (tallesDisponibles.length > 0) setSelectedTalle(tallesDisponibles[0].talle);
   }, [detalleProducto]);
 
   const getColorHex = (colorName: string): string => {
@@ -203,14 +220,14 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
             {/* Talles */}
             <div>
               <h3 className="text-lg font-semibold text-gray-700">Talle</h3>
-              <div className="flex gap-2 mt-1">
+              <div className="flex gap-3 mt-1">
                 {tallesDisponibles.map((talle, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedTalle(talle.talle)}
-                    className={`px-4 py-2 rounded border text-sm font-semibold ${selectedTalle === talle.talle
-                      ? 'bg-[#27548ad5] text-white border-blue-600'
-                      : 'bg-white border-gray-300 text-gray-700 hover:border-gray-400'
+                    className={`h-11 w-11 px-3 py-1 rounded-md text-1x2 font-semibold transition-all ${selectedTalle === talle.talle
+                      ? 'bg-gray-700 text-white'
+                      : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
                       }`}
                   >
                     {talle.talle}
@@ -220,55 +237,81 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
             </div>
           </div>
 
-          <div className="space-y-4">
-            {detalleSeleccionado ? (
-              <>
-                <div>
-                  {producto?.descuento ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold text-black">
-                        ${calculateFinalPrice().toLocaleString()}
-                      </span>
-                      <span className="text-xl line-through text-gray-500">
-                        ${detalleSeleccionado.precio.precioVenta.toLocaleString()}
-                      </span>
-                      <span className="text-xl text-green-700 font-semibold">
-                        -{producto.descuento.porcentaje}%
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="text-2xl font-bold text-gray-800">
-                      ${detalleSeleccionado.precio.precioVenta.toLocaleString()}
-                    </span>
-                  )}
-                </div>
-                {detalleSeleccionado.stock === 0
-                  ? <p className="text-red-500 font-semibold">Producto agotado</p>
-                  : <div className="text-base text-gray-600">
-                    Stock disponible: {detalleSeleccionado.stock}
-                  </div>}
-              </>
-            ) : (
-              <p className="text-red-500 font-semibold">Stock agotado</p>
-            )}
+          {/* Parte inferior: precio, stock, botones */}
+          <div className="space-y-4 mt-6">
+            {/* Stock */}
+            <div className="flex items-center flex-wrap">
+              <span className="font-semibold text-gray-700">
+                Stock disponible: {detalleSeleccionado?.stock != null
+                  ? detalleSeleccionado.stock - cantidadEnCarrito
+                  : 0}
+              </span>
 
+              <div className="flex justify-between w-full items-center">
+                <span className="font-semibold text-gray-700">
+                  En carrito: {cantidadEnCarrito}
+                </span>
+                {/* Precio */}
+                {detalleSeleccionado && detalleSeleccionado.stock > 0 && (
+                  <div>
+                    {producto?.descuento?.porcentaje ? (
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <span className="text-gray-500 line-through font-semibold text-xl">
+                            ${detalleSeleccionado.precio?.precioVenta}
+                          </span>
+                          <span className="text-green-600 text-xl font-semibold">
+                            -{producto.descuento.porcentaje}%
+                          </span>
+                        </div>
+                        <span className="text-black font-bold text-3xl">
+                          ${calculateFinalPrice()}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-900 font-bold text-2xl">
+                        ${detalleSeleccionado.precio?.precioVenta}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+            {/* Botón agregar al carrito */}
             <button
               onClick={handleAgregarAlCarrito}
-              disabled={!detalleSeleccionado || detalleSeleccionado.stock === 0}
-              className={`w-full py-3 rounded-lg font-semibold text-white flex items-center justify-center gap-2 ${detalleSeleccionado && detalleSeleccionado.stock > 0
+              disabled={
+                !detalleSeleccionado ||
+                detalleSeleccionado.stock === 0 ||
+                cantidadEnCarrito >= detalleSeleccionado.stock
+              }
+              className={`w-full flex items-center justify-center gap-3 bg-[#1c4577] text-white py-3 px-4 rounded-md hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed  ${detalleSeleccionado && detalleSeleccionado.stock > 0
                 ? 'bg-[#1c4577] hover:bg-blue-700'
                 : 'bg-gray-400 cursor-not-allowed'
                 }`}
             >
-              {detalleSeleccionado?.stock === 0
-                ? 'Sin stock'
-                : <>Agregar al carrito <FaCartPlus /></>}
+              <FaCartPlus size={18} />
+              Agregar al carrito
             </button>
+
+
           </div>
         </div>
+
       </div>
     </div>
   );
 };
-
+{/*
+                {cantidadEnCarrito > 0 && (
+                  <button
+                    onClick={handleQuitarDelCarrito}
+                    className="text-red-600 font-semibold underline"
+                  >
+                    Quitar del carrito
+                  </button>
+                )}
+            */}
 export default DetalleScreen;
