@@ -70,7 +70,7 @@ export const CatalogoScreen = () => {
 
  
     //Redux
-    const productos = useSelector((state: any) => state.detalleProductoReducer.productos);
+    const productos = useSelector((state: any) => state.detalleProducto.productos);
 
     const dispatch = useDispatch();
 
