@@ -7,7 +7,7 @@ import ProductoCatalogoCard from '../components/ui/CardList/ProductoCatalogoCard
 
 export const MainLayout = () => {
 
-  const productos = useSelector((state: RootState) => state.detalleProducto.productos);
+  const productos = useSelector((state: RootState) => state.detalleProducto.detalles);
   const textoBusqueda = useSelector((state: RootState) => state.busqueda.texto.toLowerCase());
 
   const resultados = productos.filter((p) =>

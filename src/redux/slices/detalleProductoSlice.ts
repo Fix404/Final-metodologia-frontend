@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IDetalle } from "../../types/IDetalle";
 
 interface detalleProducto {
-  productos: IDetalle[];
+  detalles: IDetalle[];
 }
 
 const initialState: detalleProducto = {
-  productos: [],
+  detalles: [],
 };
 
 const detalleProductoSlice = createSlice({
@@ -14,16 +14,16 @@ const detalleProductoSlice = createSlice({
   initialState,
   reducers: {
     fetchDetalleProducto: (state, action: PayloadAction<IDetalle[]>) => {
-      state.productos = action.payload;
+      state.detalles = action.payload;
     },
     descontarStock: (state, action: PayloadAction<number>) => {
-      const producto = state.productos.find(p => p.id === action.payload);
+      const producto = state.detalles.find(p => p.id === action.payload);
       if (producto && producto.stock > 0) {
         producto.stock--;
       }
     },
     restaurarStock: (state, action: PayloadAction<number>) => {
-      const producto = state.productos.find(p => p.id === action.payload);
+      const producto = state.detalles.find(p => p.id === action.payload);
       if (producto) {
         producto.stock++;
       }
