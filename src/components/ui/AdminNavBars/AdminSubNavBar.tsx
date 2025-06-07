@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { closeDropdown, setActiveMenu, setActiveSubMenu, type MenuSection } from '../../../redux/slices/activeMenuAdminSlice';
 
-export const AdminSubNavBar = () => {
-  
+export const AdminSubNavBar= () => {
+  const dispatch = useAppDispatch();
+  const { activeMenu, activeSubMenu, isDropdownOpen } = useAppSelector((state) => state.menuActivoAdmin);
+
   const menuItems = {
     USUARIOS: [
       "Gestionar Usuarios",
-      "Roles y Permisos",
+      "Roles y Permisos", 
       "Usuarios Activos",
       "Usuarios Bloqueados"
     ],
     PRODUCTOS: [
       "Catálogo",
       "Agregar Producto",
-      "Inventario",
+      "Inventario", 
       "Categorías",
       "Ofertas y Descuentos"
     ],
@@ -26,7 +29,7 @@ export const AdminSubNavBar = () => {
       "Dashboard",
       "Ventas",
       "Usuarios",
-      "Productos Populares",
+      "Productos Populares", 
       "Reportes"
     ],
     FACTURACIÓN: [
@@ -36,16 +39,20 @@ export const AdminSubNavBar = () => {
       "Configuración Fiscal"
     ]
   };
-  type MenuName = keyof typeof menuItems;
-  const [activeMenu, setActiveMenu] = useState<MenuName|null>(null);
 
-
-  const handleMouseEnter = (menu:MenuName) => {
-    setActiveMenu(menu);
+  const handleMouseEnter = (menu: MenuSection) => {
+    dispatch(setActiveMenu(menu));
   };
 
-  const handleMouseLeave = () => {
-    setActiveMenu(null);
+  const handleMenuAreaLeave = () => {
+    dispatch(closeDropdown());
+  };
+
+  const handleSubMenuClick = (subMenu: string) => {
+    dispatch(setActiveSubMenu(subMenu));
+    dispatch(closeDropdown());
+    console.log(`Selected: ${activeMenu} -> ${subMenu}`);
+    // Aquí puedes agregar lógica de navegación
   };
 
   return (
@@ -54,20 +61,33 @@ export const AdminSubNavBar = () => {
         <div
           key={menuName}
           className="relative"
-          onMouseEnter={() => handleMouseEnter(menuName as MenuName)}
-          onMouseLeave={handleMouseLeave}
+          onMouseLeave={handleMenuAreaLeave}
         >
-          <div className="cursor-pointer hover:text-blue-600 transition-colors duration-200 px-4 py-2">
+          <div 
+            className={`cursor-pointer transition-colors duration-200 px-4 py-2 ${
+              activeMenu === menuName ? 'text-blue-600 bg-blue-50' : 'hover:text-blue-600'
+            }`}
+            onMouseEnter={() => handleMouseEnter(menuName as MenuSection)}
+          >
             <p className="font-medium">{menuName}</p>
           </div>
-          {activeMenu === menuName && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-48 z-50">
+          
+          {/* Menú desplegable */}
+          {isDropdownOpen && activeMenu === menuName && (
+            <div 
+              className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-48 z-50"
+              onMouseEnter={() => handleMouseEnter(menuName as MenuSection)}
+            >
               <div className="py-2">
-                {menuItems[menuName].map((item, index) => (
+                {menuItems[menuName as keyof typeof menuItems].map((item, index) => (
                   <div
                     key={index}
-                    className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-150"
-                    onClick={() => console.log(`Clicked: ${item}`)}
+                    className={`px-4 py-2 text-sm cursor-pointer transition-colors duration-150 ${
+                      activeSubMenu === item 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                    }`}
+                    onClick={() => handleSubMenuClick(item)}
                   >
                     {item}
                   </div>
