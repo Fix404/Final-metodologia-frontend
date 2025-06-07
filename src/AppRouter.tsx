@@ -31,10 +31,10 @@ export const AppRouter = () => {
                         <div className="w-full bg-[#183B4E]">
                             <AdminNavBar />
                         </div>
-                        <div className="w-full bg-[#183B4E] -mt-1">
+                        <div >
                             <AdminSubNavBar />
                         </div>
-                        <div className="-py-8">
+                        <div>
                             <AdminScreen />
                         </div>
                     </div>
