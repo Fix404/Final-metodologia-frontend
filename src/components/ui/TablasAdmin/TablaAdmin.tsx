@@ -16,6 +16,7 @@ export const TablaAdmin = () => {
     try {
       const data = await usuariosService.obtenerUsuarios();
       setUsuarios(data);
+      console.log(data)
     } catch (err) {
       console.error('Error al cargar usuarios:', err);
       

@@ -33,6 +33,7 @@ export const LoginForm = () => {
       try {
         const data = await login(values.email, values.contrasenia);
         console.log('Token JWT:', data.token);
+        localStorage.setItem('authToken', data.token);
 
         const decodedToken = jwtDecode<DecodedToken>(data.token);
 

@@ -3,11 +3,11 @@ export interface Usuario {
   id: number;
   direccion: string | null;
   nombre: string;
-  contrasenia: string; // No se mostrará en frontend
+  contrasenia: string;
   rol: string;
   email: string;
   dni: string | null;
-  password: string; // No se mostrará en frontend
+  password: string; 
   enabled: boolean;
   credentialsNonExpired: boolean;
   accountNonExpired: boolean;
