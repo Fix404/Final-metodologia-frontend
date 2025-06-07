@@ -10,6 +10,7 @@ import { descontarStock, restaurarStock } from '../../redux/slices/detalleProduc
 import { RootState } from '../../redux/store';
 import { useAppSelector } from '../../hooks/redux';
 
+
 // Servicio para llamar al API
 const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]> => {
   try {
@@ -24,10 +25,11 @@ const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]
   }
 };
 
+
 const DetalleScreen: React.FC = () => {
   // Obtener el ID del producto desde la URL
   const { id } = useParams<{ id: string }>();
-  
+ 
   // Estados
   const [detalles, setDetalles] = useState<IDetalle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,11 +37,10 @@ const DetalleScreen: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedTalle, setSelectedTalle] = useState<string | null>(null);
 
+
   const dispatch = useDispatch();
   const carritoItems = useSelector((state: RootState) => state.carrito.items);
 
-/*const detalles1 = useAppSelector((state) => state.detalleProducto.productos);
-console.log(detalles1)*/
 
   // Cargar detalles cuando el componente se monta o cambia el ID
   useEffect(() => {
@@ -50,12 +51,14 @@ console.log(detalles1)*/
         return;
       }
 
+
       try {
         setLoading(true);
         setError(null);
-        
+       
         // Cargar desde API
         const detallesData = await fetchDetallesByProductoId(id);
+
 
         if (!Array.isArray(detallesData) || detallesData.length === 0) {
           setError('No se encontraron detalles para este producto');
@@ -71,8 +74,10 @@ console.log(detalles1)*/
       }
     };
 
+
     loadDetalles();
   }, [id]);
+
 
   // Establecer selecciones iniciales cuando se cargan los detalles
   useEffect(() => {
@@ -80,7 +85,7 @@ console.log(detalles1)*/
       // Seleccionar primer color y talle disponibles
       const coloresDisponibles = getColoresDisponibles();
       const tallesDisponibles = getTallesDisponibles();
-      
+     
       if (coloresDisponibles.length > 0 && !selectedColor) {
         setSelectedColor(coloresDisponibles[0].color);
       }
@@ -90,6 +95,7 @@ console.log(detalles1)*/
     }
   }, [detalles, selectedColor, selectedTalle]);
 
+
   // Funciones auxiliares
   const getColoresDisponibles = (): IColor[] => {
     if (!Array.isArray(detalles) || detalles.length === 0) return [];
@@ -98,12 +104,14 @@ console.log(detalles1)*/
     );
   };
 
+
   const getTallesDisponibles = (): ITalle[] => {
     if (!Array.isArray(detalles) || detalles.length === 0) return [];
     return Array.from(
       new Map(detalles.map(d => [d.talle.talle, d.talle])).values()
     );
   };
+
 
   const getColorHex = (colorName: string): string => {
     const colorMap: { [key: string]: string } = {
@@ -115,11 +123,13 @@ console.log(detalles1)*/
     return colorMap[colorName] || '#CCCCCC';
   };
 
+
   const calculateFinalPrice = (detalle: IDetalle): number => {
     const base = detalle.precio?.precioVenta || 0;
     const descuento = detalle.producto?.descuento?.porcentaje ?? 0;
     return Math.round(base * (1 - descuento / 100));
   };
+
 
   // Estados calculados
   const producto = detalles.length > 0 ? detalles[0]?.producto : null;
@@ -130,14 +140,17 @@ console.log(detalles1)*/
     item => item.detalle.id === detalleSeleccionado?.id
   )?.cantidad || 0;
 
+
   // Handlers
   const handleAgregarAlCarrito = () => {
     if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
     if (cantidadEnCarrito >= detalleSeleccionado.stock) return;
 
+
     dispatch(agregarAlCarrito(detalleSeleccionado));
     dispatch(descontarStock(detalleSeleccionado.id));
   };
+
 
   // Render condicional para estados de carga y error
   if (loading) {
@@ -151,12 +164,13 @@ console.log(detalles1)*/
     );
   }
 
+
   if (error) {
     return (
       <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
         <div className="text-center bg-white p-8 rounded-lg shadow-md">
           <p className="text-red-600 font-semibold mb-4">{error}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="bg-[#1c4577] text-white px-4 py-2 rounded hover:bg-blue-700"
           >
@@ -167,6 +181,7 @@ console.log(detalles1)*/
     );
   }
 
+
   if (detalles.length === 0) {
     return (
       <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
@@ -176,6 +191,7 @@ console.log(detalles1)*/
       </div>
     );
   }
+
 
   return (
     <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
@@ -188,10 +204,12 @@ console.log(detalles1)*/
           />
         </div>
 
+
         <div className="pl-5 w-full lg:w-1/2 flex flex-col justify-between flex-1 max-h-screen overflow-auto">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre}</h1>
             <p className="text-lg text-gray-600">{producto?.descripcion}</p>
+
 
             {/* Colores */}
             <div>
@@ -212,6 +230,7 @@ console.log(detalles1)*/
                 ))}
               </div>
             </div>
+
 
             {/* Talles */}
             <div>
@@ -234,6 +253,7 @@ console.log(detalles1)*/
             </div>
           </div>
 
+
           {/* Parte inferior: precio, stock, botones */}
           <div className="space-y-4 mt-6">
             {/* Stock */}
@@ -243,6 +263,7 @@ console.log(detalles1)*/
                   ? detalleSeleccionado.stock - cantidadEnCarrito
                   : 0}
               </span>
+
 
               <div className="flex justify-between w-full items-center">
                 <span className="font-semibold text-gray-700">
@@ -275,6 +296,7 @@ console.log(detalles1)*/
               </div>
             </div>
 
+
             {/* Botón agregar al carrito */}
             <button
               onClick={handleAgregarAlCarrito}
@@ -299,4 +321,6 @@ console.log(detalles1)*/
   );
 };
 
+
 export default DetalleScreen;
+

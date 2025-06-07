@@ -21,7 +21,7 @@ export const AppRouter = () => {
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/carrito" element={<CarritoScreen />} />
-                    <Route path="/detalle" element={<CatalogoScreen />} />
+                    <Route path="/productos" element={<CatalogoScreen />} />
                     <Route path="/productos/:id" element={<DetalleScreen />} />
 
                 </Route>
@@ -45,39 +45,3 @@ export const AppRouter = () => {
         </Router>
     )
 }
-
-/* <Router>
-            <div className="flex flex-col min-h-screen">
-
-                <main className="flex-grow container mx-auto py-8 px-4">
-                    <Routes>
-                        <Route path="/" element={
-                            <div className="flex flex-col min-h-screen">
-                                <Navbar logo="/images/reactors-logo.png" />
-                                <HomeScreen />
-
-                            </div>
-                        } />
-                        <Route path="/login" element={<LoginScreen />} />
-                    </Routes>
-                </main>
-
-                <Routes>
-                    <Route path="/admin" element={
-                        <div className="flex flex-col min-h-screen">
-                            <div className="w-full bg-[#183B4E] -mt-16">
-                                <AdminNavBar />
-                            </div>
-                            <div className="w-full bg-[#183B4E] -mt-1">
-                                <AdminSubNavBar />
-                            </div>
-                            <div className="-py-8">
-                                <AdminScreen />
-                            </div>
-                        </div>
-                    } />
-                </Routes>
-                
-                <Footer />
-            </div>
-        </Router> */
