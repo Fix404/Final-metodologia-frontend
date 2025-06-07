@@ -20,10 +20,9 @@ export const AppRouter = () => {
                     <Route path="/" element={<HomeScreen />} />
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
-                    <Route path="/detalle/:id" element={<DetalleScreen />} />
                     <Route path="/carrito" element={<CarritoScreen />} />
                     <Route path="/detalle" element={<CatalogoScreen />} />
-                    <Route path="/detalle/:id" element={<DetalleScreen />} />
+                    <Route path="/productos/:id" element={<DetalleScreen />} />
 
                 </Route>
 

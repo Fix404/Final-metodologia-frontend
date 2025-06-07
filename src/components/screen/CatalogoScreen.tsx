@@ -10,6 +10,7 @@ import { IColor } from "../../types/IColor";
 import { IProducto } from "../../types/IProducto";
 import { IImagen } from "../../types/IImagen";
 import { ICategoria } from "../../types/ICategoria";
+import { useAppSelector } from "../../hooks/redux";
 
 export const CatalogoScreen = () => {
 
@@ -70,7 +71,7 @@ export const CatalogoScreen = () => {
 
  
     //Redux
-    const productos = useSelector((state: any) => state.detalleProducto.productos);
+    const productos = useAppSelector((state) => state.detalleProducto.productos);
 
     const dispatch = useDispatch();
 

@@ -91,7 +91,7 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
         {/* Action Buttons */}
         <div className="flex mt-3">
           <Link
-            to={`/detalle/${detalleProducto.id}`}
+            to={`/productos/${producto.id}`}
             className="bg-[#1c4577] text-white text-center py-2 flex-1 mr-1 rounded hover:bg-blue-800 transition-colors"
           >
             Ver Más
