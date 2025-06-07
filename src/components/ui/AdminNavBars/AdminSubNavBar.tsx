@@ -7,29 +7,21 @@ export const AdminSubNavBar= () => {
 
   const menuItems = {
     USUARIOS: [
-      "Gestionar Usuarios",
-      "Roles y Permisos", 
-      "Usuarios Activos",
-      "Usuarios Bloqueados"
+      "Empleados",
+      "Clientes", 
     ],
     PRODUCTOS: [
       "Catálogo",
-      "Agregar Producto",
       "Inventario", 
-      "Categorías",
-      "Ofertas y Descuentos"
+      "Precios",
     ],
     PEDIDOS: [
       "Pedidos Pendientes",
       "Historial de Pedidos",
       "Devoluciones",
-      "Seguimiento"
     ],
     ESTADÍSTICAS: [
-      "Dashboard",
       "Ventas",
-      "Usuarios",
-      "Productos Populares", 
       "Reportes"
     ],
     FACTURACIÓN: [
@@ -64,8 +56,8 @@ export const AdminSubNavBar= () => {
           onMouseLeave={handleMenuAreaLeave}
         >
           <div 
-            className={`cursor-pointer transition-colors duration-200 px-4 py-2 ${
-              activeMenu === menuName ? 'text-blue-600 bg-blue-50' : 'hover:text-blue-600'
+            className={`cursor-pointer transition-colors duration-260 px-4 py-2 ${
+              activeMenu === menuName ? 'text-blue-600 bg-blue-50' : 'hover:text-blue-500'
             }`}
             onMouseEnter={() => handleMouseEnter(menuName as MenuSection)}
           >
