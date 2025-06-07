@@ -6,6 +6,11 @@ interface ItemCarrito {
   cantidad: number;
 }
 
+interface ItemCarrito {
+  detalle: IDetalle;
+  cantidad: number;
+}
+
 interface Carrito {
   items: ItemCarrito[];
 }
@@ -33,20 +38,34 @@ export const carritoSlice = createSlice({
     quitarDelCarrito: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(item => item.detalle.id !== action.payload);
     },
-    aumentarCantidad: (state, action: PayloadAction<number>) => {
+  
+    
+    aumentarCantidad(state, action: PayloadAction<number>) {
       const item = state.items.find(item => item.detalle.id === action.payload);
       if (item && item.cantidad < item.detalle.stock) {
         item.cantidad += 1;
       }
     },
-    disminuirCantidad: (state, action: PayloadAction<number>) => {
+    
+    disminuirCantidad(state, action: PayloadAction<number>) {
       const item = state.items.find(item => item.detalle.id === action.payload);
       if (item && item.cantidad > 1) {
-        item.cantidad -= 1
-
-          ;
+        item.cantidad -= 1;
       }
     },
+    
+    actualizarCantidad(state, action: PayloadAction<{ id: number; cantidad: number }>) {
+      const { id, cantidad } = action.payload;
+      const item = state.items.find(item => item.detalle.id === id);
+      if (item && cantidad > 0 && cantidad <= item.detalle.stock) {
+        item.cantidad = cantidad;
+      }
+    },
+    
+    limpiarCarrito(state) {
+      state.items = [];
+    },
+    
     vaciarCarrito: state => {
       state.items = [];
     }

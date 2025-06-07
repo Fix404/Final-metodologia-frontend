@@ -5,10 +5,9 @@ import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
 import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
-import { CatalogoScreen } from './components/screen/CatalogoScreen';
-import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
+import { CompraScreen } from './components/screen/CompraScreen';
 
 export const AppRouter = () => {
     return (
@@ -21,9 +20,7 @@ export const AppRouter = () => {
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/carrito" element={<CarritoScreen />} />
-                    <Route path="/productos" element={<CatalogoScreen />} />
-                    <Route path="/productos/:id" element={<DetalleScreen />} />
-
+                    <Route path="/shop" element={<CompraScreen />} />
                 </Route>
 
                 {/* Rutas SIN Navbar/Footer */}
