@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import detalleProductoReducer from "./slices/detalleProductoSlice";
 import carritoReducer from './slices/CarritoSlice'
 import activeAdminMenuSlice from './slices/activeMenuAdminSlice'
+import busquedaReducer from './slices/busquedaSlice'
 
 const store = configureStore({
     reducer: {
         detalleProducto: detalleProductoReducer,
         carrito: carritoReducer,
-        menuActivoAdmin: activeAdminMenuSlice
+        menuActivoAdmin: activeAdminMenuSlice,
+        busqueda: busquedaReducer
     },
 });
 
