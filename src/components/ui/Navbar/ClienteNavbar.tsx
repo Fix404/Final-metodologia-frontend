@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { setTextoBusqueda } from '../../../redux/slices/busquedaSlice';
 
 interface NavbarProps {
   logo?: string;
@@ -11,6 +12,12 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
 
   const [searchQuery, setSearchQuery] = useState('');
   const cantidadEnCarrito = useSelector((state: RootState) => state.carrito.items.length);
+  const dispatch = useDispatch();
+  const texto = useSelector((state: RootState) => state.busqueda.texto);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setTextoBusqueda(e.target.value));
+  };
 
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-green-400 text-white p-4 sticky top-0 z-50">
@@ -24,14 +31,23 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
         {/* Navigation links */}
         <div className="hidden md:flex space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
-          <Link to="/detalle" className="hover:text-gray-200 transition-colors">Galería</Link>
+          <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería</Link>
           <Link to="/shop" className="hover:text-gray-200 transition-colors">Shop</Link>
           <Link to="/admin" className="hover:text-gray-200 transition-colors">Contacto</Link>
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
+          <nav className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={texto}
+              onChange={handleChange}
+              className="bg-transparent text-gray-800 focus:outline-none w-64"
+            />
+          </nav>
+          {/*<div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
             <input
               type="text"
               placeholder="Buscar productos..."
@@ -44,7 +60,7 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-          </div>
+          </div>*/}
 
           {/* Carrito */}
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
