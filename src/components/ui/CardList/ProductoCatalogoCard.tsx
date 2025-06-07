@@ -68,30 +68,26 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
           )} */}
 
           {/* Talle */}
-{talle && (
-  <p className="text-gray-800">
-    <span className="font-bold">Talle: </span>
-    <span>{talle.talle}</span>
-  </p>
-)}
+          {talle && (
+            <p className="text-gray-800">
+              <span className="font-bold">Talle: </span>
+              <span>{talle.talle}</span>
+            </p>
+          )}
 
-{/* Color */}
-{color && (
-  <p className="text-gray-800">
-    <span className="font-bold">Color: </span>
-    <span>{color.color}</span>
-  </p>
-)}
-
-         
-
+          {/* Color */}
+          {color && (
+            <p className="text-gray-800">
+              <span className="font-bold">Color: </span>
+              <span>{color.color}</span>
+            </p>
+          )}
 
         </div>
 
         {/* Action Buttons */}
         <div className="flex mt-3">
           <Link
-            to={`/detalle/${detalleProducto.id}`}
             to={`/detalle/${detalleProducto.id}`}
             className="bg-[#1c4577] text-white text-center py-2 flex-1 mr-1 rounded hover:bg-blue-800 transition-colors"
           >

@@ -146,7 +146,7 @@ const DetalleScreen: React.FC<DetalleScreenProps> = ({ detalleProducto }) => {
 
   const handleAgregarAlCarrito = () => {
     if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
-    if (cantidadEnCarrito >= detalleSeleccionado.stock) return; // No agregar si ya no hay stock
+    if (cantidadEnCarrito >= detalleSeleccionado.stock) return; 
 
     dispatch(agregarAlCarrito(detalleSeleccionado));
     dispatch(descontarStock(detalleSeleccionado.id));
