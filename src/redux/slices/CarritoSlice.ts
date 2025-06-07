@@ -38,20 +38,7 @@ export const carritoSlice = createSlice({
     quitarDelCarrito: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(item => item.detalle.id !== action.payload);
     },
-    aumentarCantidad: (state, action: PayloadAction<number>) => {
-      const item = state.items.find(item => item.detalle.id === action.payload);
-      if (item && item.cantidad < item.detalle.stock) {
-        item.cantidad += 1;
-      }
-    },
-    disminuirCantidad: (state, action: PayloadAction<number>) => {
-      const item = state.items.find(item => item.detalle.id === action.payload);
-      if (item && item.cantidad > 1) {
-        item.cantidad -= 1
-
-          ;
-      }
-    },
+  
     
     aumentarCantidad(state, action: PayloadAction<number>) {
       const item = state.items.find(item => item.detalle.id === action.payload);
@@ -79,18 +66,6 @@ export const carritoSlice = createSlice({
       state.items = [];
     },
     
-    // Acción para actualizar stock de un producto específico en el carrito
-    actualizarStockEnCarrito(state, action: PayloadAction<{ id: number; nuevoStock: number }>) {
-      const { id, nuevoStock } = action.payload;
-      const item = state.items.find(item => item.detalle.id === id);
-      if (item) {
-        item.detalle.stock = nuevoStock;
-        // Si la cantidad actual excede el nuevo stock, ajustarla
-        if (item.cantidad > nuevoStock) {
-          item.cantidad = Math.max(1, nuevoStock);
-        }
-      }
-    }
     vaciarCarrito: state => {
       state.items = [];
     }
