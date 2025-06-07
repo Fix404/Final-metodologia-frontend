@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
+import { login } from '../../services/authService';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -12,21 +13,31 @@ export const LoginForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      nombre: '',
-      password: '',
+      email: '',
+      contrasenia: '',
     },
+
     validationSchema: loginSchema,
+
     onSubmit: async (values) => {
       setIsLoading(true);
       setServerError(null);
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log('Datos de login enviados:', values);
-        navigate('/');
-      } catch (error) {
+        const data = await login(values.email, values.contrasenia);
+        console.log('Token JWT:', data.token);
+
+        // Guardar el token en localStorage 
+        localStorage.setItem('token', data.token);
+
+        navigate('/'); // Acá tendría que ir al carrito
+      } catch (error: any) {
         console.error(error);
-        setServerError('Credenciales incorrectas. Por favor intenta de nuevo.');
+        if (error.response && error.response.status === 401) {
+          setServerError('Credenciales incorrectas.');
+        } else {
+          setServerError('No estás registrado.');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -39,27 +50,26 @@ export const LoginForm = () => {
         <div className="bg-red-100 text-red-700 p-3 rounded">{serverError}</div>
       )}
 
-      {/* Nombre */}
+      {/* Email */}
       <div>
-        <label htmlFor="nombre" className="block text-lg font-medium text-gray-700 mb-2">
+        <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-2">
           Usuario
         </label>
         <input
-          id="nombre"
-          name="nombre"
-          type="text"
-          value={formik.values.nombre}
+          id="email"
+          name="email"
+          type="email"
+          value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className={`block w-full py-2 border ${
-            formik.touched.nombre && formik.errors.nombre
+          className={`block w-full py-2 border ${formik.touched.email && formik.errors.email
               ? 'border-red-500'
               : 'border-gray-300'
-          } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 pl-3`}
-          placeholder="Ingresá tu nombre"
+            } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 pl-3`}
+          placeholder="Ingresá tu correo electrónico"
         />
-        {formik.touched.nombre && formik.errors.nombre && (
-          <p className="mt-1 text-sm text-red-600">{formik.errors.nombre}</p>
+        {formik.touched.email && formik.errors.email && (
+          <p className="mt-1 text-sm text-red-600">{formik.errors.email}</p>
         )}
       </div>
 
@@ -70,17 +80,16 @@ export const LoginForm = () => {
         </label>
         <div className="relative">
           <input
-            id="password"
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            value={formik.values.password}
+            id="contrasenia"
+            name="contrasenia"
+            type={showPassword ? 'text' : 'contrasenia'}
+            value={formik.values.contrasenia}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className={`block w-full py-2 pl-3 border ${
-              formik.touched.password && formik.errors.password
+            className={`block w-full py-2 pl-3 border ${formik.touched.contrasenia && formik.errors.contrasenia
                 ? 'border-red-500'
                 : 'border-gray-300'
-            } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+              } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
             placeholder="••••••••"
           />
           <button
@@ -91,8 +100,8 @@ export const LoginForm = () => {
             {showPassword ? <FiEyeOff /> : <FiEye />}
           </button>
         </div>
-        {formik.touched.password && formik.errors.password && (
-          <p className="mt-1 text-sm text-red-600">{formik.errors.password}</p>
+        {formik.touched.contrasenia && formik.errors.contrasenia && (
+          <p className="mt-1 text-sm text-red-600">{formik.errors.contrasenia}</p>
         )}
       </div>
 
@@ -100,9 +109,8 @@ export const LoginForm = () => {
         <button
           type="submit"
           disabled={isLoading || !formik.isValid}
-          className={`w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 ${
-            isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
-          }`}
+          className={`w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 ${isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
         >
           {isLoading ? 'Procesando...' : 'Iniciar Sesión'}
         </button>
