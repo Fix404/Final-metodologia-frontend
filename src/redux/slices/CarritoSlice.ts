@@ -6,6 +6,11 @@ interface ItemCarrito {
   cantidad: number;
 }
 
+interface ItemCarrito {
+  detalle: IDetalle;
+  cantidad: number;
+}
+
 interface Carrito {
   items: ItemCarrito[];
 }
@@ -18,28 +23,33 @@ export const carritoSlice = createSlice({
   name: 'carrito',
   initialState,
   reducers: {
-    agregarAlCarrito(state, action: PayloadAction<IDetalle>) {
-      const producto = action.payload;
-      const itemExistente = state.items.find(item => item.detalle.id === producto.id);
-      
+    agregarAlCarrito: (state, action: PayloadAction<IDetalle>) => {
+      const detalle = action.payload;
+      const itemExistente = state.items.find(item => item.detalle.id === detalle.id);
       if (itemExistente) {
-        // Si ya existe, aumentar cantidad (respetando stock)
-        if (itemExistente.cantidad < producto.stock) {
+        // Solo aumentar cantidad si hay stock disponible
+        if (itemExistente.cantidad < detalle.stock) {
           itemExistente.cantidad += 1;
         }
       } else {
-        // Si no existe, agregarlo con cantidad 1
-        state.items.push({
-          detalle: producto,
-          cantidad: 1
-        });
+        state.items.push({ detalle, cantidad: 1 });
       }
     },
-    
-    quitarDelCarrito(state, action: PayloadAction<number>) {
-      const index = state.items.findIndex(item => item.detalle.id === action.payload);
-      if (index !== -1) {
-        state.items.splice(index, 1);
+    quitarDelCarrito: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter(item => item.detalle.id !== action.payload);
+    },
+    aumentarCantidad: (state, action: PayloadAction<number>) => {
+      const item = state.items.find(item => item.detalle.id === action.payload);
+      if (item && item.cantidad < item.detalle.stock) {
+        item.cantidad += 1;
+      }
+    },
+    disminuirCantidad: (state, action: PayloadAction<number>) => {
+      const item = state.items.find(item => item.detalle.id === action.payload);
+      if (item && item.cantidad > 1) {
+        item.cantidad -= 1
+
+          ;
       }
     },
     
@@ -81,17 +91,18 @@ export const carritoSlice = createSlice({
         }
       }
     }
-  },
+    vaciarCarrito: state => {
+      state.items = [];
+    }
+  }
 });
 
-export const { 
-  agregarAlCarrito, 
-  quitarDelCarrito, 
-  aumentarCantidad, 
-  disminuirCantidad, 
-  actualizarCantidad, 
-  limpiarCarrito,
-  actualizarStockEnCarrito
+export const {
+  agregarAlCarrito,
+  quitarDelCarrito,
+  aumentarCantidad,
+  disminuirCantidad,
+  vaciarCarrito
 } = carritoSlice.actions;
 
 export default carritoSlice.reducer;

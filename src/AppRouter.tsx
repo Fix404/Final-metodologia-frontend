@@ -21,14 +21,14 @@ export const AppRouter = () => {
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/galeria" element={<CatalogoScreen />} />
-                    <Route path="/producto/:id" element={<DetalleScreen />} />
+                    <Route path="/detalle/:id" element={<DetalleScreen />} />
                     <Route path="/carrito" element={<CarritoScreen />} />
                 </Route>
 
                 {/* Rutas SIN Navbar/Footer */}
                 <Route path="/admin" element={
                     <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E] -mt-16">
+                        <div className="w-full bg-[#183B4E]">
                             <AdminNavBar />
                         </div>
                         <div className="w-full bg-[#183B4E] -mt-1">
