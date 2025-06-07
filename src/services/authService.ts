@@ -8,6 +8,11 @@ export const login = async (email: string, contrasenia: string) => {
         contrasenia,
     });
 
+     const { token } = response.data;
+
+    // Guardar en localStorage
+    localStorage.setItem('token', token);
+
     return response.data; // Recibe el token
 };
 
