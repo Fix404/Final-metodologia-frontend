@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const AdminSubNavBar = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate(); // ← para navegación
-
+  const navigate = useNavigate(); 
   const { activeMenu, activeSubMenu, isDropdownOpen } = useAppSelector((state) => state.menuActivoAdmin);
 
   const menuItems = {

@@ -10,6 +10,7 @@ import DetalleScreen from "./components/screen/DetalleScreen";
 import { LoginScreen } from "./components/screen/LoginScreen";
 import { CarritoScreen } from "./components/screen/CarritoScreen";
 import { TablaAdminEmpleados } from "./components/ui/TablasAdmin/TablaAdminEmpleados";
+import { TablaAdminClientes } from "./components/ui/TablasAdmin/TablaAdminClientes";
 
 export const AppRouter = () => {
   return (
@@ -83,7 +84,7 @@ export const AppRouter = () => {
               </div>
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminEmpleados />
+                <TablaAdminClientes />
               </div>
             </div>
           }

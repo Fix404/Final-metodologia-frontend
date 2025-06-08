@@ -3,44 +3,30 @@ import { useAppSelector } from "../../../hooks/redux";
 import { Usuario, usuariosService } from "../../../services/usuarioService";
 
 export const TablaAdminEmpleados = () => {
-  const { activeMenu } = useAppSelector((state) => state.menuActivoAdmin);
+  const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
 
   // Función para cargar usuarios
   const cargarUsuarios = async () => {
-    // setLoading(true);
-    // setError(null);
     
     try {
       const data = await usuariosService.obtenerUsuarios();
-      setUsuarios(data);
-      console.log(data)
+      const soloAdmins = data.filter((usuario:Usuario) => 
+        usuario.rol === "ADMIN"
+);
+setUsuarios(soloAdmins);
+      console.log(soloAdmins)
     } catch (err) {
       console.error('Error al cargar usuarios:', err);
-      
-      // Manejo de errores específicos de axios
-      // if (err.code === 'ECONNABORTED') {
-      //   setError('Tiempo de espera agotado. Inténtalo de nuevo.');
-      // } else if (err.response) {
-      //   setError(`Error del servidor: ${err.response.status} - ${err.response.data?.message || 'Error desconocido'}`);
-      // } else if (err.request) {
-      //   setError('No se pudo conectar con el servidor. Verifica tu conexión.');
-      // } else {
-      //   setError('Error inesperado: ' + err.message);
-      // }
-    } finally {
-      // setLoading(false);
     }
   };
 
   // Effect para cargar usuarios cuando se activa el menú
   useEffect(() => {
-    if (activeMenu === "USUARIOS") {
+    if (activeSubMenu === "Empleados") {
       cargarUsuarios();
     }
-  }, [activeMenu]);
+  }, [activeSubMenu]);
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
