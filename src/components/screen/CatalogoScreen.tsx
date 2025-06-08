@@ -2,81 +2,15 @@ import { SetStateAction, useEffect, useState } from "react";
 import { ProductoCatalogoCardList } from "../ui/Lists/ProductoCatalogoCardList";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { fetchDetalleProducto } from "../../redux/slices/detalleProductoSlice";
-import { IDetalle } from "../../types/IDetalle";
-import { IPrecio } from "../../types/IPrecio";
-import { ITalle } from "../../types/ITalle";
-import { IColor } from "../../types/IColor";
 import { IProducto } from "../../types/IProducto";
-import { IImagen } from "../../types/IImagen";
-import { ICategoria } from "../../types/ICategoria";
 import { fetchProducto } from "../../redux/slices/productoSlice";
 import { RootState } from "../../redux/store";
 
 export const CatalogoScreen = () => {
 
-    /* const mockImagen: IImagen = {
-         id: 1, url: "https://tse4.mm.bing.net/th?id=OIP.wqwEufidl9MOIHra1Gc-CgHaHa&pid=Api", altDescripcion: ""
-     }
- 
-     const mockCategoria: ICategoria[] = [
-         { id: 1, nombre: "mujer", },
-         { id: 2, nombre: "hombre", },
-         { id: 3, nombre: "infantil", },
-         { id: 4, nombre: "deportivo" }
-     ]
- 
-     const productos: IProducto[] = [
-         { id: 1, nombre: "Zapatillas", descripcion: "Calzado deportivo", categoria: mockCategoria[0], tipo: "calzado", sexoProducto: "mujer", imagen: mockImagen },
-         { id: 3, nombre: "Remera", descripcion: "Remera casual", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria[0], imagen: mockImagen },
-         { id: 4, nombre: "Pantalón deportivo", descripcion: "Pantalón deportivo", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria[1], imagen: mockImagen },
-         { id: 5, nombre: "Remera estampada", descripcion: "Remera con estampado", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria[2], imagen: mockImagen },
-         { id: 6, nombre: "Zapatillas de lona", descripcion: "Calzado casual", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria[3], imagen: mockImagen },
-         { id: 7, nombre: "Zapatillas", descripcion: "Calzado deportivo", categoria: mockCategoria[0], tipo: "calzado", sexoProducto: "mujer", imagen: mockImagen },
-         { id: 8, nombre: "Remera", descripcion: "Remera casual", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria[0], imagen: mockImagen },
-         { id: 9, nombre: "Pantalón deportivo", descripcion: "Pantalón deportivo", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria[1], imagen: mockImagen },
-         { id: 10, nombre: "Remera estampada", descripcion: "Remera con estampado", tipo: "ropa", sexoProducto: "mujer", categoria: mockCategoria[2], imagen: mockImagen },
-         { id: 11, nombre: "Zapatillas de lona", descripcion: "Calzado casual", tipo: "calzado", sexoProducto: "hombre", categoria: mockCategoria[3], imagen: mockImagen },
-     ];
- 
-     const colores: IColor[] = [
-         { id: 1, color: "Rojo" },
-         { id: 1, color: "Negro" },
-         { id: 1, color: "Blanco" }
-     ]
- 
-     const talles: ITalle[] = [
-         { id: 1, talle: "S" },
-         { id: 2, talle: "M" },
-         { id: 3, talle: "L" },
-     ];
- 
-     const precios: IPrecio[] = [
-         { id: 1, precioCompra: 7000, precioVenta: 10000 },
-         { id: 2, precioCompra: 9000, precioVenta: 12000 },
-         { id: 3, precioCompra: 6000, precioVenta: 9500 },
-         { id: 4, precioCompra: 8000, precioVenta: 11000 },
-         { id: 5, precioCompra: 8500, precioVenta: 11500 },
-         { id: 6, precioCompra: 7500, precioVenta: 10500 },
-     ];
- 
-     const detalleProductos: IDetalle[] = productos.map((producto, index) => ({
-         id: index + 1,
-         producto: producto,
-         precio: precios[index],
-         color: colores[1],
-         talle: talles[2],
-         stock: 10 + index,
-         estado: "activo",
-     }));*/
-
-
-    //Redux
     const productos = useSelector((state: RootState) => state.producto.productos);
-
     const dispatch = useDispatch();
 
-    // Filtros
     const [selectedCategory, setSelectedCategory] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -110,7 +44,6 @@ export const CatalogoScreen = () => {
         setSelectedCategory(event.target.value);
     };
 
-    // Cargando
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#fdfae8]">
@@ -121,8 +54,6 @@ export const CatalogoScreen = () => {
             </div>
         );
     }
-
-    // Error
     if (error) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#fdfae8]">
@@ -140,7 +71,7 @@ export const CatalogoScreen = () => {
     }
 
     return (
-        <div className="min-h-screen left-0 right-0 bg-[#fdfae8]">
+        <div className="min-h-screen left-0 right-0 bg-[#fcfcd3]">
             <main className="container mx-auto px-4 pt-4 py-8 max-w-7xl">
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full mb-5 sm:w-auto">
@@ -155,7 +86,6 @@ export const CatalogoScreen = () => {
                             <option value="mujer">Mujer</option>
                             <option value="hombre">Hombre</option>
                             <option value="infantil">Infantil</option>
-                            <option value="deportivo">Deportivo</option>
                         </select>
 
                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">

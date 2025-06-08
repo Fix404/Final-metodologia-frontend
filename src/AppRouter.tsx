@@ -9,15 +9,27 @@ import { CatalogoScreen } from './components/screen/CatalogoScreen';
 import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
+import ClienteNavbar from './components/ui/Navbar/ClienteNavbar';
 
 export const AppRouter = () => {
     return (
         <Router>
             <Routes>
 
+                {/*Landing Page sin Footer*/}
+                <Route path="/" element={
+                    <div className="flex flex-col min-h-screen">
+                        <div className="w-full bg-[#183B4E]">
+                            <ClienteNavbar />
+                        </div>
+                        <div>
+                            <HomeScreen />
+                        </div>
+                    </div>
+                } />
+
                 {/* Rutas CON Navbar/Footer */}
                 <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomeScreen />} />
                     <Route path="/login" element={<LoginScreen />} />
                     <Route path="/registro" element={<RegistroScreen />} />
                     <Route path="/carrito" element={<CarritoScreen />} />

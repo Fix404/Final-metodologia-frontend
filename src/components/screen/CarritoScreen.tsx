@@ -31,7 +31,7 @@ export const CarritoScreen: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="bg-[#fdfae8] min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="bg-[#fcfcd3] min-h-screen flex flex-col items-center justify-center px-4">
         <div className="text-center">
           <FaShoppingBag className="text-8xl text-gray-300 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -76,14 +76,14 @@ export const CarritoScreen: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <button
                 onClick={handleContinuarComprando}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors border border-gray-300"
+                className="bg-gray-100 hover:bg-gray-200 hover:cursor-pointer text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors border border-gray-300"
               >
                 Continuar Comprando
               </button>
 
               <button
                 onClick={handleComprar}
-                className="bg-[#4A90E2] hover:bg-[#357ABD] text-white font-semibold py-3 px-8 rounded-lg transition-colors min-w-[160px]"
+                className="bg-[#4A90E2] hover:bg-[#357ABD] hover:cursor-pointer text-white font-semibold py-3 px-8 rounded-lg transition-colors min-w-[160px]"
               >
                 COMPRAR
               </button>

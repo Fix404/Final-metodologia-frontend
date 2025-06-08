@@ -5,7 +5,7 @@ import { LoginForm } from "../forms/LoginForm";
 export const LoginScreen = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <main className="flex-grow flex items-center justify-center bg-[#f0f4f9] px-4">
+      <main className="flex-grow flex items-center justify-center bg-[#fcfcd3] px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="bg-[#27548a] px-6 py-4">
             <h2 className="text-center text-2xl font-bold text-white">
