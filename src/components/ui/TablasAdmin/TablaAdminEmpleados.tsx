@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { Usuario, usuariosService } from "../../../services/usuarioService";
 
-export const TablaAdmin = () => {
+export const TablaAdminEmpleados = () => {
   const { activeMenu } = useAppSelector((state) => state.menuActivoAdmin);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   // const [loading, setLoading] = useState(false);
