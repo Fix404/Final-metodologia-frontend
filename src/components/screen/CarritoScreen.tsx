@@ -1,14 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { CarritoCard } from "../ui/CardList/CarritoCard";
 import { FaShoppingBag } from "react-icons/fa";
+import { IDetalle } from "../../types/IDetalle";
+
+// Servicio para obtener detalles actualizados desde el backend
+const fetchDetalleById = async (detalleId: number): Promise<IDetalle> => {
+  try {
+    const response = await fetch(`http://localhost:8080/detalle/${detalleId}`);
+    if (!response.ok) {
+      throw new Error(`Error al obtener detalle ${detalleId}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching detalle ${detalleId}:`, error);
+    throw error;
+  }
+};
 
 export const CarritoScreen: React.FC = () => {
   const items = useSelector((state: RootState) => state.carrito.items);
   const navigate = useNavigate();
+  
+  // Estados para manejar los datos actualizados del backend
+  const [detallesActualizados, setDetallesActualizados] = useState<IDetalle[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Cargar detalles actualizados desde el backend
+  useEffect(() => {
+    const loadDetallesActualizados = async () => {
+      if (items.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Obtener todos los detalles actualizados del backend
+        const promesas = items.map(item => fetchDetalleById(item.detalle.id));
+        const detallesFromAPI = await Promise.all(promesas);
+        
+        setDetallesActualizados(detallesFromAPI);
+      } catch (err) {
+        setError('Error al cargar los detalles actualizados del carrito');
+        console.error('Error loading detalles actualizados:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDetallesActualizados();
+  }, [items]);
+
+  // Función para calcular precio final con descuentos (usando datos del backend)
+  const calcularPrecioFinal = (detalle: IDetalle) => {
+    const precioBase = detalle.precio?.precioVenta || 0;
+    const descuento = detalle.producto?.descuento?.porcentaje ?? 0;
+    return Math.round(precioBase * (1 - descuento / 100));
+  };
+
+  // Función para calcular el total del carrito (usando datos actualizados del backend)
+  const calcularTotal = () => {
+    return items.reduce((total, itemCarrito) => {
+      const detalleActualizado = detallesActualizados.find(
+        d => d.id === itemCarrito.detalle.id
+      );
+      
+      if (detalleActualizado) {
+        return total + calcularPrecioFinal(detalleActualizado) * itemCarrito.cantidad;
+      }
+      
+      // Fallback: usar datos del carrito si no se encontró el detalle actualizado
+      return total + calcularPrecioFinal(itemCarrito.detalle) * itemCarrito.cantidad;
+    }, 0);
+  };
+
+  // Funciones originales comentadas (ya no se usan)
+  /*
   const calcularPrecioFinal = (item: typeof items[number]["detalle"]) => {
     const precioBase = item.precio.precioVenta;
     const descuento = item.producto.descuento?.porcentaje ?? 0;
@@ -20,6 +93,7 @@ export const CarritoScreen: React.FC = () => {
       return total + calcularPrecioFinal(detalle) * cantidad;
     }, 0);
   };
+  */
 
   const handleComprar = () => {
     navigate("/shop");
@@ -28,6 +102,35 @@ export const CarritoScreen: React.FC = () => {
   const handleContinuarComprando = () => {
     navigate("/detalle");
   };
+
+  // Mostrar loading mientras se cargan los datos del backend
+  if (loading && items.length > 0) {
+    return (
+      <div className="bg-[#fdfae8] min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1c4577] mx-auto mb-4"></div>
+          <p className="text-gray-600">Actualizando carrito...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar error si ocurrió algún problema al cargar desde el backend
+  if (error) {
+    return (
+      <div className="bg-[#fdfae8] min-h-screen flex items-center justify-center">
+        <div className="text-center bg-white p-8 rounded-lg shadow-md">
+          <p className="text-red-600 font-semibold mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#1c4577] text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -59,9 +162,18 @@ export const CarritoScreen: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-          {items.map(({ detalle, cantidad }) => (
-            <CarritoCard key={detalle.id} detalle={detalle} cantidad={cantidad} />
-          ))}
+          {items.map(({ detalle, cantidad }) => {
+            // Buscar el detalle actualizado del backend
+            const detalleActualizado = detallesActualizados.find(d => d.id === detalle.id);
+            
+            return (
+              <CarritoCard 
+                key={detalle.id} 
+                detalle={detalleActualizado || detalle} // Usar datos actualizados o fallback
+                cantidad={cantidad} 
+              />
+            );
+          })}
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
