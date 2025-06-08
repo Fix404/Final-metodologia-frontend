@@ -20,7 +20,7 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
   };
 
   return (
-    <nav className="bg-gradient-to-r from-blue-500 to-green-400 text-white p-4 sticky top-0 z-50">
+    <nav className="bg-[#6DA4B9] text-white p-4 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo and brand */}
         <Link to="/" className="flex items-center space-x-2">
@@ -31,14 +31,14 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
         {/* Navigation links */}
         <div className="hidden md:flex space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
-          <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería</Link>
+          <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería de productos</Link>
           <Link to="/shop" className="hover:text-gray-200 transition-colors">Shop</Link>
-          <Link to="/admin" className="hover:text-gray-200 transition-colors">Contacto</Link>
+          <Link to="/admin" className="hover:text-gray-200 transition-colors">Admin</Link>
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
 
         <div className="flex items-center space-x-4">
-          <nav className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
+          {/*<nav className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
             <input
               type="text"
               placeholder="Buscar productos..."
@@ -47,7 +47,7 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
               className="bg-transparent text-gray-800 focus:outline-none w-64"
             />
           </nav>
-          {/*<div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
+          <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
             <input
               type="text"
               placeholder="Buscar productos..."

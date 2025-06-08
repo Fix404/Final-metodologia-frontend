@@ -25,7 +25,6 @@ export const AppRouter = () => {
                     <Route path="/carrito" element={<CarritoScreen />} />
                     <Route path="/productos" element={<CatalogoScreen />} />
                     <Route path="/productos/:id" element={<DetalleScreen />} />
-
                     <Route path="/shop" element={<CompraScreen />} />
                     <Route path="/shop/pagar" element={<PagoScreen />} />
                 </Route>
