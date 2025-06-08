@@ -42,7 +42,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
   };
 
   const handleNavegacionProducto = () => {
-    navigate(`/detalle/${detalle.producto.id}`);
+    navigate(`/productos/${detalle.producto.id}`);
   };
 
   const calcularPrecioFinal = () => {
@@ -55,7 +55,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
   const subtotal = precioFinal * cantidad;
 
   return (
-    <div className="bg-[#fdfae8] border-b border-gray-300 py-6 px-2 sm:px-4">
+    <div className="bg-white border-b border-gray-300 shadow-xl py-6 px-2 sm:px-4">
       <div className="flex gap-4">
         {/* Imagen */}
         <div
@@ -71,6 +71,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
 
         {/* Info principal */}
         <div className="flex-1 min-w-0 flex flex-col justify-between">
+          
           {/* Header: título + eliminar */}
           <div className="flex justify-between items-start">
             <div className="flex-1">
@@ -105,11 +106,11 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
 
           {/* Controles y precio */}
           <div className="mt-4 flex justify-between items-center flex-wrap gap-3">
-            <div className="inline-flex items-center bg-[#4A90E2] rounded overflow-hidden">
+            <div className="inline-flex items-center bg-[#4782c5ee] rounded overflow-hidden">
               <button
                 onClick={handleDisminuirCantidad}
                 disabled={cantidad <= 1}
-                className="text-white p-2 hover:bg-[#357ABD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="text-white p-2 hover:bg-[#357ABD] hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <FaMinus className="text-xs" />
               </button>
@@ -119,7 +120,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
               <button
                 onClick={handleAumentarCantidad}
                 disabled={cantidad >= detalle.stock}
-                className="text-white p-2 hover:bg-[#357ABD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="text-white p-2 hover:bg-[#357ABD] hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <FaPlus className="text-xs" />
               </button>

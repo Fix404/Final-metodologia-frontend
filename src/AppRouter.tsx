@@ -9,25 +9,36 @@ import { CatalogoScreen } from './components/screen/CatalogoScreen';
 import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
-import  {CompraScreen}  from './components/screen/CompraScreen';
-import { PagoScreen } from './components/screen/PagoScreen';
-import { TablaAdminEmpleados } from "./components/ui/TablasAdmin/TablaAdminEmpleados";
+import ClienteNavbar from './components/ui/Navbar/ClienteNavbar';
+import { TablaAdminClientes } from './components/ui/TablasAdmin/TablaAdminClientes';
+import { TablaAdminEmpleados } from './components/ui/TablasAdmin/TablaAdminEmpleados';
 
 export const AppRouter = () => {
-  return (
-    <Router>
-      <Routes>
-        {/* Rutas CON Navbar/Footer */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomeScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/registro" element={<RegistroScreen />} />
-          <Route path="/carrito" element={<CarritoScreen />} />
-          <Route path="/productos" element={<CatalogoScreen />} />
-          <Route path="/productos/:id" element={<DetalleScreen />} />
-          <Route path="/shop" element={<CompraScreen />} />
-          <Route path="/shop/pagar" element={<PagoScreen />} />
-        </Route>
+    return (
+        <Router>
+            <Routes>
+
+                {/*Landing Page sin Footer*/}
+                <Route path="/" element={
+                    <div className="flex flex-col min-h-screen">
+                        <div className="w-full bg-[#183B4E]">
+                            <ClienteNavbar />
+                        </div>
+                        <div>
+                            <HomeScreen />
+                        </div>
+                    </div>
+                } />
+
+                {/* Rutas CON Navbar/Footer */}
+                <Route element={<MainLayout />}>
+                    <Route path="/login" element={<LoginScreen />} />
+                    <Route path="/registro" element={<RegistroScreen />} />
+                    <Route path="/carrito" element={<CarritoScreen />} />
+                    <Route path="/productos" element={<CatalogoScreen />} />
+                    <Route path="/productos/:id" element={<DetalleScreen />} />
+
+                </Route>
 
         {/* Rutas SIN Navbar/Footer */}
         <Route
@@ -87,7 +98,7 @@ export const AppRouter = () => {
               </div>
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminEmpleados />
+                <TablaAdminClientes />
               </div>
             </div>
           }

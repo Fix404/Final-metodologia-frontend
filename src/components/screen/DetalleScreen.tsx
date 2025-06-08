@@ -8,10 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { agregarAlCarrito, quitarDelCarrito } from '../../redux/slices/CarritoSlice';
 import { descontarStock, restaurarStock } from '../../redux/slices/detalleProductoSlice';
 import { RootState } from '../../redux/store';
-import { useAppSelector } from '../../hooks/redux';
 
-
-// Servicio para llamar al API
 const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]> => {
   try {
     const response = await fetch(`http://localhost:8080/detalle/productos/${productoId}`);
@@ -27,22 +24,17 @@ const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]
 
 
 const DetalleScreen: React.FC = () => {
-  // Obtener el ID del producto desde la URL
   const { id } = useParams<{ id: string }>();
- 
-  // Estados
+
   const [detalles, setDetalles] = useState<IDetalle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedTalle, setSelectedTalle] = useState<string | null>(null);
 
-
   const dispatch = useDispatch();
   const carritoItems = useSelector((state: RootState) => state.carrito.items);
 
-
-  // Cargar detalles cuando el componente se monta o cambia el ID
   useEffect(() => {
     const loadDetalles = async () => {
       if (!id) {
@@ -50,15 +42,10 @@ const DetalleScreen: React.FC = () => {
         setLoading(false);
         return;
       }
-
-
       try {
         setLoading(true);
         setError(null);
-       
-        // Cargar desde API
         const detallesData = await fetchDetallesByProductoId(id);
-
 
         if (!Array.isArray(detallesData) || detallesData.length === 0) {
           setError('No se encontraron detalles para este producto');
@@ -73,19 +60,14 @@ const DetalleScreen: React.FC = () => {
         setLoading(false);
       }
     };
-
-
     loadDetalles();
   }, [id]);
 
-
-  // Establecer selecciones iniciales cuando se cargan los detalles
   useEffect(() => {
     if (detalles.length > 0) {
-      // Seleccionar primer color y talle disponibles
       const coloresDisponibles = getColoresDisponibles();
       const tallesDisponibles = getTallesDisponibles();
-     
+
       if (coloresDisponibles.length > 0 && !selectedColor) {
         setSelectedColor(coloresDisponibles[0].color);
       }
@@ -95,8 +77,6 @@ const DetalleScreen: React.FC = () => {
     }
   }, [detalles, selectedColor, selectedTalle]);
 
-
-  // Funciones auxiliares
   const getColoresDisponibles = (): IColor[] => {
     if (!Array.isArray(detalles) || detalles.length === 0) return [];
     return Array.from(
@@ -111,7 +91,6 @@ const DetalleScreen: React.FC = () => {
       new Map(detalles.map(d => [d.talle.talle, d.talle])).values()
     );
   };
-
 
   const getColorHex = (colorName: string): string => {
     const colorMap: { [key: string]: string } = {
@@ -131,7 +110,6 @@ const DetalleScreen: React.FC = () => {
   };
 
 
-  // Estados calculados
   const producto = detalles.length > 0 ? detalles[0]?.producto : null;
   const detalleSeleccionado = Array.isArray(detalles) ? detalles.find(
     d => d.color.color === selectedColor && d.talle.talle === selectedTalle
@@ -140,19 +118,15 @@ const DetalleScreen: React.FC = () => {
     item => item.detalle.id === detalleSeleccionado?.id
   )?.cantidad || 0;
 
-
-  // Handlers
   const handleAgregarAlCarrito = () => {
     if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
     if (cantidadEnCarrito >= detalleSeleccionado.stock) return;
-
 
     dispatch(agregarAlCarrito(detalleSeleccionado));
     dispatch(descontarStock(detalleSeleccionado.id));
   };
 
 
-  // Render condicional para estados de carga y error
   if (loading) {
     return (
       <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
@@ -163,7 +137,6 @@ const DetalleScreen: React.FC = () => {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -181,20 +154,18 @@ const DetalleScreen: React.FC = () => {
     );
   }
 
-
   if (detalles.length === 0) {
     return (
       <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">No se encontraron detalles para este producto.</p>
+          <p className="text-gray-600">No se encontró el detalle del producto</p>
         </div>
       </div>
     );
   }
 
-
   return (
-    <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
+    <div className="bg-[#fcfcd3] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
       <div className="max-w-5xl w-full flex flex-col lg:flex-row gap-10 h-full">
         <div className="w-full lg:w-1/2">
           <img
@@ -204,12 +175,10 @@ const DetalleScreen: React.FC = () => {
           />
         </div>
 
-
         <div className="pl-5 w-full lg:w-1/2 flex flex-col justify-between flex-1 max-h-screen overflow-auto">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre}</h1>
             <p className="text-lg text-gray-600">{producto?.descripcion}</p>
-
 
             {/* Colores */}
             <div>
@@ -220,17 +189,15 @@ const DetalleScreen: React.FC = () => {
                     key={index}
                     onClick={() => setSelectedColor(color.color)}
                     style={{ backgroundColor: getColorHex(color.color) }}
-                    className={`w-12 h-12 rounded-full border-4 transition-all ${
-                      selectedColor === color.color
-                        ? 'border-gray-600 scale-110'
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
+                    className={`w-12 h-12 rounded-full border-4 transition-all ${selectedColor === color.color
+                      ? 'border-gray-600 scale-110'
+                      : 'border-gray-300 hover:border-gray-400'
+                      }`}
                     title={color.color}
                   />
                 ))}
               </div>
             </div>
-
 
             {/* Talles */}
             <div>
@@ -240,11 +207,10 @@ const DetalleScreen: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedTalle(talle.talle)}
-                    className={`h-11 w-11 px-3 py-1 rounded-md text-1x2 font-semibold transition-all ${
-                      selectedTalle === talle.talle
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                    }`}
+                    className={`h-11 w-11 px-3 py-1 rounded-md text-1x2 font-semibold transition-all ${selectedTalle === talle.talle
+                      ? 'bg-gray-700 text-white'
+                      : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                      }`}
                   >
                     {talle.talle}
                   </button>
@@ -253,47 +219,37 @@ const DetalleScreen: React.FC = () => {
             </div>
           </div>
 
-
           {/* Parte inferior: precio, stock, botones */}
           <div className="space-y-4 mt-6">
-            {/* Stock */}
-            <div className="flex items-center flex-wrap">
+
+            <div className="flex justify-between items-center">
+              {/* Stock */}
               <span className="font-semibold text-gray-700">
-                Stock disponible: {detalleSeleccionado?.stock != null
-                  ? detalleSeleccionado.stock - cantidadEnCarrito
-                  : 0}
+                En carrito: {cantidadEnCarrito}
               </span>
 
-
-              <div className="flex justify-between w-full items-center">
-                <span className="font-semibold text-gray-700">
-                  En carrito: {cantidadEnCarrito}
-                </span>
-                {/* Precio */}
-                {detalleSeleccionado && detalleSeleccionado.stock > 0 && (
-                  <div>
-                    {producto?.descuento?.porcentaje ? (
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <span className="text-gray-500 line-through font-semibold text-xl">
-                            ${detalleSeleccionado.precio?.precioVenta}
-                          </span>
-                          <span className="text-green-600 text-xl font-semibold">
-                            -{producto.descuento.porcentaje}%
-                          </span>
-                        </div>
-                        <span className="text-black font-bold text-3xl">
-                          ${calculateFinalPrice(detalleSeleccionado)}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-900 font-bold text-2xl">
+              {/* Precio */}
+              {detalleSeleccionado && detalleSeleccionado.stock > 0 && (
+                <div className="flex items-center gap-4">
+                  {producto?.descuento?.porcentaje ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 line-through font-semibold text-xl">
                         ${detalleSeleccionado.precio?.precioVenta}
                       </span>
-                    )}
-                  </div>
-                )}
-              </div>
+                      <span className="text-green-600 text-xl font-semibold">
+                        -{producto.descuento.porcentaje}%
+                      </span>
+                      <span className="text-black font-bold text-3xl">
+                        ${calculateFinalPrice(detalleSeleccionado)}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-gray-900 font-bold text-2xl">
+                      ${detalleSeleccionado.precio?.precioVenta}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
 
@@ -305,11 +261,10 @@ const DetalleScreen: React.FC = () => {
                 detalleSeleccionado.stock === 0 ||
                 cantidadEnCarrito >= detalleSeleccionado.stock
               }
-              className={`w-full flex items-center justify-center gap-3 text-white py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                detalleSeleccionado && detalleSeleccionado.stock > 0
-                  ? 'bg-[#1c4577] hover:bg-blue-700'
-                  : 'bg-gray-400 cursor-not-allowed'
-              }`}
+              className={`w-full flex items-center justify-center gap-3 text-white py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${detalleSeleccionado && detalleSeleccionado.stock > 0
+                ? 'bg-[#1c4577] hover:bg-blue-900'
+                : 'bg-gray-400 cursor-not-allowed'
+                }`}
             >
               <FaCartPlus size={18} />
               Agregar al carrito
@@ -323,4 +278,3 @@ const DetalleScreen: React.FC = () => {
 
 
 export default DetalleScreen;
-

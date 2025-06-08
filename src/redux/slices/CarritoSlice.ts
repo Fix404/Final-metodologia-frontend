@@ -31,7 +31,6 @@ export const carritoSlice = createSlice({
       const detalle = action.payload;
       const itemExistente = state.items.find(item => item.detalle.id === detalle.id);
       if (itemExistente) {
-        // Solo aumentar cantidad si hay stock disponible
         if (itemExistente.cantidad < detalle.stock) {
           itemExistente.cantidad += 1;
         }
