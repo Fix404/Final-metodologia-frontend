@@ -69,7 +69,6 @@ const ClienteNavbar = () => {
         <div className="hidden md:flex space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
           <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería</Link>
-          <Link to="/shop" className="hover:text-gray-200 transition-colors">Shop</Link>
           <Link to="/admin" className="hover:text-gray-200 transition-colors">Contacto</Link>
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
