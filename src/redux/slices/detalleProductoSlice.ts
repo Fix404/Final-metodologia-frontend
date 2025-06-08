@@ -1,37 +1,49 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IDetalle } from "../../types/IDetalle";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IDetalle } from '../../types/IDetalle';
 
-interface detalleProducto {
+interface DetalleProductoState {
   detalles: IDetalle[];
 }
 
-const initialState: detalleProducto = {
+const initialState: DetalleProductoState = {
   detalles: [],
 };
 
 const detalleProductoSlice = createSlice({
-  name: "detalleProductoReducer",
+  name: 'detalleProducto',
   initialState,
   reducers: {
-    fetchDetalleProducto: (state, action: PayloadAction<IDetalle[]>) => {
+    fetchDetalles: (state, action: PayloadAction<IDetalle[]>) => {
       state.detalles = action.payload;
     },
+    fetchDetallesByProductoId: (state, action: PayloadAction<number>) => {
+      const productoId = action.payload;
+      state.detalles = state.detalles.filter(detalle => detalle.producto.id === productoId);
+    },
+    clearDetalles: (state) => {
+      state.detalles = [];
+    },
     descontarStock: (state, action: PayloadAction<number>) => {
-      const producto = state.detalles.find(p => p.id === action.payload);
-      if (producto && producto.stock > 0) {
-        producto.stock--;
+      const detalle = state.detalles.find(d => d.id === action.payload);
+      if (detalle && detalle.stock > 0) {
+        detalle.stock--;
       }
     },
     restaurarStock: (state, action: PayloadAction<number>) => {
-      const producto = state.detalles.find(p => p.id === action.payload);
-      if (producto) {
-        producto.stock++;
+      const detalle = state.detalles.find(d => d.id === action.payload);
+      if (detalle) {
+        detalle.stock++;
       }
     },
   },
 });
 
-export const { fetchDetalleProducto, descontarStock, restaurarStock } =
-  detalleProductoSlice.actions;
+export const {
+  fetchDetalles,
+  fetchDetallesByProductoId,
+  clearDetalles,
+  descontarStock,
+  restaurarStock,
+} = detalleProductoSlice.actions;
 
 export default detalleProductoSlice.reducer;

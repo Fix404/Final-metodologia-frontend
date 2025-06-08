@@ -31,7 +31,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
       setServerError(null);
 
       try {
-         const data = await register(
+        const data = await register(
           values.nombre,
           values.email,
           values.contrasenia,
@@ -41,7 +41,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
         localStorage.setItem('token', data.token);
         navigate('/login');
 
-        onSuccess(); 
+        onSuccess();
       } catch (error) {
         console.error('Error de registro:', error);
         setServerError('No se pudo completar el registro. Por favor intenta de nuevo.');
@@ -58,11 +58,12 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
           {serverError}
         </div>
       )}
+      <form
+        className=" mt-8 space-y-6"
+        onSubmit={formik.handleSubmit}>
 
-      <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
-        
         {/* Nombre */}
-        <div>
+        <div >
           <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
             Nombre
           </label>
@@ -78,11 +79,10 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               value={formik.values.nombre}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`pl-10 block w-full py-2 border ${
-                formik.touched.nombre && formik.errors.nombre
+              className={`pl-10 block w-full py-2 border ${formik.touched.nombre && formik.errors.nombre
                   ? 'border-red-500'
                   : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="Tu nombre completo"
             />
           </div>
@@ -108,11 +108,10 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`pl-10 block w-full py-2 border ${
-                formik.touched.email && formik.errors.email
+              className={`pl-10 block w-full py-2 border ${formik.touched.email && formik.errors.email
                   ? 'border-red-500'
                   : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="tu@ejemplo.com"
             />
           </div>
@@ -138,11 +137,10 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               value={formik.values.contrasenia}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`pl-10 block w-full py-2 border ${
-                formik.touched.contrasenia && formik.errors.contrasenia
+              className={`pl-10 block w-full py-2 border ${formik.touched.contrasenia && formik.errors.contrasenia
                   ? 'border-red-500'
                   : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="••••••••"
             />
             <button
@@ -179,11 +177,10 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               value={formik.values.confirmarContrasenia}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`pl-10 block w-full py-2 border ${
-                formik.touched.confirmarContrasenia && formik.errors.confirmarContrasenia
+              className={`pl-10 block w-full py-2 border ${formik.touched.confirmarContrasenia && formik.errors.confirmarContrasenia
                   ? 'border-red-500'
                   : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="••••••••"
             />
             <button
@@ -208,9 +205,8 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
           <button
             type="submit"
             disabled={isLoading || !formik.isValid}
-            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-              isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
+            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
           >
             {isLoading ? (
               <span className="inline-flex items-center">

@@ -18,19 +18,12 @@ export const AdminSubNavBar = () => {
       "Precios",
     ],
     PEDIDOS: [
-      "Pedidos Pendientes",
+      "Órdenes de compra",
       "Historial de Pedidos",
-      "Devoluciones",
     ],
     ESTADÍSTICAS: [
       "Ventas",
       "Reportes"
-    ],
-    FACTURACIÓN: [
-      "Facturas Emitidas",
-      "Pagos Pendientes",
-      "Historial de Pagos",
-      "Configuración Fiscal"
     ]
   };
 
@@ -45,7 +38,12 @@ export const AdminSubNavBar = () => {
     // Navegar a la ruta basada en el menú y submenú (ajusta si tienes otra lógica)
     const base = activeMenu!.toLowerCase().replace(/\s+/g, '-');
     const sub = subMenu.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/admin/${base}/${sub}`); // Por ejemplo: /admin/usuarios/empleados
+    if(sub != "catálogo"){
+      navigate(`/admin/${base}/${sub}`); 
+    }else{
+      navigate(`/admin/${base}/catalogo`); 
+    }
+    
   };
 
   return (
