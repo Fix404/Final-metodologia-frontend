@@ -1,9 +1,9 @@
-import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/auth';
+import api from './axiosConfig';
+
 
 export const login = async (email: string, contrasenia: string) => {
-    const response = await axios.post(`${API_URL}/login`, {
+    const response = await api.post(`/auth/login`, {
         email,
         contrasenia,
     });
@@ -11,9 +11,9 @@ export const login = async (email: string, contrasenia: string) => {
      const { token } = response.data;
 
     // Guardar en localStorage
-    localStorage.setItem('token', token);
+    localStorage.setItem('authToken', token);
 
-    return response.data; // Recibe el token
+    return response.data; 
 };
 
 export const register = async (
@@ -23,7 +23,7 @@ export const register = async (
     confirmarContrasenia: string,
     
 ) => {
-    const response = await axios.post(`${API_URL}/register`, {
+    const response = await api.post(`/auth/register`, {
         nombre,
         email,
         contrasenia,

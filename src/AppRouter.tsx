@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
@@ -12,38 +12,41 @@ import { CarritoScreen } from './components/screen/CarritoScreen';
 import ClienteNavbar from './components/ui/Navbar/ClienteNavbar';
 import { TablaAdminClientes } from './components/ui/TablasAdmin/TablaAdminClientes';
 import { TablaAdminEmpleados } from './components/ui/TablasAdmin/TablaAdminEmpleados';
+import { useAuth } from './context/AuthContext';
 
 export const AppRouter = () => {
-    return (
-        <Router>
-            <Routes>
+  const { rol } = useAuth();
 
-                {/*Landing Page sin Footer*/}
-                <Route path="/" element={
-                    <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E]">
-                            <ClienteNavbar />
-                        </div>
-                        <div>
-                            <HomeScreen />
-                        </div>
-                    </div>
-                } />
+  return (
+    <Router>
+      <Routes>
 
-                {/* Rutas CON Navbar/Footer */}
-                <Route element={<MainLayout />}>
-                    <Route path="/login" element={<LoginScreen />} />
-                    <Route path="/registro" element={<RegistroScreen />} />
-                    <Route path="/carrito" element={<CarritoScreen />} />
-                    <Route path="/productos" element={<CatalogoScreen />} />
-                    <Route path="/productos/:id" element={<DetalleScreen />} />
+        {/*Landing Page sin Footer*/}
+        <Route path="/" element={
+          <div className="flex flex-col min-h-screen">
+            <div className="w-full bg-[#183B4E]">
+              <ClienteNavbar />
+            </div>
+            <div>
+              <HomeScreen />
+            </div>
+          </div>
+        } />
 
-                </Route>
+        {/* Rutas CON Navbar/Footer */}
+        <Route element={<MainLayout />}>
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/registro" element={<RegistroScreen />} />
+          <Route path="/carrito" element={<CarritoScreen />} />
+          <Route path="/productos" element={<CatalogoScreen />} />
+          <Route path="/productos/:id" element={<DetalleScreen />} />
+        </Route>
 
         {/* Rutas SIN Navbar/Footer */}
         <Route
           path="/admin"
           element={
+            rol?.includes("ADMIN") ? (
             <div className="flex flex-col min-h-screen">
               <div className="w-full bg-[#183B4E]">
                 <AdminNavBar />
@@ -55,6 +58,7 @@ export const AppRouter = () => {
                 <AdminScreen />
               </div>
             </div>
+            ): <Navigate to="/" replace />
           }
         />
         <Route
@@ -62,9 +66,10 @@ export const AppRouter = () => {
           element={
             <div
               className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
-              style={{ backgroundSize: "385px auto",
+              style={{
+                backgroundSize: "385px auto",
                 backgroundPosition: 'center 140px'
-               }}
+              }}
             >
               <div className="w-full bg-[#183B4E]">
                 <AdminNavBar />
@@ -85,9 +90,10 @@ export const AppRouter = () => {
           element={
             <div
               className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
-              style={{ backgroundSize: "385px auto",
+              style={{
+                backgroundSize: "385px auto",
                 backgroundPosition: 'center 140px'
-               }}
+              }}
             >
               <div className="w-full bg-[#183B4E]">
                 <AdminNavBar />

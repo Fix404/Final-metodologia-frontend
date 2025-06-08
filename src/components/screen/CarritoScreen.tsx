@@ -26,7 +26,7 @@ export const CarritoScreen: React.FC = () => {
   };
 
   const handleContinuarComprando = () => {
-    navigate("/detalle");
+    navigate("/productos");
   };
 
   if (items.length === 0) {
