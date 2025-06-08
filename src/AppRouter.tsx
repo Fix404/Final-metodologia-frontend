@@ -12,6 +12,7 @@ import { CarritoScreen } from './components/screen/CarritoScreen';
 import  {CompraScreen}  from './components/screen/CompraScreen';
 import { PagoScreen } from './components/screen/PagoScreen';
 import { TablaAdminEmpleados } from "./components/ui/TablasAdmin/TablaAdminEmpleados";
+import { TablaAdminClientes } from './components/ui/TablasAdmin/TablaAdminClientes';
 
 export const AppRouter = () => {
   return (
