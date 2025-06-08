@@ -2,12 +2,15 @@ import { useFormik } from 'formik';
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useState } from 'react';
 import { registroSchema } from '../forms/schema/registroSchema';
+import { useNavigate } from 'react-router-dom';
+import { register } from '../../services/authService';
 
 interface RegistroFormProps {
   onSuccess: () => void;
 }
 
 export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,25 +18,30 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      nombre: '',
       email: '',
-      password: '',
-      confirmPassword: '',
+      contrasenia: '',
+      confirmarContrasenia: '',
     },
+
     validationSchema: registroSchema,
+
     onSubmit: async (values) => {
       setIsLoading(true);
       setServerError(null);
 
       try {
-        // Simulamos llamada a API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+         const data = await register(
+          values.nombre,
+          values.email,
+          values.contrasenia,
+          values.confirmarContrasenia
+        );
 
-        console.log('Datos de registro enviados:', values);
+        localStorage.setItem('token', data.token);
+        navigate('/login');
 
-        // Llamada real a API aquí
-
-        onSuccess(); // Avisamos que fue exitoso para que el contenedor actúe
+        onSuccess(); 
       } catch (error) {
         console.error('Error de registro:', error);
         setServerError('No se pudo completar el registro. Por favor intenta de nuevo.');
@@ -55,7 +63,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
         
         {/* Nombre */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
             Nombre
           </label>
           <div className="mt-1 relative">
@@ -63,23 +71,23 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               <FiUser className="text-gray-400" />
             </div>
             <input
-              id="name"
-              name="name"
+              id="nombre"
+              name="nombre"
               type="text"
-              autoComplete="name"
-              value={formik.values.name}
+              autoComplete="nombre"
+              value={formik.values.nombre}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={`pl-10 block w-full py-2 border ${
-                formik.touched.name && formik.errors.name
+                formik.touched.nombre && formik.errors.nombre
                   ? 'border-red-500'
                   : 'border-gray-300'
               } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="Tu nombre completo"
             />
           </div>
-          {formik.touched.name && formik.errors.name && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
+          {formik.touched.nombre && formik.errors.nombre && (
+            <p className="mt-1 text-sm text-red-600">{formik.errors.nombre}</p>
           )}
         </div>
 
@@ -115,7 +123,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
 
         {/* Contraseña */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="contrasenia" className="block text-sm font-medium text-gray-700">
             Contraseña
           </label>
           <div className="mt-1 relative">
@@ -123,15 +131,15 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               <FiLock className="text-gray-400" />
             </div>
             <input
-              id="password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
+              id="contrasenia"
+              name="contrasenia"
+              type={showPassword ? 'text' : 'contrasenia'}
               autoComplete="new-password"
-              value={formik.values.password}
+              value={formik.values.contrasenia}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={`pl-10 block w-full py-2 border ${
-                formik.touched.password && formik.errors.password
+                formik.touched.contrasenia && formik.errors.contrasenia
                   ? 'border-red-500'
                   : 'border-gray-300'
               } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
@@ -149,14 +157,14 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               )}
             </button>
           </div>
-          {formik.touched.password && formik.errors.password && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.password}</p>
+          {formik.touched.contrasenia && formik.errors.contrasenia && (
+            <p className="mt-1 text-sm text-red-600">{formik.errors.contrasenia}</p>
           )}
         </div>
 
         {/* Confirmar Contraseña */}
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="confirmarContrasenia" className="block text-sm font-medium text-gray-700">
             Confirmar Contraseña
           </label>
           <div className="mt-1 relative">
@@ -164,15 +172,15 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               <FiLock className="text-gray-400" />
             </div>
             <input
-              id="confirmPassword"
-              name="confirmPassword"
+              id="confirmarContrasenia"
+              name="confirmarContrasenia"
               type={showConfirmPassword ? 'text' : 'password'}
               autoComplete="new-password"
-              value={formik.values.confirmPassword}
+              value={formik.values.confirmarContrasenia}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={`pl-10 block w-full py-2 border ${
-                formik.touched.confirmPassword && formik.errors.confirmPassword
+                formik.touched.confirmarContrasenia && formik.errors.confirmarContrasenia
                   ? 'border-red-500'
                   : 'border-gray-300'
               } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
@@ -190,8 +198,8 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               )}
             </button>
           </div>
-          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.confirmPassword}</p>
+          {formik.touched.confirmarContrasenia && formik.errors.confirmarContrasenia && (
+            <p className="mt-1 text-sm text-red-600">{formik.errors.confirmarContrasenia}</p>
           )}
         </div>
 

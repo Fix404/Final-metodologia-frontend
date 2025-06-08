@@ -1,3 +1,4 @@
+import { Estado } from "./enums/Estado"
 import { IColor } from "./IColor"
 import { IPrecio } from "./IPrecio"
 import { IProducto } from "./IProducto"
@@ -9,6 +10,6 @@ export interface IDetalle {
     color: IColor
     precio: IPrecio 
     stock: number
-    estado?: string 
+    estado?: Estado 
     producto: IProducto
 }
