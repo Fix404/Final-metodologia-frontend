@@ -177,7 +177,7 @@ const DetalleScreen: React.FC = () => {
 
         <div className="pl-5 w-full lg:w-1/2 flex flex-col justify-between flex-1 max-h-screen overflow-auto">
           <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre}</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre.toUpperCase()}</h1>
             <p className="text-lg text-gray-600">{producto?.descripcion}</p>
 
             {/* Colores */}
@@ -190,8 +190,8 @@ const DetalleScreen: React.FC = () => {
                     onClick={() => setSelectedColor(color.color)}
                     style={{ backgroundColor: getColorHex(color.color) }}
                     className={`w-12 h-12 rounded-full border-4 transition-all ${selectedColor === color.color
-                      ? 'border-gray-600 scale-110'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-gray-600 scale-110 hover:cursor-pointer'
+                      : 'border-gray-300 hover:border-gray-400 hover:cursor-pointer'
                       }`}
                     title={color.color}
                   />
@@ -208,8 +208,8 @@ const DetalleScreen: React.FC = () => {
                     key={index}
                     onClick={() => setSelectedTalle(talle.talle)}
                     className={`h-11 w-11 px-3 py-1 rounded-md text-1x2 font-semibold transition-all ${selectedTalle === talle.talle
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                      ? 'bg-[#1c4577] hover:cursor-pointer text-white'
+                      : 'bg-gray-300 hover:bg-gray-400 hover:cursor-pointer text-gray-700'
                       }`}
                   >
                     {talle.talle}
@@ -224,7 +224,7 @@ const DetalleScreen: React.FC = () => {
 
             <div className="flex justify-between items-center">
               {/* Stock */}
-              <span className="font-semibold text-gray-700">
+              <span className="font-semibold text-xl text-gray-700">
                 En carrito: {cantidadEnCarrito}
               </span>
 

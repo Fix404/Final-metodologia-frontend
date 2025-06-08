@@ -59,7 +59,7 @@ export const HomeScreen: React.FC = () => {
 
       {/* Featured Products Section */}
       <section>
-        <h2 className="text-3xl font-bold mb-8 text-left ml-8">PRODUCTOS DESTACADOS</h2>
+        <h2 className="text-3xl text-neutral-900 font-bold mb-8 text-left ml-8">PRODUCTOS DESTACADOS</h2>
 
         {loading && <p className="ml-8">Cargando productos...</p>}
         {error && <p className="ml-8 text-red-500">Error: {error}</p>}
