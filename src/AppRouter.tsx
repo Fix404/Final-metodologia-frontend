@@ -11,40 +11,88 @@ import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
 import  {CompraScreen}  from './components/screen/CompraScreen';
 import { PagoScreen } from './components/screen/PagoScreen';
+import { TablaAdminEmpleados } from "./components/ui/TablasAdmin/TablaAdminEmpleados";
 
 export const AppRouter = () => {
-    return (
-        <Router>
-            <Routes>
+  return (
+    <Router>
+      <Routes>
+        {/* Rutas CON Navbar/Footer */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/registro" element={<RegistroScreen />} />
+          <Route path="/carrito" element={<CarritoScreen />} />
+          <Route path="/productos" element={<CatalogoScreen />} />
+          <Route path="/productos/:id" element={<DetalleScreen />} />
+          <Route path="/shop" element={<CompraScreen />} />
+          <Route path="/shop/pagar" element={<PagoScreen />} />
+        </Route>
 
-                {/* Rutas CON Navbar/Footer */}
-                <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomeScreen />} />
-                    <Route path="/login" element={<LoginScreen />} />
-                    <Route path="/registro" element={<RegistroScreen />} />
-                    <Route path="/carrito" element={<CarritoScreen />} />
-                    <Route path="/productos" element={<CatalogoScreen />} />
-                    <Route path="/productos/:id" element={<DetalleScreen />} />
-                    <Route path="/shop" element={<CompraScreen />} />
-                    <Route path="/shop/pagar" element={<PagoScreen />} />
-                </Route>
+        {/* Rutas SIN Navbar/Footer */}
+        <Route
+          path="/admin"
+          element={
+            <div className="flex flex-col min-h-screen">
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+              <div>
+                <AdminSubNavBar />
+              </div>
+              <div>
+                <AdminScreen />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/admin/usuarios/empleados"
+          element={
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
 
-                {/* Rutas SIN Navbar/Footer */}
-                <Route path="/admin" element={
-                    <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E]">
-                            <AdminNavBar />
-                        </div>
-                        <div >
-                            <AdminSubNavBar />
-                        </div>
-                        <div>
-                            <AdminScreen />
-                        </div>
-                    </div>
-                } />
+              <div>
+                <AdminSubNavBar />
+              </div>
 
-            </Routes>
-        </Router>
-    )
-}
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminEmpleados />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/admin/usuarios/clientes"
+          element={
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+
+              <div>
+                <AdminSubNavBar />
+              </div>
+
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminEmpleados />
+              </div>
+            </div>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
