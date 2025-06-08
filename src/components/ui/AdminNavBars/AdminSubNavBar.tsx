@@ -1,8 +1,10 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { closeDropdown, setActiveMenu, setActiveSubMenu, type MenuSection } from '../../../redux/slices/activeMenuAdminSlice';
+import { useNavigate } from 'react-router-dom';
 
-export const AdminSubNavBar= () => {
+export const AdminSubNavBar = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate(); 
   const { activeMenu, activeSubMenu, isDropdownOpen } = useAppSelector((state) => state.menuActivoAdmin);
 
   const menuItems = {
@@ -36,25 +38,20 @@ export const AdminSubNavBar= () => {
     dispatch(setActiveMenu(menu));
   };
 
-  const handleMenuAreaLeave = () => {
-    dispatch(closeDropdown());
-  };
-
   const handleSubMenuClick = (subMenu: string) => {
     dispatch(setActiveSubMenu(subMenu));
     dispatch(closeDropdown());
-    console.log(`Selected: ${activeMenu} -> ${subMenu}`);
-    // Aquí puedes agregar lógica de navegación
+
+    // Navegar a la ruta basada en el menú y submenú (ajusta si tienes otra lógica)
+    const base = activeMenu!.toLowerCase().replace(/\s+/g, '-');
+    const sub = subMenu.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/admin/${base}/${sub}`); // Por ejemplo: /admin/usuarios/empleados
   };
 
   return (
     <div className="w-full h-10 bg-gray-300 text-xl flex items-center justify-center gap-8 relative">
       {Object.keys(menuItems).map((menuName) => (
-        <div
-          key={menuName}
-          className="relative"
-          onMouseLeave={handleMenuAreaLeave}
-        >
+        <div key={menuName} className="relative">
           <div 
             className={`cursor-pointer transition-colors duration-260 px-4 py-2 ${
               activeMenu === menuName ? 'text-blue-600 bg-blue-50' : 'hover:text-blue-500'
@@ -63,8 +60,7 @@ export const AdminSubNavBar= () => {
           >
             <p className="font-medium">{menuName}</p>
           </div>
-          
-          {/* Menú desplegable */}
+
           {isDropdownOpen && activeMenu === menuName && (
             <div 
               className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-48 z-50"

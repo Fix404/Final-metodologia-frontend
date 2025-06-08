@@ -4,6 +4,13 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
 import { login } from '../../services/authService';
+import { jwtDecode } from 'jwt-decode'; 
+
+interface DecodedToken {
+  rol: string[];
+  email: string;
+  exp: number;
+}
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -26,11 +33,16 @@ export const LoginForm = () => {
       try {
         const data = await login(values.email, values.contrasenia);
         console.log('Token JWT:', data.token);
+        localStorage.setItem('authToken', data.token);
 
-        // Guardar el token en localStorage 
-        localStorage.setItem('token', data.token);
+        const decodedToken = jwtDecode<DecodedToken>(data.token);
 
-        navigate('/'); // Acá tendría que ir al carrito
+    if (decodedToken.rol && decodedToken.rol.includes('CLIENTE')) {
+      navigate('/'); // deberia ir al carrito? 
+    } else {
+      navigate('/admin'); 
+    }
+
       } catch (error: any) {
         console.error(error);
         if (error.response && error.response.status === 401) {
@@ -82,7 +94,7 @@ export const LoginForm = () => {
           <input
             id="contrasenia"
             name="contrasenia"
-            type={showPassword ? 'text' : 'contrasenia'}
+            type={showPassword ? 'text' : 'password'}
             value={formik.values.contrasenia}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
