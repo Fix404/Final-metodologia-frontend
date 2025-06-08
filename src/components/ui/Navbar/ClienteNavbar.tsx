@@ -2,17 +2,16 @@ import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import logoEmpresa from '../../../images/logo.png';
+
 import {
   setTexto,
   setResultados,
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
 
-interface NavbarProps {
-  logo?: string;
-}
 
-const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) => {
+const ClienteNavbar = () => {
   const dispatch = useDispatch();
 
   const productos = useSelector((state: RootState) => state.producto.productos);
@@ -57,13 +56,14 @@ const ClienteNavbar: React.FC<NavbarProps> = ({ logo = './assets/explo.png' }) =
 
 
   return (
-    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-4 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-0 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <img src={logo} alt="Reactors Logo" className="h-10 w-10" />
-          <span className="text-xl font-bold">Reactors</span>
+        <Link to="/" className="flex flex-col items-center ">
+          <img src={logoEmpresa} alt="Reactors Logo" className="h-8 w-10" />
+          <span className='text-ml font-["Alumni_Sans_SC"]'>ReactorS</span>
         </Link>
+
 
         {/* Links */}
         <div className="hidden md:flex space-x-8">
