@@ -4,7 +4,8 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
 import { login } from '../../services/authService';
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '../../context/AuthContext';
 
 interface DecodedToken {
   rol: string[];
@@ -17,6 +18,8 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  
+        const { setRol } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -32,16 +35,27 @@ export const LoginForm = () => {
 
       try {
         const data = await login(values.email, values.contrasenia);
-        console.log('Token JWT:', data.token);
-        localStorage.setItem('authToken', data.token);
 
+      
         const decodedToken = jwtDecode<DecodedToken>(data.token);
 
-    if (decodedToken.rol && decodedToken.rol.includes('CLIENTE')) {
-      navigate('/'); // deberia ir al carrito? 
-    } else {
-      navigate('/admin'); 
-    }
+        setRol(decodedToken.rol); // Actualiza el context
+        localStorage.setItem("usuarioRol", JSON.stringify(decodedToken.rol));
+
+
+        const currentTime = Date.now() / 1000;
+
+        if (decodedToken.exp < currentTime) {
+          setServerError('Sesión expirada. Por favor, iniciá sesión nuevamente.');
+          localStorage.removeItem('authToken');
+          return;
+        }
+
+        if (decodedToken.rol && decodedToken.rol.includes('CLIENTE')) {
+          navigate('/'); // deberia ir al carrito? 
+        } else {
+          navigate('/admin');
+        }
 
       } catch (error: any) {
         console.error(error);
@@ -75,8 +89,8 @@ export const LoginForm = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={`block w-full py-2 border ${formik.touched.email && formik.errors.email
-              ? 'border-red-500'
-              : 'border-gray-300'
+            ? 'border-red-500'
+            : 'border-gray-300'
             } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 pl-3`}
           placeholder="Ingresá tu correo electrónico"
         />
@@ -99,8 +113,8 @@ export const LoginForm = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={`block w-full py-2 pl-3 border ${formik.touched.contrasenia && formik.errors.contrasenia
-                ? 'border-red-500'
-                : 'border-gray-300'
+              ? 'border-red-500'
+              : 'border-gray-300'
               } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
             placeholder="••••••••"
           />
