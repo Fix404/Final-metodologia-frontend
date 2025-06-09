@@ -3,9 +3,9 @@ import detalleProductoReducer from "./slices/detalleProductoSlice";
 import carritoReducer from './slices/CarritoSlice'
 import activeAdminMenuSlice from './slices/activeMenuAdminSlice'
 import compraReducer from "./slices/CompraSlice"
-
 import busquedaReducer from './slices/busquedaSlice';
-import productoReducer from './slices/productoSlice'
+import productoReducer from './slices/productoSlice';
+import usuarioReducer from './slices/usuarioSlice'
 
 
 const store = configureStore({
@@ -15,7 +15,8 @@ const store = configureStore({
         carrito: carritoReducer,
         menuActivoAdmin: activeAdminMenuSlice,
         compra: compraReducer,
-        busqueda: busquedaReducer
+        busqueda: busquedaReducer,
+        usuario: usuarioReducer
     },
 });
 
