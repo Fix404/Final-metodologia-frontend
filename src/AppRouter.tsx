@@ -16,6 +16,7 @@ import { TablaAdminOrdCompra } from './components/ui/TablasAdmin/Pedidos/TablaAd
 import { TablaAdminHistorial } from './components/ui/TablasAdmin/Pedidos/TablaAdminHistorial';
 import { TablaAdminClientes } from './components/ui/TablasAdmin/Usuarios/TablaAdminClientes';
 import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaAdminEmpleados';
+import { PagoScreen } from './components/screen/PagoScreen';
 
 export const AppRouter = () => {
   const { rol } = useAuth();
@@ -54,6 +55,8 @@ export const AppRouter = () => {
           <Route path="/carrito" element={<CarritoScreen />} />
           <Route path="/productos" element={<CatalogoScreen />} />
           <Route path="/productos/:id" element={<DetalleScreen />} />
+          <Route path="/pagar" element={<PagoScreen />} />
+
         </Route>
 
         {/* Rutas SIN Navbar/Footer */}

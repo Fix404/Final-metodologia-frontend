@@ -34,7 +34,7 @@ export const PagoScreen: React.FC = () => {
   useEffect(() => {
     // Verificar que venga de la pantalla anterior con datos completos
     if (items.length === 0 || !compraState.dni || !compraState.direccionEnvio) {
-      navigate("/shop/pagar");
+      navigate("/pagar");
       return;
     }
   }, [items, compraState, navigate]);

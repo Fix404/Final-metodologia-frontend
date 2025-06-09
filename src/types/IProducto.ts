@@ -10,5 +10,5 @@ export interface IProducto {
     tipo: string
     sexoProducto: string
     descuento?: IDescuento
-    imagen: IImagen
+    imagen?: IImagen
 }
