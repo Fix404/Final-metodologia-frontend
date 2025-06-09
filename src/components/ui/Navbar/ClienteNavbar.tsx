@@ -10,7 +10,6 @@ import {
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
 
-
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
 
@@ -52,11 +51,8 @@ const ClienteNavbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dispatch]);
 
-  console.log('Resultados actuales:', resultados);
-
-
   return (
-    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-0 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-10 pr-10 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center ">
@@ -75,44 +71,80 @@ const ClienteNavbar = () => {
 
         {/* Barra de búsqueda + carrito */}
         <div className="hidden md:flex items-center space-x-4">
-          {/* Barra de búsqueda */}
-          <div className="relative" ref={containerRef}>
-            <div className="flex items-center bg-white rounded-full px-3 py-1">
+
+          <div className="relative w-80" ref={containerRef}>
+            <div
+              className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'}`}
+            >
               <input
                 type="text"
                 placeholder="Buscar productos..."
                 value={query}
                 onChange={handleChange}
-                className="bg-transparent text-gray-800 focus:outline-none w-64"
+                className="bg-transparent text-gray-800 focus:outline-none w-full placeholder-gray-400"
               />
-              <div className="ml-2 text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              {query ? (
+                <button
+                  onClick={() => {
+                    dispatch(setTexto(''));
+                    dispatch(setResultados([]));
+                  }}
+                  className="ml-2 text-gray-500 hover:cursor-pointer hover:text-red-600 transition-colors"
+                  aria-label="Limpiar búsqueda"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <div className="ml-2 text-gray-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+              )}
             </div>
 
             {resultados.length > 0 && (
-              <ul className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+              <ul
+                className={`absolute top-full left-0 w-full bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg z-50 overflow-hidden ${resultados.length > 6 ? 'max-h-96 overflow-y-auto' : ''
+                  }`}
+              >
                 {resultados.map((producto) => (
                   <Link
                     to={`/productos/${producto.id}`}
                     key={producto.id}
-                    className="block px-4 py-2 hover:bg-gray-100 text-black"
                     onClick={() => dispatch(limpiarBusqueda())}
+                    className="flex items-center gap-4 px-4 py-3 hover:bg-gray-100 transition-colors"
                   >
-                    {producto.nombre}
+                    <img
+                      src={producto.imagen.url}
+                      alt={producto.nombre}
+                      className="w-12 h-12 object-cover rounded-md border"
+                    />
+                    <span className="text-sm font-medium text-gray-800">{producto.nombre}</span>
                   </Link>
                 ))}
               </ul>

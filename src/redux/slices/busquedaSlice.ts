@@ -1,4 +1,3 @@
-// src/redux/slices/busquedaSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProducto } from "../../types/IProducto";
 

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import detalleProductoReducer from "./slices/detalleProductoSlice";
-import carritoReducer from './slices/CarritoSlice';
-import activeAdminMenuSlice from './slices/activeMenuAdminSlice';
+import carritoReducer from './slices/CarritoSlice'
+import activeAdminMenuSlice from './slices/activeMenuAdminSlice'
+import compraReducer from "./slices/CompraSlice"
 import busquedaReducer from './slices/busquedaSlice';
-import productoReducer from './slices/productoSlice'
+import productoReducer from './slices/productoSlice';
+import usuarioReducer from './slices/usuarioSlice'
 import authReducer from './slices/authSlice'
 
 
@@ -14,7 +16,9 @@ const store = configureStore({
         detalleProducto: detalleProductoReducer,
         carrito: carritoReducer,
         menuActivoAdmin: activeAdminMenuSlice,
-        busqueda: busquedaReducer
+        compra: compraReducer,
+        busqueda: busquedaReducer,
+        usuario: usuarioReducer
     },
 });
 

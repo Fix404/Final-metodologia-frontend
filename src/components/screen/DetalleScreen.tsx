@@ -5,8 +5,8 @@ import { IDetalle } from '../../types/IDetalle';
 import { ITalle } from '../../types/ITalle';
 import { IColor } from '../../types/IColor';
 import { useDispatch, useSelector } from 'react-redux';
-import { agregarAlCarrito, quitarDelCarrito } from '../../redux/slices/CarritoSlice';
-import { descontarStock, restaurarStock } from '../../redux/slices/detalleProductoSlice';
+import { agregarAlCarrito } from '../../redux/slices/CarritoSlice';
+import { descontarStock } from '../../redux/slices/detalleProductoSlice';
 import { RootState } from '../../redux/store';
 
 const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]> => {
@@ -223,10 +223,19 @@ const DetalleScreen: React.FC = () => {
           <div className="space-y-4 mt-6">
 
             <div className="flex justify-between items-center">
+              
               {/* Stock */}
-              <span className="font-semibold text-xl text-gray-700">
-                En carrito: {cantidadEnCarrito}
-              </span>
+              <div className=' flex flex-col'>
+                <span className="font-semibold text-xl text-gray-700">
+                  En carrito: {cantidadEnCarrito}
+                </span>
+                <span className="font-semibold text-gray-700">
+                  Stock disponible: {detalleSeleccionado?.stock != null
+                    ? detalleSeleccionado.stock - cantidadEnCarrito
+                    : 0}
+                </span>
+
+              </div>
 
               {/* Precio */}
               {detalleSeleccionado && detalleSeleccionado.stock > 0 && (

@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { IProducto } from '../../../types/IProducto';
 
 interface ProductCatalogCardProps {
-  producto: IProducto
+  producto: IProducto;
+  precio?: number;
 }
 
-const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
-  producto }) => {
 
-  const { nombre, imagen, descripcion } = producto
+const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
+  producto, precio }) => {
+
+  const { nombre, imagen } = producto
 
   return (
     <Link className="bg-white rounded-lg shadow-xl overflow-hidden transition-transform hover:shadow-xl hover:scale-105 "
@@ -28,9 +30,10 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
         </div>
 
         {/* Product Info */}
-        <div className="px-2 py-1">
-          <p>{descripcion}</p>
-        </div>
+{precio !== undefined && (
+  <p className="text-center text-green-600 font-semibold">${precio.toFixed(2)}</p>
+)}
+
       </div>
     </Link>
   );
