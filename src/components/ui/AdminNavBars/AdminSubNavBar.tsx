@@ -27,24 +27,22 @@ export const AdminSubNavBar = () => {
     ]
   };
 
+  const normalize = (str: string) =>
+  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, '-');
+
   const handleMouseEnter = (menu: MenuSection) => {
     dispatch(setActiveMenu(menu));
   };
 
   const handleSubMenuClick = (subMenu: string) => {
-    dispatch(setActiveSubMenu(subMenu));
-    dispatch(closeDropdown());
+  dispatch(setActiveSubMenu(subMenu));
+  dispatch(closeDropdown());
 
-    // Navegar a la ruta basada en el menú y submenú (ajusta si tienes otra lógica)
-    const base = activeMenu!.toLowerCase().replace(/\s+/g, '-');
-    const sub = subMenu.toLowerCase().replace(/\s+/g, '-');
-    if(sub != "catálogo"){
-      navigate(`/admin/${base}/${sub}`); 
-    }else{
-      navigate(`/admin/${base}/catalogo`); 
-    }
-    
-  };
+  const base = normalize(activeMenu!);
+  const sub = normalize(subMenu);
+
+  navigate(`/admin/${base}/${sub}`);
+};
 
   return (
     <div className="w-full h-10 bg-gray-300 text-xl flex items-center justify-center gap-8 relative">

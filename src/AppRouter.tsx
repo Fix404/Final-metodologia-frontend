@@ -152,7 +152,7 @@ export const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/pedidos/ordenesCompra"
+          path="/admin/pedidos/ordenes-de-compra"
           element={
             <div
               className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
