@@ -8,7 +8,6 @@ interface ItemCarrito {
 
 interface Carrito {
   items: ItemCarrito[];
-  // Nuevos estados para manejar datos del backend
   detallesActualizados: IDetalle[];
   loading: boolean;
   error: string | null;
@@ -16,7 +15,6 @@ interface Carrito {
 
 const initialState: Carrito = {
   items: [],
-  // Estados para datos del backend
   detallesActualizados: [],
   loading: false,
   error: null,
@@ -26,7 +24,6 @@ export const carritoSlice = createSlice({
   name: 'carrito',
   initialState,
   reducers: {
-    // Acciones originales (mantienen funcionalidad actual)
     agregarAlCarrito: (state, action: PayloadAction<IDetalle>) => {
       const detalle = action.payload;
       const itemExistente = state.items.find(item => item.detalle.id === detalle.id);
@@ -105,21 +102,17 @@ export const carritoSlice = createSlice({
       }
     },
 
-    // Acción para sincronizar cantidades con stock actualizado del backend
     sincronizarConStock: (state) => {
       state.items.forEach(item => {
         const detalleActualizado = state.detallesActualizados.find(d => d.id === item.detalle.id);
         if (detalleActualizado) {
-          // Si la cantidad en carrito es mayor al stock disponible, ajustar
           if (item.cantidad > detalleActualizado.stock) {
             item.cantidad = Math.max(0, detalleActualizado.stock);
           }
-          // Actualizar el detalle en el carrito con datos frescos del backend
           item.detalle = detalleActualizado;
         }
       });
       
-      // Remover items que ya no tienen stock
       state.items = state.items.filter(item => item.cantidad > 0);
     }
   }
