@@ -27,8 +27,8 @@ export const usuariosService = {
   },
 
   // Eliminar usuario
-  eliminarUsuario: async (id:number) => {
-      const response = await api.delete(`/usuarios/${id}`);
+  eliminarUsuario: async (id:number, usuario:IUsuario) => {
+      const response = await api.put(`/usuarios/${id}`, usuario);
       return response.data;
   },
 

@@ -17,6 +17,7 @@ const initialState: IUsuario = {
   direccion: null,
   dni: null,
   rol: '',
+  activo: true
 };
 
 export const UsuarioModal = ({
@@ -27,11 +28,6 @@ export const UsuarioModal = ({
   const [formValues, setFormValues] = useState<IUsuario>(initialState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setFormValues(activeUser ?? initialState);
-    setError(null);
-  }, [activeUser]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,6 +55,12 @@ export const UsuarioModal = ({
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    setFormValues(activeUser ?? initialState);
+    setError(null);
+  }, [activeUser]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

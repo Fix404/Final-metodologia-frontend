@@ -7,6 +7,7 @@ import { UsuarioModal } from "../../Modals/AdminModals/UsuarioModal";
 import { useDispatch } from "react-redux";
 import { limpiarUsuarioActivo, setUsuarioActivo } from "../../../../redux/slices/usuarioSlice";
 import { IUsuario } from "../../../../types/IUsuario";
+import Swal from 'sweetalert2'
 
 export const TablaAdminClientes = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
@@ -18,18 +19,18 @@ export const TablaAdminClientes = () => {
 
   // Función para cargar usuarios
   const cargarUsuarios = async () => {
-    try {
-      const data = await usuariosService.obtenerUsuarios();
-      console.log(data);
-      const soloClientes = data.filter(
-        (usuario: IUsuario) => usuario.rol === "CLIENTE"
-      );
-      setUsuarios(soloClientes);
-      console.log(soloClientes);
-    } catch (err) {
-      console.error("Error al cargar usuarios:", err);
-    }
-  };
+  try {
+    const data = await usuariosService.obtenerUsuarios();
+    console.log(data);
+    const soloClientesActivos = data.filter(
+      (usuario: IUsuario) => usuario.rol === "CLIENTE" && usuario.activo === true
+    );
+    setUsuarios(soloClientesActivos);
+    console.log(soloClientesActivos);
+  } catch (err) {
+    console.error("Error al cargar usuarios:", err);
+  }
+};
 
   // Función cambiar admin
   const hacerAdmin = async (idUsuario: number, usuario: IUsuario) => {
@@ -72,6 +73,38 @@ export const TablaAdminClientes = () => {
     setOpenModal(false);
     cargarUsuarios()
   }
+  const handleDelete = async (id: number, usuario: IUsuario) => {
+  const resultado = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción deshabilitará al usuario.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, deshabilitar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (resultado.isConfirmed) {
+    try {
+      const usuarioActualizado: IUsuario = {
+        ...usuario,
+        activo: false
+      };
+
+      await usuariosService.eliminarUsuario(id, usuarioActualizado);
+
+      Swal.fire('Deshabilitado', 'El usuario fue deshabilitado exitosamente.', 'success');
+
+      // Podés refrescar la lista si es necesario
+      // fetchUsuarios();
+    } catch (error) {
+      Swal.fire('Error', 'Hubo un problema al deshabilitar el usuario.', 'error');
+      console.error("Hubo un error al borrar el usuario", error);
+    }
+  }
+};
+
 
   // Effect para cargar usuarios cuando se activa el menú
   useEffect(() => {
@@ -102,13 +135,13 @@ export const TablaAdminClientes = () => {
               <p>Nombre</p>
             </th>
             <th className="py-3 px-4 text-left font-semibold border-b">
+              <p>Apellido</p>
+            </th>
+            <th className="py-3 px-4 text-left font-semibold border-b">
               <p>Email</p>
             </th>
             <th className="py-3 px-4 text-left font-semibold border-b">
               <p>Dirección</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Estado</p>
             </th>
             <th className="py-3 px-4 text-left font-semibold border-b">
               <p>Rol</p>
@@ -132,6 +165,9 @@ export const TablaAdminClientes = () => {
                 <td className="py-2 px-4 border-b">
                   {usuario.nombre || "Sin nombre"}
                 </td>
+                <td className="py-2 px-4 border-b">
+                  {usuario.apellido}
+                </td>
                 <td className="py-2 px-4 border-b">{usuario.email}</td>
                 <td className="py-2 px-4 border-b">
                    {typeof usuario.direccion === "object" && usuario.direccion !== null
@@ -139,10 +175,7 @@ export const TablaAdminClientes = () => {
     : usuario.direccion || "No especificada"}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {/* {mostrarEstado(usuario.enabled, usuario.accountNonLocked)} */}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {/* {mostrarRol(usuario.rol)} */}
+                  {usuario.rol}
                 </td>
                 <td className="py-2 px-4 border-b">
   <div className="flex justify-center gap-2">
@@ -169,7 +202,7 @@ export const TablaAdminClientes = () => {
     </button>
     <button
       title="Eliminar"
-      onClick={() => console.log("Borrado lógico equisdé")}
+      onClick={() => handleDelete(usuario.id!, usuario)}
       className="bg-red-500 hover:bg-red-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
     >
       <IoTrashBinOutline />

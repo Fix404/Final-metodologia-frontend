@@ -9,4 +9,5 @@ export interface IUsuario {
   direccion?: IDireccion | null;
   dni?: number | null;
   rol?: string;
+  activo: boolean;
 }
