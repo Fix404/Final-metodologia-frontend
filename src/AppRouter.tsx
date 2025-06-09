@@ -10,15 +10,16 @@ import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
 import ClienteNavbar from './components/ui/Navbar/ClienteNavbar';
-import { useAuth } from './context/AuthContext';
 import { TablaAdminCatalogo } from './components/ui/TablasAdmin/Productos/TablaAdminCatalogo';
 import { TablaAdminOrdCompra } from './components/ui/TablasAdmin/Pedidos/TablaAdminOrdCompra';
 import { TablaAdminHistorial } from './components/ui/TablasAdmin/Pedidos/TablaAdminHistorial';
 import { TablaAdminClientes } from './components/ui/TablasAdmin/Usuarios/TablaAdminClientes';
 import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaAdminEmpleados';
+import { useAppSelector } from './hooks/redux';
+
 
 export const AppRouter = () => {
-  const { rol } = useAuth();
+  const rol  = useAppSelector(state => state.auth.rol);
 
   return (
         <Router>

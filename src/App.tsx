@@ -1,13 +1,16 @@
 import React from 'react';
 import './App.css';
 import { AppRouter } from './AppRouter';
-import { AuthProvider } from './context/AuthContext';
+import { Provider } from 'react-redux';
+import store from './redux/store';
+
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-    <AppRouter/>
-    </AuthProvider>
+  
+   <Provider store={store}>
+       <AppRouter/>
+    </Provider>
   );
 };
 

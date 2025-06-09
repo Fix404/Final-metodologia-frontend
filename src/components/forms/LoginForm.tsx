@@ -1,25 +1,28 @@
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
 import { login } from '../../services/authService';
 import { jwtDecode } from 'jwt-decode';
-import { useAuth } from '../../context/AuthContext';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { logout, setRoles, setUsuario } from '../../redux/slices/authSlice';
 
 interface DecodedToken {
   rol: string[];
-  email: string;
+  sub: string;
   exp: number;
 }
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  
-        const { setRol } = useAuth();
+
+  const usuario = useAppSelector(state => state.auth.usuario); //Esto se tiene que guardar
 
   const formik = useFormik({
     initialValues: {
@@ -36,11 +39,17 @@ export const LoginForm = () => {
       try {
         const data = await login(values.email, values.contrasenia);
 
-      
-        const decodedToken = jwtDecode<DecodedToken>(data.token);
 
-        setRol(decodedToken.rol); // Actualiza el context
-        localStorage.setItem("usuarioRol", JSON.stringify(decodedToken.rol));
+        const decodedToken = jwtDecode<DecodedToken>(data.token);
+        console.log(decodedToken);
+
+        const usuarioFromToken = {
+          email: decodedToken.sub,
+        };
+
+        dispatch(setRoles(decodedToken.rol));
+        dispatch(setUsuario(usuarioFromToken));
+        console.log("USUARIO:", usuario)
 
 
         const currentTime = Date.now() / 1000;
@@ -69,6 +78,42 @@ export const LoginForm = () => {
       }
     },
   });
+
+
+
+  if (usuario) {
+  return (
+    
+      <div className="bg-white shadow-lg rounded-lg p-10 max-w-xl w-full flex flex-col items-center text-center">
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">¡Ya estás logueado!</h2>
+        <p className="text-gray-600 text-lg mb-8">
+          Estás logueado como <strong className="text-blue-700">{usuario.email}</strong>.<br />
+          Si querés iniciar sesión con otra cuenta, primero cerrá sesión.
+        </p>
+
+        <div className="flex gap-6">
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md transition-colors duration-200"
+          >
+            Seguir comprando
+          </button>
+
+          <button
+            onClick={() => {
+              dispatch(logout());
+              localStorage.removeItem('authToken');
+              navigate("/login");
+            }}
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md shadow-md transition-colors duration-200"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+  );
+}
+
 
   return (
     <form className="mt-4 space-y-6" onSubmit={formik.handleSubmit}>

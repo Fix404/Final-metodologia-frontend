@@ -4,10 +4,12 @@ import carritoReducer from './slices/CarritoSlice';
 import activeAdminMenuSlice from './slices/activeMenuAdminSlice';
 import busquedaReducer from './slices/busquedaSlice';
 import productoReducer from './slices/productoSlice'
+import authReducer from './slices/authSlice'
 
 
 const store = configureStore({
     reducer: {
+        auth: authReducer,
         producto: productoReducer,
         detalleProducto: detalleProductoReducer,
         carrito: carritoReducer,

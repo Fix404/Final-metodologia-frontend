@@ -9,9 +9,11 @@ export const login = async (email: string, contrasenia: string) => {
     });
 
      const { token } = response.data;
+   
 
     // Guardar en localStorage
     localStorage.setItem('authToken', token);
+   
 
     return response.data; 
 };
