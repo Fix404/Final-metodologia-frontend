@@ -31,20 +31,19 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
       setServerError(null);
 
       try {
-        const data = await register(
+        await register(
           values.nombre,
           values.email,
           values.contrasenia,
           values.confirmarContrasenia
         );
 
-        localStorage.setItem('token', data.token);
         navigate('/login');
 
         onSuccess();
-      } catch (error) {
+      } catch (error:any) {
         console.error('Error de registro:', error);
-        setServerError('No se pudo completar el registro. Por favor intenta de nuevo.');
+        setServerError(error.response?.data?.error ||'No se pudo completar el registro. Por favor intenta de nuevo.');
       } finally {
         setIsLoading(false);
       }
