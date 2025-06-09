@@ -63,8 +63,8 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
           onClick={handleNavegacionProducto}
         >
           <img
-            src={detalle.producto.imagen.url}
-            alt={detalle.producto.imagen.altDescripcion}
+            src={detalle.producto.imagen?.url}
+            alt={detalle.producto.imagen?.altDescripcion??'Sin imagen'}
             className="w-full h-full object-contain rounded"
           />
         </div>

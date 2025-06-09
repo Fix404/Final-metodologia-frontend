@@ -24,8 +24,8 @@ export const CompraCard: React.FC<CompraCardProps> = ({
       {/* Imagen pequeña */}
       <div className="w-16 h-16 flex-shrink-0">
         <img
-          src={detalle.producto.imagen.url}
-          alt={detalle.producto.imagen.altDescripcion}
+          src={detalle.producto.imagen?.url}
+          alt={detalle.producto.imagen?.altDescripcion??'Sin imagen'}
           className="w-full h-full object-contain rounded"
         />
       </div>

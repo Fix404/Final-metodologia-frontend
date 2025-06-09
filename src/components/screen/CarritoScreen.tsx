@@ -96,7 +96,7 @@ export const CarritoScreen: React.FC = () => {
   */
 
   const handleComprar = () => {
-    navigate("/shop");
+    navigate("/pagar");
   };
 
   const handleContinuarComprando = () => {
