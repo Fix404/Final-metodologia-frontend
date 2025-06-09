@@ -56,7 +56,7 @@ const ClienteNavbar = () => {
 
 
   return (
-    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-0 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-10 pr-10 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center ">

@@ -13,9 +13,8 @@ export const ProductoDestacadoCard: React.FC<ProductoDestacadoCardProps> = ({ pr
     return (
         <Link
             to={`/productos/${producto.id}`}
-            className="shrink-0 flex w-[300px] h-[200px] bg-white rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden transition-shadow duration-300"
+            className="shrink-0 flex w-[300px] h-[200px] bg-white rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,4)] hover:shadow-[0_10px_50px_rgba(0,0,0,5)] overflow-hidden transition-shadow duration-300"
         >
-
             {/* Imagen */}
             <div className="w-1/2 p-2 h-full">
                 <img
