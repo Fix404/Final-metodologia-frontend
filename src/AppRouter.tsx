@@ -178,7 +178,7 @@ export const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/pedidos/ordenesCompra"
+          path="/admin/pedidos/ordenes-de-compra"
           element={
             rol?.includes("ADMIN") ?
             <div

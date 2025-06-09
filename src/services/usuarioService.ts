@@ -1,20 +1,5 @@
+import { IUsuario } from '../types/IUsuario';
 import api from './axiosConfig';
-export interface Usuario {
-  id: number;
-  direccion: string | null;
-  nombre: string;
-  contrasenia: string;
-  rol: string;
-  email: string;
-  dni: string | null;
-  password: string; 
-  enabled: boolean;
-  credentialsNonExpired: boolean;
-  accountNonExpired: boolean;
-  username: string;
-  authorities: "";
-  accountNonLocked: boolean;
-}
 
 export const usuariosService = {
   // Obtener todos los usuarios
@@ -30,13 +15,13 @@ export const usuariosService = {
   },
 
   // Crear usuario
-  crearUsuario: async (usuario:Usuario) => {
+  crearUsuario: async (usuario:IUsuario) => {
       const response = await api.post('/usuarios', usuario);
       return response.data;
   },
 
   // Actualizar usuario
-  actualizarUsuario: async (id:number, usuario:Usuario) => {
+  actualizarUsuario: async (id:number, usuario:IUsuario) => {
       const response = await api.put(`/usuarios/${id}`, usuario);
       return response.data;
   },
