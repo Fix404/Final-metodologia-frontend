@@ -30,5 +30,8 @@ export const register = async (
         confirmarContrasenia
     });
 
+    const { token } = response.data;
+    localStorage.setItem('authToken', token);
+
     return response.data;
 };
