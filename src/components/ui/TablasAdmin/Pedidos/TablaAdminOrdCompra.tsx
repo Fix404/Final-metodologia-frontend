@@ -10,9 +10,9 @@ export const TablaAdminOrdCompra = () => {
   // Función para cargar ordenesCompra
   const cargarOrdenesCompra = async () => {
             try {
-                const response = await ordenesCompraService.obtenerOrdenesCompra()
-                console.log("ordenes de Compra desde la API:", response.data);
-                setOrdenesCompra(response.data);
+                const data = await ordenesCompraService.obtenerOrdenesCompra()
+                console.log("ordenes de Compra desde la API:", data);
+                setOrdenesCompra(data);
             } catch (err) {
                 console.error("Error al obtener ordenes de compra:", err);
             }
@@ -35,18 +35,18 @@ export const TablaAdminOrdCompra = () => {
           <th className="py-3 px-4 text-left font-semibold border-b">
             <p>Fecha</p>
           </th>
-          <th className="py-3 px-4 text-left font-semibold border-b">
+          {/* <th className="py-3 px-4 text-left font-semibold border-b">
             <p>Movimiento</p>
-          </th>
+          </th> */}
           <th className="py-3 px-4 text-left font-semibold border-b">
             <p>Precio total</p>
           </th>
           <th className="py-3 px-4 text-left font-semibold border-b">
-            <p>Cantidad de ordenCompra</p>
+            <p>Cantidad de producto</p>
           </th>
-          <th className="py-3 px-4 text-left font-semibold border-b">
+          {/* <th className="py-3 px-4 text-left font-semibold border-b">
             <p>ID Usuario</p>
-          </th>
+          </th> */}
         </tr>
       </thead>
       <tbody>

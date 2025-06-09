@@ -3,7 +3,7 @@ import { IUsuario } from "./IUsuario";
 
 export interface IOrdenCompra {
   id: number;
-  fecha: string; // o Date, si la transformás
+  fecha: string;
   total: number;
   usuario: IUsuario;
   detalles: IDetalle[];

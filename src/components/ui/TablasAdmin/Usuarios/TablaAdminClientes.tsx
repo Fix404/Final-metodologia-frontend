@@ -22,6 +22,22 @@ setUsuarios(soloClientes);
     }
   };
 
+  // Función cambiar admin
+  const hacerAdmin = async (idUsuario: number, usuario: Usuario) => {
+  try {
+    const usuarioActualizado: Usuario = { ...usuario, rol: "ADMIN" };
+    const data = await usuariosService.actualizarUsuario(idUsuario, usuarioActualizado);
+    console.log(data);
+
+    // Opcional: actualizar el estado local para reflejar el cambio
+    setUsuarios((prev) =>
+      prev.map((u) => (u.id === idUsuario ? { ...u, rol: "ADMIN" } : u))
+    );
+  } catch (error) {
+    console.log("Hubo un error", error);
+  }
+};
+
   // Effect para cargar usuarios cuando se activa el menú
   useEffect(() => {
     if (activeSubMenu === "Clientes") {
@@ -33,6 +49,8 @@ setUsuarios(soloClientes);
       <div className="text-4xl font-bold justify-self-center py-7">
         <h1>CLIENTES</h1>
       </div>
+      <div className="flex justify-end items-center mb-4">
+</div>
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
       <thead className="bg-gray-100">
         <tr>
@@ -54,6 +72,9 @@ setUsuarios(soloClientes);
           <th className="py-3 px-4 text-left font-semibold border-b">
             <p>Rol</p>
           </th>
+          <th className="py-3 px-4 text-left font-semibold border-b">
+  <p>Acciones</p>
+</th>
         </tr>
       </thead>
       <tbody>
@@ -84,6 +105,15 @@ setUsuarios(soloClientes);
               <td className="py-2 px-4 border-b">
                 {/* {mostrarRol(usuario.rol)} */}
               </td>
+              <td className="py-2 px-4 border-b">
+                <button
+    onClick={() => hacerAdmin(usuario.id, usuario)}
+    className="bg-[#183B4E] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-md transition"
+  >
+    Agregar administrador
+  </button>
+              </td>
+              
             </tr>
           ))
         )}
