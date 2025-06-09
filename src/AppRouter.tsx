@@ -10,16 +10,30 @@ import DetalleScreen from './components/screen/DetalleScreen';
 import { LoginScreen } from './components/screen/LoginScreen';
 import { CarritoScreen } from './components/screen/CarritoScreen';
 import ClienteNavbar from './components/ui/Navbar/ClienteNavbar';
-import { TablaAdminClientes } from './components/ui/TablasAdmin/TablaAdminClientes';
-import { TablaAdminEmpleados } from './components/ui/TablasAdmin/TablaAdminEmpleados';
 import { useAuth } from './context/AuthContext';
+import { TablaAdminCatalogo } from './components/ui/TablasAdmin/Productos/TablaAdminCatalogo';
+import { TablaAdminOrdCompra } from './components/ui/TablasAdmin/Pedidos/TablaAdminOrdCompra';
+import { TablaAdminHistorial } from './components/ui/TablasAdmin/Pedidos/TablaAdminHistorial';
+import { TablaAdminClientes } from './components/ui/TablasAdmin/Usuarios/TablaAdminClientes';
+import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaAdminEmpleados';
 
 export const AppRouter = () => {
   const { rol } = useAuth();
 
   return (
-    <Router>
-      <Routes>
+        <Router>
+            <Routes>
+                {/*Landing Page sin Footer*/}
+                <Route path="/" element={
+                    <div className="flex flex-col min-h-screen">
+                        <div className="w-full bg-[#183B4E]">
+                            <ClienteNavbar />
+                        </div>
+                        <div>
+                            <HomeScreen />
+                        </div>
+                    </div>
+                } />
 
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
@@ -64,6 +78,7 @@ export const AppRouter = () => {
         <Route
           path="/admin/usuarios/empleados"
           element={
+            rol?.includes("ADMIN") ?
             <div
               className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
               style={{
@@ -83,11 +98,13 @@ export const AppRouter = () => {
                 <TablaAdminEmpleados />
               </div>
             </div>
+            : <Navigate to="/" replace />
           }
         />
         <Route
           path="/admin/usuarios/clientes"
           element={
+            rol?.includes("ADMIN") ?
             <div
               className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
               style={{
@@ -107,6 +124,105 @@ export const AppRouter = () => {
                 <TablaAdminClientes />
               </div>
             </div>
+            : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/admin/productos/catalogo"
+          element={
+            rol?.includes("ADMIN") ?
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+
+              <div>
+                <AdminSubNavBar />
+              </div>
+
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminCatalogo />
+              </div>
+            </div>
+            : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/admin/productos/precios"
+          element={
+            rol?.includes("ADMIN") ?
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+
+              <div>
+                <AdminSubNavBar />
+              </div>
+
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminCatalogo />
+              </div>
+            </div>
+            : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/admin/pedidos/ordenesCompra"
+          element={
+            rol?.includes("ADMIN") ?
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+              <div>
+                <AdminSubNavBar />
+              </div>
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminOrdCompra />
+              </div>
+            </div>
+            : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/admin/pedidos/historial"
+          element={
+            rol?.includes("ADMIN") ?
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+
+              <div>
+                <AdminSubNavBar />
+              </div>
+
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminHistorial />
+              </div>
+            </div>
+            : <Navigate to="/" replace />
           }
         />
       </Routes>

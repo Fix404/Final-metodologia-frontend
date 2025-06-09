@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../../hooks/redux";
-import { Usuario, usuariosService } from "../../../services/usuarioService";
+import { useAppSelector } from "../../../../hooks/redux";
+import { Usuario, usuariosService } from "../../../../services/usuarioService";
 
-export const TablaAdminClientes = () => {
+export const TablaAdminEmpleados = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
@@ -11,12 +11,11 @@ export const TablaAdminClientes = () => {
     
     try {
       const data = await usuariosService.obtenerUsuarios();
-      console.log(data)
-      const soloClientes = data.filter((usuario:Usuario) => 
-        usuario.rol === "CLIENTE"
+      const soloAdmins = data.filter((usuario:Usuario) => 
+        usuario.rol === "ADMIN"
 );
-setUsuarios(soloClientes);
-      console.log(soloClientes)
+setUsuarios(soloAdmins);
+      console.log(soloAdmins)
     } catch (err) {
       console.error('Error al cargar usuarios:', err);
     }
@@ -24,12 +23,15 @@ setUsuarios(soloClientes);
 
   // Effect para cargar usuarios cuando se activa el menú
   useEffect(() => {
-    if (activeSubMenu === "Clientes") {
+    if (activeSubMenu === "Empleados") {
       cargarUsuarios();
     }
   }, [activeSubMenu]);
   return (
     <div className="overflow-x-auto">
+      <div className="text-4xl font-bold justify-self-center py-7">
+        <h1>EMPLEADOS</h1>
+      </div>
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
       <thead className="bg-gray-100">
         <tr>
