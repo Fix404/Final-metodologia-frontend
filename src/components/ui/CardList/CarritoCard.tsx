@@ -71,12 +71,12 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
 
         {/* Info principal */}
         <div className="flex-1 min-w-0 flex flex-col justify-between">
-          
+
           {/* Header: título + eliminar */}
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h3
-                className="text-lg font-semibold text-gray-800 cursor-pointer hover:text-blue-600"
+                className="text-lg w-46 font-semibold text-gray-800 cursor-pointer hover:text-blue-600"
                 onClick={handleNavegacionProducto}
               >
                 {detalle.producto.nombre}
@@ -87,7 +87,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
             </div>
             <button
               onClick={handleQuitar}
-              className="text-red-500 hover:text-red-700 p-2 transition"
+              className="text-red-500 hover:text-red-700 hover:cursor-pointer p-2 transition"
               title="Eliminar"
             >
               <FaTrash />
@@ -106,7 +106,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
 
           {/* Controles y precio */}
           <div className="mt-4 flex justify-between items-center flex-wrap gap-3">
-            <div className="inline-flex items-center bg-[#4782c5ee] rounded overflow-hidden">
+            <div className="inline-flex items-center bg-[#4782c5ee] px-2 rounded overflow-hidden">
               <button
                 onClick={handleDisminuirCantidad}
                 disabled={cantidad <= 1}
@@ -114,7 +114,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
               >
                 <FaMinus className="text-xs" />
               </button>
-              <span className="text-white px-4 py-2 font-medium min-w-[40px] text-center">
+              <span className="text-white w-[40px] py-2 font-medium text-center">
                 {cantidad}
               </span>
               <button
@@ -125,6 +125,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
                 <FaPlus className="text-xs" />
               </button>
             </div>
+
 
             <div className="text-right flex-1">
               {detalle.producto.descuento ? (

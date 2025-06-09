@@ -1,28 +1,35 @@
-import { SetStateAction, useEffect, useState } from "react";
-import { ProductoCatalogoCardList } from "../ui/Lists/ProductoCatalogoCardList";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { IProducto } from "../../types/IProducto";
+import { ProductoCatalogoCardList } from "../ui/Lists/ProductoCatalogoCardList";
 import { fetchProducto } from "../../redux/slices/productoSlice";
 import { RootState } from "../../redux/store";
+import { IProducto } from "../../types/IProducto";
+
+interface ICategoria {
+    id: number;
+    nombre: string;
+}
 
 export const CatalogoScreen = () => {
-
     const productos = useSelector((state: RootState) => state.producto.productos);
     const dispatch = useDispatch();
 
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [categorias, setCategorias] = useState<ICategoria[]>([]);
+    const [categoria, setCategoria] = useState("");
+    const [tipo, setTipo] = useState("");
+    const [sexo, setSexo] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Traer productos
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
             setError(null);
-
             try {
                 const response = await axios.get("http://localhost:8080/productos");
-                console.log("Productos desde la API:", response.data);
                 dispatch(fetchProducto(response.data));
             } catch (err) {
                 console.error("Error al obtener productos:", err);
@@ -35,25 +42,59 @@ export const CatalogoScreen = () => {
         fetchProducts();
     }, [dispatch]);
 
-    // Filtro
-    const filteredProducts: IProducto[] = selectedCategory
-        ? productos.filter((producto: IProducto) => producto.categoria.nombre.toLowerCase() === selectedCategory)
-        : productos;
+    // Traer categorías
+    useEffect(() => {
+        const fetchCategorias = async () => {
+            try {
+                const res = await axios.get<ICategoria[]>("http://localhost:8080/categorias");
+                setCategorias(res.data);
+            } catch (err) {
+                console.error("Error al obtener categorías:", err);
+            }
+        };
 
-    const handleCategoryChange = (event: { target: { value: SetStateAction<string> } }) => {
-        setSelectedCategory(event.target.value);
-    };
+        fetchCategorias();
+    }, []);
+
+    // Filtrado de productos según filtros
+    const filteredProducts = productos.filter((producto: IProducto) => {
+        const matchesTipo = tipo ? producto.tipo.toLowerCase() === tipo.toLowerCase() : true;
+        const matchesSexo = sexo ? producto.sexoProducto.toLowerCase() === sexo.toLowerCase() : true;
+        const matchesCategoria = categoria
+            ? producto.categoria?.id.toString() === categoria
+            : true;
+
+        return matchesTipo && matchesSexo && matchesCategoria;
+    });
+
+    const renderFiltro = (
+        label: string,
+        value: string,
+        setValue: (v: string) => void
+    ) =>
+        value && (
+            <div className="flex items-center gap-2 bg-[#1c4577]/10 text-[#1c4577] px-3 py-2 rounded-lg text-sm font-medium">
+                <span>{label}: {value}</span>
+                <button
+                    onClick={() => setValue("")}
+                    className="hover:bg-[#1c4577]/20 hover:cursor-pointer rounded-full p-1 transition-colors duration-200"
+                    title="Limpiar filtro"
+                >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        );
 
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#fdfae8]">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-4"></div>
-                    <p className="text-gray-600">Cargando productos...</p>
-                </div>
+                <p className="text-gray-600">Cargando productos...</p>
             </div>
         );
     }
+
     if (error) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#fdfae8]">
@@ -71,49 +112,79 @@ export const CatalogoScreen = () => {
     }
 
     return (
-        <div className="min-h-screen left-0 right-0 bg-[#fcfcd3]">
+        <div className="min-h-screen bg-[#fcfcd3]">
             <main className="container mx-auto px-4 pt-4 py-8 max-w-7xl">
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full mb-5 sm:w-auto">
+                {/* FILTROS */}
+                <div className="flex flex-wrap gap-6 mb-6">
 
-                    <div className="relative group">
-                        <select
-                            className="appearance-none bg-white/90 border-2 border-gray-200 hover:border-[#1c4577] focus:border-[#1c4577] focus:ring-4 focus:ring-[#1c4577]/10 focus:outline-none rounded-xl px-4 py-3 pr-10 text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer min-w-[200px]"
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                        >
-                            <option value="">Todas las categorías</option>
-                            <option value="mujer">Mujer</option>
-                            <option value="hombre">Hombre</option>
-                            <option value="infantil">Infantil</option>
-                        </select>
+                    {/* Filtro Categoría */}
+                    <select
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        value={categoria}
+                        onChange={(e) => setCategoria(e.target.value)}
+                        disabled={categorias.length === 0}
+                    >
+                        <option value="">Categoría</option>
+                        {categorias.map(cat => (
+                            <option
+                                className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                                key={cat.id}
+                                value={cat.id.toString()}>
+                                {cat.nombre}
+                            </option>
+                        ))}
+                    </select>
 
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-400 group-hover:text-[#1c4577] transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
+                    {/* Filtro Tipo */}
+                    <select
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        value={tipo}
+                        onChange={(e) => setTipo(e.target.value)}
+                    >
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value=""
+                        >Tipo</option>
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="ropa"
+                        >Ropa</option>
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="calzado"
+                        >Calzado</option>
+                    </select>
 
-                    {selectedCategory && (
-                        <div className="flex items-center gap-2 bg-[#1c4577]/10 text-[#1c4577] px-3 py-2 rounded-lg text-sm font-medium">
-                            <span>Filtro activo</span>
-                            <button
-                                onClick={() => setSelectedCategory('')}
-                                className="hover:bg-[#1c4577]/20 rounded-full p-1 transition-colors duration-200"
-                                title="Limpiar filtro"
-                            >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    )}
+                    {/* Filtro Sexo */}
+                    <select
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        value={sexo}
+                        onChange={(e) => setSexo(e.target.value)}
+                    >
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="">Sexo</option>
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="mujer">Mujer</option>
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="hombre">Hombre</option>
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="unisex">Unisex</option>
+                    </select>
+
+                    {/* Etiquetas de filtros activos */}
+                    {renderFiltro("Tipo", tipo, setTipo)}
+                    {renderFiltro("Sexo", sexo, setSexo)}
+                    {renderFiltro("Categoría", categoria ? categorias.find(c => c.id.toString() === categoria)?.nombre || "" : "", setCategoria)}
+
                 </div>
 
                 <ProductoCatalogoCardList productos={filteredProducts} />
             </main>
         </div>
-
     );
 };
