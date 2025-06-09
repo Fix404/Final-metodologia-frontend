@@ -12,6 +12,7 @@ export const TablaAdminClientes = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
   const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalSee, setOpenModalSee] = useState(false);
   const usuarioActivo=useAppSelector((state) => state.usuario.usuarioActivo);
   const dispatch=useDispatch()
 
@@ -49,7 +50,14 @@ export const TablaAdminClientes = () => {
     }
   };
 
+  const handleOpenModalVer=(usuario:IUsuario) =>{
+    setOpenModalSee(true);
+    dispatch(setUsuarioActivo(usuario))
+    setOpenModal(true);
+  }
+
   const handleOpenModalEdit=(usuario:IUsuario) =>{
+    setOpenModalSee(false);
     dispatch(setUsuarioActivo(usuario))
     setOpenModal(true);
   }
@@ -147,7 +155,7 @@ export const TablaAdminClientes = () => {
     </button>
     <button
     title="Ver"
-      onClick={() => handleOpenModalEdit(usuario)}
+      onClick={() => handleOpenModalVer(usuario)}
       className="bg-green-500 hover:bg-green-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
     >
       <IoEyeSharp />
@@ -174,7 +182,7 @@ export const TablaAdminClientes = () => {
         </tbody>
       </table>
     </div>
-    {openModal && <UsuarioModal activeUser={usuarioActivo} openModalSee={false} handleCloseModal={handleCloseModal}/>}
+    {openModal && <UsuarioModal activeUser={usuarioActivo} openModalSee={openModalSee} handleCloseModal={handleCloseModal}/>}
     </>
   );
 };

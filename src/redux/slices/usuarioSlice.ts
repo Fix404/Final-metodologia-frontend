@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Usuario } from "../../services/usuarioService";
+import { IUsuario } from "../../types/IUsuario";
 
 interface UsuarioState {
-  usuarios: Usuario[];
-  usuarioActivo: Usuario | null;
+  usuarios: IUsuario[];
+  usuarioActivo: IUsuario | null;
 }
 
 const initialState: UsuarioState = {
@@ -15,13 +15,13 @@ const usuarioSlice = createSlice({
   name: "usuario",
   initialState,
   reducers: {
-    setUsuarioActivo: (state, action: PayloadAction<Usuario>) => {
+    setUsuarioActivo: (state, action: PayloadAction<IUsuario>) => {
       state.usuarioActivo = action.payload;
     },
     limpiarUsuarioActivo: (state) => {
       state.usuarioActivo = null;
     },
-    setUsuarios: (state, action: PayloadAction<Usuario[]>) => {
+    setUsuarios: (state, action: PayloadAction<IUsuario[]>) => {
       state.usuarios = action.payload;
     },
   },
