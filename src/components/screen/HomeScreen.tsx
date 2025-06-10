@@ -34,44 +34,48 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-r from-blue-500 to-[#DDA853] pb-10">
+      
       {/* Hero Section */}
-      <section className=" flex flex-row items-center justify-center text-white p-8 mb-4">
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-128 md:mb-0">
-            <h1 className="text-5xl font-bold mb-4">¡ATREVETE A MARCAR LA DIFERENCIA!</h1>
-            <p className="text-3xl mb-8">¡Aprovechá las ofertas exclusivas que tenemos para vos!</p>
+      <section className="flex flex-row items-center justify-center text-white pt-16 mb-4  max-sm:pt-0">
+        <div className="flex flex-row items-start max-w-screen-lg flex-wrap max-xs:flex-col max-sm:p-8 max-xs:items-center max-sm:flex-row max-sm:justify-between">
+          <div className="max-w-lg max-xs:w-full max-xs:px-4 max-sm:w-2/3 max-sm:px-6">
+            <h1 className="text-5xl font-bold mb-4 w-full max-xs:text-3xl max-sm:text-4xl">
+              ¡ATREVETE A MARCAR LA DIFERENCIA!
+            </h1>
+            <p className="text-3xl mb-8 w-full max-xs:text-[17px] max-sm:text-[20px]">
+              ¡Aprovechá las ofertas exclusivas que tenemos para vos!
+            </p>
+
             <Link
               to="/productos"
-              className="bg-white text-blue-700 px-6 py-3 rounded-md font-bold hover:bg-gray-100 hover:cursor-pointer transition-colors">
+              className="bg-white text-blue-700 px-6 py-3 rounded-md font-bold hover:bg-gray-100 hover:cursor-pointer transition-colors max-xs:px-4 max-xs:py-2 max-sm:px-5 max-sm:py-3">
               ¡Comprar ahora!
             </Link>
           </div>
 
-        </div>
-        <div className="flex justify-center p-0">
-          <img
-            src={imglustrativa}
-            alt="Zapatilla deportiva"
-            className="max-w-xs md:max-w-sm"
-          />
+          <div className="flex justify-center max-xs:mt-4 max-xs:mb-6 max-sm:w-1/3 max-sm:mt-0">
+            <img
+              src={imglustrativa}
+              alt="Zapatilla deportiva"
+              className="max-w-xs md:max-w-sm max-xs:w-11/12 max-sm:w-full"
+            />
+          </div>
         </div>
       </section>
 
       {/* Featured Products Section */}
       <section>
-        <h2 className="text-3xl text-neutral-900 font-bold mb-8 text-left ml-8">PRODUCTOS DESTACADOS</h2>
+        <h2 className="text-3xl text-neutral-900 font-bold mb-8 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS DESTACADOS</h2>
+        {loading && <p className="ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Cargando productos...</p>}
+        {error && <p className="ml-8 text-red-500 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Error: {error}</p>}
 
-        {loading && <p className="ml-8">Cargando productos...</p>}
-        {error && <p className="ml-8 text-red-500">Error: {error}</p>}
-
-        <div className={`relative px-4 mb-4`}>
-          <div className={`flex overflow-visible space-x-8 ${styles.ocultarScrollbar}`}>
+        <div className={`relative px-4 mb-4 max-xs:overflow-x-auto max-sm:overflow-x-auto ${styles.ocultarScrollbar}`}>
+          <div className="flex space-x-8 overflow-visible max-xs:flex-nowrap max-sm:flex-nowrap max-xs:whitespace-nowrap max-sm:whitespace-nowrap">
             {productos.map((producto) => (
               <ProductoDestacadoCard key={producto.id} producto={producto} />
             ))}
           </div>
         </div>
-
       </section>
     </div>
   );

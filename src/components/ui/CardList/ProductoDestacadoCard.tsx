@@ -24,11 +24,10 @@ export const ProductoDestacadoCard: React.FC<ProductoDestacadoCardProps> = ({ pr
                 />
             </div>
 
-            {/* Descripción */}
-            <div className="w-1/2 h-full flex items-center justify-center p-4 bg-stone-200">
+            {/* Descripción (oculta en pantallas pequeñas) */}
+            <div className="w-1/2 h-full flex items-center justify-center p-4 bg-stone-200 max-xs:hidden max-sm:hidden">
                 <p className="text-base text-gray-800 text-center">{descripcion}</p>
             </div>
-
         </Link>
     );
 };
