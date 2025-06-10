@@ -93,7 +93,7 @@ setUsuarios(soloEmpleados);
       </div>
       <button
               onClick={() => handleOpenModalCrear()}
-              className="bg-blue-700 hover:bg-blue-500 text-white text-3xl font-semibold py-1 px-2 cursor-pointer rounded shadow-md transition"
+              className="bg-blue-700 hover:bg-blue-500 text-white text-2xl mb-2 font-semibold py-1 px-2 cursor-pointer rounded shadow-md transition"
             >
               <p>Crear Empleado</p>
             </button>

@@ -87,12 +87,12 @@ export const TablaAdminCatalogo = () => {
   return (
     <>
     <div className="overflow-x-auto">
-      <div className="text-4xl font-bold justify-self-center py-7">
+      <div className="text-4xl font-bold justify-self-center py-4">
         <h1>PRODUCTOS</h1>
       </div>
       <button
               onClick={() => handleOpenModalCrear()}
-              className="bg-blue-700 hover:bg-blue-500 text-white text-3xl font-semibold py-1 px-2 cursor-pointer rounded shadow-md transition"
+              className="bg-blue-700 hover:bg-blue-500 text-white text-2xl font-semibold py-1 px-2 mb-2 cursor-pointer rounded shadow-md transition"
             >
               <p>Crear producto</p>
             </button>
