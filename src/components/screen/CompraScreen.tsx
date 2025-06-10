@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
@@ -8,34 +8,68 @@ import { limpiarCompra } from "../../redux/slices/CompraSlice";
 import { IUsuario } from "../../types/IUsuario";
 import { DatosCompraForm } from "../forms/DatosCompraForm";
 import { DireccionForm } from "../forms/DireccionForm";
+import { useAppSelector } from "../../hooks/redux";
+import { usuariosService } from "../../services/usuarioService";
 
 export const CompraScreen: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [datosUsuario, setDatosUsuario] = useState<IUsuario | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const items = useSelector((state: RootState) => state.carrito.items);
-  // const usuario = useSelector((state: RootState) => state.auth.usuario);
+  // Obtener el usuario del Redux store
+  const usuario = useAppSelector((state) => state.auth.usuario);
   const compraState = useSelector((state: RootState) => state.compra);
 
-  // USUARIO SIMULADO PARA TESTING - Remover cuando tengas auth real
+  /* USUARIO SIMULADO PARA TESTING - Remover cuando tengas auth real
   const usuario: IUsuario = {
     id: 1,
     nombre: "Juan",
     apellido: "Pérez",
     email: "juan@ejemplo.com",
     contrasenia: "123456",
-  };
+  };*/
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (!usuario?.id) {
+        setLoading(false);
+        return;
+
+
+      }
+
+      try {
+        const data = await usuariosService.obtenerUsuarioPorId(usuario.id);
+        setDatosUsuario(data);
+      } catch (error) {
+        console.error('Error al obtener datos del usuario:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [usuario?.id]);
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+  console.log("DATOOOOSSSS:", "dni:", datosUsuario?.dni, "nombre:", datosUsuario?.nombre, "apellido:", datosUsuario?.apellido)
+
+ // COMENTÉ ESTO DE ABAJO PORQUE SI NO, NO RENDERIZA. VER!!!!!!
+ 
+  /*useEffect(() => {
     if (items.length === 0) {
       navigate("/carrito");
       return;
-    }
+    }*/
 
-    return () => {
+    /*return () => {
       dispatch(limpiarCompra());
     };
-  }, [items, navigate, dispatch]);
+  }, [items, navigate, dispatch]);*/
 
   const calcularPrecioFinal = (item: (typeof items)[number]["detalle"]) => {
     const precioBase = item.precio.precioVenta;
@@ -51,20 +85,20 @@ export const CompraScreen: React.FC = () => {
 
   const puedeFinalizarCompra = () => {
     // Verificar que tenga DNI (del usuario o del estado de compra)
-    const tieneDni = usuario.dni || compraState.dni;
-    
+    const tieneDni = datosUsuario?.dni || compraState.dni;
+
     // Verificar que tenga dirección completa
-    const tieneDireccion = 
-      (usuario.direccion && 
-       usuario.direccion.calle && 
-       usuario.direccion.numero && 
-       usuario.direccion.localidad?.nombre && 
-       usuario.direccion.localidad?.provincia?.nombre) ||
+    const tieneDireccion =
+      (datosUsuario?.direccion &&
+        datosUsuario.direccion.calle &&
+        datosUsuario.direccion.numero &&
+        datosUsuario.direccion.localidad?.nombre &&
+        datosUsuario.direccion.localidad?.provincia?.nombre) ||
       (compraState.direccionEnvio &&
-       compraState.direccionEnvio.calle &&
-       compraState.direccionEnvio.numero &&
-       compraState.direccionEnvio.localidad?.nombre &&
-       compraState.direccionEnvio.localidad?.provincia?.nombre);
+        compraState.direccionEnvio.calle &&
+        compraState.direccionEnvio.numero &&
+        compraState.direccionEnvio.localidad?.nombre &&
+        compraState.direccionEnvio.localidad?.provincia?.nombre);
 
     return tieneDni && tieneDireccion;
   };
@@ -97,16 +131,14 @@ export const CompraScreen: React.FC = () => {
           {/* Columna izquierda - Formularios */}
           <div className="lg:col-span-2 space-y-6">
             {/* Datos del comprador */}
-            <DatosCompraForm
-              usuario={usuario}
-              compraDni={compraState.dni}
-            />
+            {datosUsuario && (
+              <DatosCompraForm usuario={datosUsuario} compraDni={compraState.dni} />
+            )}
 
             {/* Dirección de envío */}
-            <DireccionForm
-              usuario={usuario}
-              compraDireccionEnvio={compraState.direccionEnvio}
-            />
+            {datosUsuario && (
+              <DireccionForm usuario={datosUsuario} compraDireccionEnvio={compraState.direccionEnvio} />
+            )}
           </div>
 
           {/* Columna derecha - Resumen */}

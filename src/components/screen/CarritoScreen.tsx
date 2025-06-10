@@ -5,6 +5,7 @@ import { RootState } from "../../redux/store";
 import { CarritoCard } from "../ui/CardList/CarritoCard";
 import { FaShoppingBag } from "react-icons/fa";
 import { IDetalle } from "../../types/IDetalle";
+import Swal from "sweetalert2";
 
 // Servicio para obtener detalles actualizados desde el backend
 const fetchDetalleById = async (detalleId: number): Promise<IDetalle> => {
@@ -22,6 +23,8 @@ const fetchDetalleById = async (detalleId: number): Promise<IDetalle> => {
 
 export const CarritoScreen: React.FC = () => {
   const items = useSelector((state: RootState) => state.carrito.items);
+  const usuario = useSelector((state: RootState) => state.auth.usuario);
+
   const navigate = useNavigate();
   
   // Estados para manejar los datos actualizados del backend
@@ -96,7 +99,24 @@ export const CarritoScreen: React.FC = () => {
   */
 
   const handleComprar = () => {
-    navigate("/pagar");
+ if (!usuario){
+
+ Swal.fire({
+      title: '¡Inicia sesión!',
+      text: 'Debes estar logueado para continuar con la compra.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ir al login',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#4A90E2',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate('/login');
+      }
+    });
+    return;
+  }
+    navigate("/comprar");
   };
 
   const handleContinuarComprando = () => {

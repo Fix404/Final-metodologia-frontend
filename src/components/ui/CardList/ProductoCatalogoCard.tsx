@@ -23,7 +23,7 @@ const ProductoCatalogoCard: React.FC<ProductCatalogCardProps> = ({
         {/* Product Image */}
         <div className="bg-white p-2 mb-2">
           <img
-            src={imagen?.url ?? ''}
+            src={imagen?.url || undefined} //src={imagen?.url ?? ''}
             alt={imagen?.altDescripcion ?? ''}
             className="w-full h-40 object-contain"
           />

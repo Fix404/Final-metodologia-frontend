@@ -19,6 +19,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
   const formik = useFormik({
     initialValues: {
       nombre: '',
+      apellido: '',
       email: '',
       contrasenia: '',
       confirmarContrasenia: '',
@@ -33,6 +34,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
       try {
         await register(
           values.nombre,
+          values.apellido,
           values.email,
           values.contrasenia,
           values.confirmarContrasenia
@@ -82,13 +84,43 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
                   ? 'border-red-500'
                   : 'border-gray-300'
                 } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-              placeholder="Tu nombre completo"
+              placeholder="Tu nombre"
             />
           </div>
           {formik.touched.nombre && formik.errors.nombre && (
             <p className="mt-1 text-sm text-red-600">{formik.errors.nombre}</p>
           )}
         </div>
+
+        {/* Apellido */}
+        <div >
+          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+            Apellido
+          </label>
+          <div className="mt-1 relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiUser className="text-gray-400" />
+            </div>
+            <input
+              id="apellido"
+              name="apellido"
+              type="text"
+              autoComplete="apellido"
+              value={formik.values.apellido}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`pl-10 block w-full py-2 border ${formik.touched.apellido && formik.errors.apellido
+                  ? 'border-red-500'
+                  : 'border-gray-300'
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+              placeholder="Tu apellido"
+            />
+          </div>
+          {formik.touched.nombre && formik.errors.nombre && (
+            <p className="mt-1 text-sm text-red-600">{formik.errors.nombre}</p>
+          )}
+        </div>
+
 
         {/* Email */}
         <div>
@@ -111,7 +143,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
                   ? 'border-red-500'
                   : 'border-gray-300'
                 } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-              placeholder="tu@ejemplo.com"
+              placeholder="tu_email@ejemplo.com"
             />
           </div>
           {formik.touched.email && formik.errors.email && (

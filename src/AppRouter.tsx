@@ -17,6 +17,7 @@ import { TablaAdminClientes } from './components/ui/TablasAdmin/Usuarios/TablaAd
 import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaAdminEmpleados';
 import { PagoScreen } from './components/screen/PagoScreen';
 import { useAppSelector } from './hooks/redux';
+import { CompraScreen } from './components/screen/CompraScreen';
 
 
 export const AppRouter = () => {
@@ -56,6 +57,7 @@ export const AppRouter = () => {
           <Route path="/carrito" element={<CarritoScreen />} />
           <Route path="/productos" element={<CatalogoScreen />} />
           <Route path="/productos/:id" element={<DetalleScreen />} />
+          <Route path='/comprar' element={<CompraScreen />} />
           <Route path="/pagar" element={<PagoScreen />} />
 
         </Route>

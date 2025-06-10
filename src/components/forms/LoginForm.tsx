@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { logout, setRoles, setUsuario } from '../../redux/slices/authSlice';
 
 interface DecodedToken {
+  id: number,
   rol: string[];
   sub: string;
   exp: number;
@@ -22,7 +23,7 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const usuario = useAppSelector(state => state.auth.usuario); //Esto se tiene que guardar
+  const usuario = useAppSelector(state => state.auth.usuario);
 
   const formik = useFormik({
     initialValues: {
@@ -41,16 +42,17 @@ export const LoginForm = () => {
 
 
         const decodedToken = jwtDecode<DecodedToken>(data.token);
-        console.log(decodedToken);
+        console.log("DECODED TOKEN", decodedToken);
+        console.log("id correspondiente: ", decodedToken.id);
 
         const usuarioFromToken = {
           email: decodedToken.sub,
+          id: decodedToken.id, 
         };
 
         dispatch(setRoles(decodedToken.rol));
         dispatch(setUsuario(usuarioFromToken));
-        console.log("USUARIO:", usuario)
-
+        console.log("USUARIO:", usuarioFromToken)
 
         const currentTime = Date.now() / 1000;
 
@@ -82,8 +84,8 @@ export const LoginForm = () => {
 
 
   if (usuario) {
-  return (
-    
+    return (
+
       <div className="bg-white shadow-lg rounded-lg p-10 max-w-xl w-full flex flex-col items-center text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">¡Ya estás logueado!</h2>
         <p className="text-gray-600 text-lg mb-8">
@@ -111,8 +113,8 @@ export const LoginForm = () => {
           </button>
         </div>
       </div>
-  );
-}
+    );
+  }
 
 
   return (

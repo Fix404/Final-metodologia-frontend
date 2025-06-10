@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { CompraCard } from "../ui/CardList/CompraCard";
-import { 
-  FaCreditCard, 
-  FaUniversity, 
+import {
+  FaCreditCard,
+  FaUniversity,
   FaSpinner,
   FaShieldAlt,
   FaCopy,
-  FaArrowLeft 
+  FaArrowLeft
 } from "react-icons/fa";
 import { usePago } from "../../hooks/usePago";
 import { datosTransferencia } from "../../constants/pagoConstant";
@@ -21,7 +21,8 @@ export const PagoScreen: React.FC = () => {
 
   const items = useSelector((state: RootState) => state.carrito.items);
   const compraState = useSelector((state: RootState) => state.compra);
-  
+ 
+
   const {
     metodoPago,
     setMetodoPago,
@@ -63,7 +64,7 @@ export const PagoScreen: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Columna izquierda - Métodos de pago */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Selección de método de pago */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-6">
@@ -74,11 +75,10 @@ export const PagoScreen: React.FC = () => {
                 {/* Transferencia Bancaria */}
                 <div
                   onClick={() => setMetodoPago("transferencia")}
-                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                    metodoPago === "transferencia"
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${metodoPago === "transferencia"
                       ? "border-[#4A90E2] bg-blue-50"
                       : "border-gray-200 hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center">
                     <FaUniversity className="text-[#4A90E2] text-xl mr-4" />
@@ -90,11 +90,10 @@ export const PagoScreen: React.FC = () => {
                         Realiza una transferencia desde tu banco
                       </p>
                     </div>
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      metodoPago === "transferencia"
+                    <div className={`w-4 h-4 rounded-full border-2 ${metodoPago === "transferencia"
                         ? "border-[#4A90E2] bg-[#4A90E2]"
                         : "border-gray-300"
-                    }`}>
+                      }`}>
                       {metodoPago === "transferencia" && (
                         <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
                       )}
@@ -105,11 +104,10 @@ export const PagoScreen: React.FC = () => {
                 {/* MercadoPago */}
                 <div
                   onClick={() => setMetodoPago("mercadopago")}
-                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                    metodoPago === "mercadopago"
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${metodoPago === "mercadopago"
                       ? "border-[#4A90E2] bg-blue-50"
                       : "border-gray-200 hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center">
                     <FaCreditCard className="text-[#4A90E2] text-xl mr-4" />
@@ -121,11 +119,10 @@ export const PagoScreen: React.FC = () => {
                         Paga con tarjeta, débito o crédito disponible
                       </p>
                     </div>
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      metodoPago === "mercadopago"
+                    <div className={`w-4 h-4 rounded-full border-2 ${metodoPago === "mercadopago"
                         ? "border-[#4A90E2] bg-[#4A90E2]"
                         : "border-gray-300"
-                    }`}>
+                      }`}>
                       {metodoPago === "mercadopago" && (
                         <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
                       )}
@@ -141,18 +138,18 @@ export const PagoScreen: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Datos para transferencia
                 </h3>
-                
+
                 <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                   <div className="flex justify-between items-center pb-2 border-b border-gray-200">
                     <span className="text-gray-600">Banco:</span>
                     <span className="font-medium">{datosTransferencia.banco}</span>
                   </div>
-                  
+
                   <div className="flex justify-between items-center pb-2 border-b border-gray-200">
                     <span className="text-gray-600">Titular:</span>
                     <span className="font-medium">{datosTransferencia.titular}</span>
                   </div>
-                  
+
                   <div className="flex justify-between items-center pb-2 border-b border-gray-200">
                     <span className="text-gray-600">CBU:</span>
                     <div className="flex items-center gap-2">
@@ -165,7 +162,7 @@ export const PagoScreen: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Alias:</span>
                     <div className="flex items-center gap-2">
@@ -182,8 +179,8 @@ export const PagoScreen: React.FC = () => {
 
                 <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <p className="text-sm text-yellow-800">
-                    <strong>Importante:</strong> Una vez realizada la transferencia, 
-                    tu pedido será procesado y recibirás una confirmación por email. 
+                    <strong>Importante:</strong> Una vez realizada la transferencia,
+                    tu pedido será procesado y recibirás una confirmación por email.
                     El tiempo de procesamiento es de 24-48 horas hábiles.
                   </p>
                 </div>
@@ -196,7 +193,7 @@ export const PagoScreen: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Pago con MercadoPago
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center p-4 bg-blue-50 rounded-lg">
                     <FaShieldAlt className="text-blue-500 mr-3" />
@@ -207,7 +204,7 @@ export const PagoScreen: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="text-sm text-gray-600">
                     <p>• Acepta todas las tarjetas de crédito y débito</p>
                     <p>• Pago en cuotas disponible</p>
