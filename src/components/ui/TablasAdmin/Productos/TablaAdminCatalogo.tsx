@@ -5,7 +5,6 @@ import { RootState } from "../../../../redux/store";
 import { fetchProducto, limpiarProductoActivo, setProductoActivo } from "../../../../redux/slices/productoSlice";
 import { IProducto } from "../../../../types/IProducto";
 import { productoService } from "../../../../services/productoService";
-import { RiProhibitedLine } from "react-icons/ri";
 import { IoEyeSharp, IoTrashBinOutline } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
@@ -79,23 +78,6 @@ export const TablaAdminCatalogo = () => {
       }
     };
 
-    const cambiarDisponible = async (idProducto: number, producto: IProducto) => {
-  try {
-    const ProductoActualizado: IProducto = { 
-      ...producto, 
-      disponible: !producto.disponible 
-    };
-    
-    const data = await productoService.actualizarProducto(
-      idProducto, 
-      ProductoActualizado
-    );
-    console.log(data);
-  } catch (error) {
-    console.log("Hubo un error", error);
-  }
-};
-
   // Effect para cargar productos cuando se activa el menú
   useEffect(() => {
     if (activeSubMenu === "Catálogo") {
@@ -142,9 +124,6 @@ export const TablaAdminCatalogo = () => {
             <p>Sexo</p>
           </th>
           <th className="py-3 px-4 text-left font-semibold border-b">
-            <p>Disponible</p>
-          </th>
-          <th className="py-3 px-4 text-left font-semibold border-b">
             <p>Acciones</p>
           </th>
         </tr>
@@ -184,17 +163,7 @@ export const TablaAdminCatalogo = () => {
                {producto.sexoProducto || "Sin definir"}
               </td>
               <td className="py-2 px-4 border-b">
-               {(producto.disponible ? "A la venta":"No se vende")}
-              </td>
-              <td className="py-2 px-4 border-b">
                 <div className="flex justify-center gap-2">
-                  <button
-                  title="Hacer no disponible"
-                    onClick={() => cambiarDisponible(producto.id!, producto)}
-                    className="bg-yellow-500 hover:bg-yellow-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
-                  >
-                    <RiProhibitedLine />
-                  </button>
                   <button
                   title="Ver"
                     onClick={() => handleOpenModalVer(producto)}
