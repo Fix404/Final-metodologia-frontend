@@ -1,12 +1,12 @@
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
 import { login } from '../../services/authService';
 import { jwtDecode } from 'jwt-decode';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { logout, setRoles, setUsuario } from '../../redux/slices/authSlice';
+import { useAppDispatch} from '../../hooks/redux';
+import { setRoles, setUsuario } from '../../redux/slices/authSlice';
 
 interface DecodedToken {
   id: number,
@@ -23,7 +23,6 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const usuario = useAppSelector(state => state.auth.usuario);
 
   const formik = useFormik({
     initialValues: {
@@ -81,40 +80,6 @@ export const LoginForm = () => {
     },
   });
 
-
-
-  if (usuario) {
-    return (
-
-      <div className="bg-white shadow-lg rounded-lg p-10 max-w-xl w-full flex flex-col items-center text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">¡Ya estás logueado!</h2>
-        <p className="text-gray-600 text-lg mb-8">
-          Estás logueado como <strong className="text-blue-700">{usuario.email}</strong>.<br />
-          Si querés iniciar sesión con otra cuenta, primero cerrá sesión.
-        </p>
-
-        <div className="flex gap-6">
-          <button
-            onClick={() => navigate("/")}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md transition-colors duration-200"
-          >
-            Seguir comprando
-          </button>
-
-          <button
-            onClick={() => {
-              dispatch(logout());
-              localStorage.removeItem('authToken');
-              navigate("/login");
-            }}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md shadow-md transition-colors duration-200"
-          >
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
-    );
-  }
 
 
   return (
