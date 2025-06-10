@@ -9,7 +9,7 @@ export interface IDetalle {
     talle: ITalle
     color: IColor
     precio: IPrecio 
-    stock: number
+    stock?: number
     estado?: Estado 
     producto: IProducto
 }

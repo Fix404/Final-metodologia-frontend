@@ -1,10 +1,13 @@
-import { IDetalle } from "./IDetalle";
+
+import { IProductoCantidad } from "./IProductoCantidad";
 import { IUsuario } from "./IUsuario";
 
 export interface IOrdenCompra {
+  activo: boolean;
   id: number;
-  fecha: string;
-  total: number;
+  fecha:String;
+  precio_total: number;
   usuario: IUsuario;
-  detalles: IDetalle[];
+  movimiento: string;
+  producto_cantidad_id: IProductoCantidad;
 }

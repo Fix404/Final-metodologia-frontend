@@ -5,7 +5,8 @@ import activeAdminMenuSlice from './slices/activeMenuAdminSlice'
 import compraReducer from "./slices/CompraSlice"
 import busquedaReducer from './slices/busquedaSlice';
 import productoReducer from './slices/productoSlice';
-import usuarioReducer from './slices/usuarioSlice'
+import usuarioReducer from './slices/usuarioSlice';
+import ordenesCompraReducer from "./slices/ordenesCompraSlice";
 
 
 const store = configureStore({
@@ -16,7 +17,8 @@ const store = configureStore({
         menuActivoAdmin: activeAdminMenuSlice,
         compra: compraReducer,
         busqueda: busquedaReducer,
-        usuario: usuarioReducer
+        usuario: usuarioReducer,
+        ordenesCompra: ordenesCompraReducer,
     },
 });
 
