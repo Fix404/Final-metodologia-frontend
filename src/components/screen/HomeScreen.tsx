@@ -65,12 +65,12 @@ export const HomeScreen: React.FC = () => {
 
       {/* Featured Products Section */}
       <section>
-        <h2 className="text-3xl text-neutral-900 font-bold mb-8 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS DESTACADOS</h2>
+        <h2 className="text-3xl text-neutral-900 font-bold mb-4 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS DESTACADOS</h2>
         {loading && <p className="ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Cargando productos...</p>}
         {error && <p className="ml-8 text-red-500 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Error: {error}</p>}
 
-        <div className={`relative px-4 mb-4 max-xs:overflow-x-auto max-sm:overflow-x-auto ${styles.ocultarScrollbar}`}>
-          <div className="flex space-x-8 overflow-visible max-xs:flex-nowrap max-sm:flex-nowrap max-xs:whitespace-nowrap max-sm:whitespace-nowrap">
+        <div className={`${styles.scrollContainer}`}>
+          <div className={`${styles.cardsHorizontal}`}>
             {productos.map((producto) => (
               <ProductoDestacadoCard key={producto.id} producto={producto} />
             ))}
