@@ -4,5 +4,55 @@
 }
 
 .ocultarScrollbar::-webkit-scrollbar {
-  display: none; 
+  display: none;
+}
+
+.scrollContainer {
+  padding: 1rem 2rem 2rem 2rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.cardsHorizontal {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  min-width: 100%;
+  padding: 0.5rem 0;
+}
+
+.cardsHorizontal > * {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 640px) {
+  .scrollContainer {
+    padding: 0 1rem;
+  }
+  
+  .cardsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollContainer {
+    padding: rem;
+  }
+  
+  .cardsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
 }
