@@ -75,9 +75,9 @@ export const UsuarioModal = ({
           {[
             { name: 'nombre', label: 'Nombre' },
             { name: 'apellido', label: 'Apellido' },
-            { name: 'email', label: 'Email', type: 'email' },
-            { name: 'contrasenia', label: 'Contraseña', type: 'password' },
             { name: 'dni', label: 'DNI' },
+            { name: 'email', label: 'Email', type: 'email' },
+            { name: 'direccion', label: 'Direccion'},      
             { name: 'rol', label: 'Rol' },
           ].map(({ name, label, type = 'text' }) => (
             <div key={name}>
