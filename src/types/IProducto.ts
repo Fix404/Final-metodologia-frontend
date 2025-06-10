@@ -3,12 +3,13 @@ import { IDescuento } from "./IDescuento"
 import { IImagen } from "./IImagen"
 
 export interface IProducto {
-    id: number
+    id: number | null
     nombre: string
     descripcion: string
-    categoria: ICategoria
-    tipo: string
-    sexoProducto: string
-    descuento?: IDescuento
-    imagen?: IImagen
+    categoria: ICategoria | null
+    tipo: string | null
+    sexoProducto: string | null
+    descuento?: IDescuento | null
+    imagen?: IImagen | null,
+    disponible: boolean
 }

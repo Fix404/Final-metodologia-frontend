@@ -20,13 +20,12 @@ export const TablaAdminClientes = () => {
   // Función para cargar usuarios
   const cargarUsuarios = async () => {
   try {
-    const data = await usuariosService.obtenerUsuarios();
-    console.log(data);
-    const soloClientesActivos = data.filter(
-      (usuario: IUsuario) => usuario.rol === "CLIENTE" && usuario.activo === true
+    const data = await usuariosService.obtenerUsuariosActivos();
+    const soloClientes = data.filter(
+      (usuario: IUsuario) => usuario.rol === "CLIENTE"
     );
-    setUsuarios(soloClientesActivos);
-    console.log(soloClientesActivos);
+    setUsuarios(soloClientes);
+    console.log(soloClientes);
   } catch (err) {
     console.error("Error al cargar usuarios:", err);
   }
@@ -65,6 +64,7 @@ export const TablaAdminClientes = () => {
 
   const handleOpenModalCrear=() => {
     dispatch(limpiarUsuarioActivo())
+    setOpenModalSee(false);
     setOpenModal(true);
   }
 
@@ -73,7 +73,7 @@ export const TablaAdminClientes = () => {
     setOpenModal(false);
     cargarUsuarios()
   }
-  const handleDelete = async (id: number, usuario: IUsuario) => {
+  const handleDelete = async (id: number) => {
   const resultado = await Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción deshabilitará al usuario.',
@@ -87,17 +87,10 @@ export const TablaAdminClientes = () => {
 
   if (resultado.isConfirmed) {
     try {
-      const usuarioActualizado: IUsuario = {
-        ...usuario,
-        activo: false
-      };
-
-      await usuariosService.eliminarUsuario(id, usuarioActualizado);
+      await usuariosService.eliminarUsuario(id);
 
       Swal.fire('Deshabilitado', 'El usuario fue deshabilitado exitosamente.', 'success');
-
-      // Podés refrescar la lista si es necesario
-      // fetchUsuarios();
+      cargarUsuarios()
     } catch (error) {
       Swal.fire('Error', 'Hubo un problema al deshabilitar el usuario.', 'error');
       console.error("Hubo un error al borrar el usuario", error);
@@ -105,8 +98,6 @@ export const TablaAdminClientes = () => {
   }
 };
 
-
-  // Effect para cargar usuarios cuando se activa el menú
   useEffect(() => {
     if (activeSubMenu === "Clientes") {
       cargarUsuarios();
@@ -202,7 +193,7 @@ export const TablaAdminClientes = () => {
     </button>
     <button
       title="Eliminar"
-      onClick={() => handleDelete(usuario.id!, usuario)}
+      onClick={() => handleDelete(usuario.id!)}
       className="bg-red-500 hover:bg-red-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
     >
       <IoTrashBinOutline />

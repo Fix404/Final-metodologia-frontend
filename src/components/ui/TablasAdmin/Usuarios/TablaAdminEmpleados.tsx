@@ -21,7 +21,7 @@ export const TablaAdminEmpleados = () => {
   const cargarUsuarios = async () => {
     
     try {
-      const data = await usuariosService.obtenerUsuarios();
+      const data = await usuariosService.obtenerUsuariosActivos();
       const soloEmpleados = data.filter((usuario:IUsuario) => 
         usuario.rol === "ADMIN"
 );
@@ -45,6 +45,7 @@ setUsuarios(soloEmpleados);
   
     const handleOpenModalCrear=() => {
       dispatch(limpiarUsuarioActivo())
+      setOpenModalSee(false);
       setOpenModal(true);
     }
   
@@ -53,7 +54,7 @@ setUsuarios(soloEmpleados);
       setOpenModal(false);
       cargarUsuarios()
     }
-    const handleDelete = async (id: number, usuario: IUsuario) => {
+    const handleDelete = async (id: number) => {
     const resultado = await Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción deshabilitará al usuario.',
@@ -67,12 +68,7 @@ setUsuarios(soloEmpleados);
   
     if (resultado.isConfirmed) {
       try {
-        const usuarioActualizado: IUsuario = {
-          ...usuario,
-          activo: false
-        };
-  
-        await usuariosService.eliminarUsuario(id, usuarioActualizado);
+        await usuariosService.eliminarUsuario(id);
   
         Swal.fire('Deshabilitado', 'El usuario fue deshabilitado exitosamente.', 'success');
         cargarUsuarios()
@@ -175,7 +171,7 @@ setUsuarios(soloEmpleados);
                   </button>
                   <button
                     title="Eliminar"
-                    onClick={() => handleDelete(usuario.id!, usuario)}
+                    onClick={() => handleDelete(usuario.id!)}
                     className="bg-red-500 hover:bg-red-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
                   >
                     <IoTrashBinOutline />
