@@ -8,16 +8,19 @@ import {
   setResultados,
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
+import { useAppSelector } from '../../../hooks/redux';
+
 
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
   const [menuAbierto, setMenuAbierto] = useState(false);
-  
+  const rolUsuario = useAppSelector((state) => state.auth.rol);
   const productos = useSelector((state: RootState) => state.producto.productos);
   const cantidadEnCarrito = useSelector((state: RootState) => state.carrito!.items.length);
   const query = useSelector((state: RootState) => state.busqueda.texto);
   const resultados = useSelector((state: RootState) => state.busqueda.resultados);
   const containerRef = useRef<HTMLDivElement>(null);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const texto = e.target.value;
@@ -65,16 +68,17 @@ const ClienteNavbar = () => {
         <div className="hidden max-mm:flex items-center space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
           <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería</Link>
-          <Link to="/admin" className="hover:text-gray-200 transition-colors">Contacto</Link>
+          {rolUsuario?.includes("ADMIN") && (
+            <Link to="/admin" className="hover:text-gray-200 transition-colors">Admin</Link>
+          )}
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
 
         {/* Desktop - Barra de búsqueda */}
         <div className="hidden max-mm:flex items-center space-x-4">
           <div className="relative w-80" ref={containerRef}>
-            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${
-              resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
-            }`}>
+            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
+              }`}>
               <input
                 type="text"
                 placeholder="Buscar productos..."
@@ -105,9 +109,8 @@ const ClienteNavbar = () => {
             </div>
 
             {resultados.length > 0 && (
-              <ul className={`absolute top-full left-0 w-full bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg z-50 overflow-hidden ${
-                resultados.length > 6 ? 'max-h-96 overflow-y-auto' : ''
-              }`}>
+              <ul className={`absolute top-full left-0 w-full bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg z-50 overflow-hidden ${resultados.length > 6 ? 'max-h-96 overflow-y-auto' : ''
+                }`}>
                 {resultados.map((producto) => (
                   <Link
                     to={`/productos/${producto.id}`}
@@ -175,9 +178,8 @@ const ClienteNavbar = () => {
         <div className="max-mm:hidden mt-4 pb-4 border-t border-white/20">
 
           <div className="mb-4 px-2" ref={containerRef}>
-            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${
-              resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
-            }`}>
+            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
+              }`}>
               <input
                 type="text"
                 placeholder="Buscar productos..."
@@ -208,9 +210,8 @@ const ClienteNavbar = () => {
             </div>
 
             {resultados.length > 0 && (
-              <ul className={`bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg overflow-hidden ${
-                resultados.length > 4 ? 'max-h-64 overflow-y-auto' : ''
-              }`}>
+              <ul className={`bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg overflow-hidden ${resultados.length > 4 ? 'max-h-64 overflow-y-auto' : ''
+                }`}>
                 {resultados.map((producto) => (
                   <Link
                     to={`/productos/${producto.id}`}
@@ -236,29 +237,29 @@ const ClienteNavbar = () => {
           </div>
 
           <div className="flex flex-col space-y-2">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Home
             </Link>
-            <Link 
-              to="/productos" 
+            <Link
+              to="/productos"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Galería
             </Link>
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Contacto
             </Link>
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
