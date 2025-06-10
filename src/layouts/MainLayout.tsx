@@ -5,8 +5,7 @@ import ClienteNavbar from '../components/ui/Navbar/ClienteNavbar';
 export const MainLayout = () => {
 
   return (
-    <div className="
-    bg-gradient-to-b from-[#6DA4B9] to-[#fdfae8] flex flex-col h-screen">
+    <div className="bg-gradient-to-b from-[#6DA4B9] to-[#fdfae8] flex flex-col h-screen">
       <ClienteNavbar />
  
       <main className="flex-grow overflow-auto">
