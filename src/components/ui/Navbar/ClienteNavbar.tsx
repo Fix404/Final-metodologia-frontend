@@ -14,7 +14,7 @@ const ClienteNavbar = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   
   const productos = useSelector((state: RootState) => state.producto.productos);
-  const cantidadEnCarrito = useSelector((state: RootState) => state.carrito.items.length);
+  const cantidadEnCarrito = useSelector((state: RootState) => state.carrito!.items.length);
   const query = useSelector((state: RootState) => state.busqueda.texto);
   const resultados = useSelector((state: RootState) => state.busqueda.resultados);
   const containerRef = useRef<HTMLDivElement>(null);
