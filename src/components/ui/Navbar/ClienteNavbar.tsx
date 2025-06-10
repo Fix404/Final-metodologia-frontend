@@ -1,18 +1,22 @@
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import logoEmpresa from '../../../images/logo.png';
+
 import {
   setTexto,
   setResultados,
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
 import { useAppSelector } from '../../../hooks/redux';
+import Swal from 'sweetalert2';
+import { logout } from '../../../redux/slices/authSlice';
 
 
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const rolUsuario = useAppSelector((state) => state.auth.rol);
   const productos = useSelector((state: RootState) => state.producto.productos);
@@ -20,6 +24,7 @@ const ClienteNavbar = () => {
   const query = useSelector((state: RootState) => state.busqueda.texto);
   const resultados = useSelector((state: RootState) => state.busqueda.resultados);
   const containerRef = useRef<HTMLDivElement>(null);
+  const usuario = useAppSelector(state => state.auth.usuario);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,6 +58,31 @@ const ClienteNavbar = () => {
 
   const cerrarMenuMovil = () => {
     setMenuAbierto(false);
+  };
+
+
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: 'Estás a punto de salir de tu cuenta',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Quedarme',
+      confirmButtonText: 'Salir',
+      customClass: {
+        confirmButton: 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600',
+        cancelButton: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        navigate('/login');
+      } else {
+        navigate('/');
+      }
+    });
   };
 
   return (
@@ -143,8 +173,14 @@ const ClienteNavbar = () => {
               </span>
             )}
           </Link>
-        </div>
 
+          {/* Logout */}
+          {usuario && (
+            <div onClick={handleLogout} className="relative hover:text-gray-200 transition-colors">
+              <img src='../../../../logout.svg' alt="icono contacto" className="h-6 w-6" />
+            </div>
+          )}
+        </div>
         <div className="flex max-mm:hidden items-center space-x-4">
 
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
