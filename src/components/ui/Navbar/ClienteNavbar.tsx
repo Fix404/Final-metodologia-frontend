@@ -1,23 +1,31 @@
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import logoEmpresa from '../../../images/logo.png';
+
 import {
   setTexto,
   setResultados,
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
+import { useAppSelector } from '../../../hooks/redux';
+import Swal from 'sweetalert2';
+import { logout } from '../../../redux/slices/authSlice';
+
 
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
-  
+  const rolUsuario = useAppSelector((state) => state.auth.rol);
   const productos = useSelector((state: RootState) => state.producto.productos);
   const cantidadEnCarrito = useSelector((state: RootState) => state.carrito.items.length);
   const query = useSelector((state: RootState) => state.busqueda.texto);
   const resultados = useSelector((state: RootState) => state.busqueda.resultados);
   const containerRef = useRef<HTMLDivElement>(null);
+  const usuario = useAppSelector(state => state.auth.usuario);
+
   const containerRefMobile = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +63,31 @@ const ClienteNavbar = () => {
     setMenuAbierto(false);
   };
 
+
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: 'Estás a punto de salir de tu cuenta',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Quedarme',
+      confirmButtonText: 'Salir',
+      customClass: {
+        confirmButton: 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600',
+        cancelButton: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        navigate('/login');
+      } else {
+        navigate('/');
+      }
+    });
+  };
+
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-[#DDA853] text-white p-2 pl-4 pr-4 md:pl-10 md:pr-10 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
@@ -68,16 +101,17 @@ const ClienteNavbar = () => {
         <div className="hidden max-mm:flex items-center space-x-8">
           <Link to="/" className="hover:text-gray-200 transition-colors">Home</Link>
           <Link to="/productos" className="hover:text-gray-200 transition-colors">Galería</Link>
-          <Link to="/admin" className="hover:text-gray-200 transition-colors">Contacto</Link>
+          {rolUsuario?.includes("ADMIN") && (
+            <Link to="/admin" className="hover:text-gray-200 transition-colors">Admin</Link>
+          )}
           <Link to="/login" className="hover:text-gray-200 transition-colors">Log In</Link>
         </div>
 
         {/* Desktop - Barra de búsqueda */}
         <div className="hidden max-mm:flex items-center space-x-4">
           <div className="relative w-80" ref={containerRef}>
-            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${
-              resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
-            }`}>
+            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
+              }`}>
               <input
                 type="text"
                 placeholder="Buscar productos..."
@@ -108,9 +142,8 @@ const ClienteNavbar = () => {
             </div>
 
             {resultados.length > 0 && (
-              <ul className={`absolute top-full left-0 w-full bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg z-50 overflow-hidden ${
-                resultados.length > 6 ? 'max-h-96 overflow-y-auto' : ''
-              }`}>
+              <ul className={`absolute top-full left-0 w-full bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg z-50 overflow-hidden ${resultados.length > 6 ? 'max-h-96 overflow-y-auto' : ''
+                }`}>
                 {resultados.map((producto) => (
                   <Link
                     to={`/productos/${producto.id}`}
@@ -143,8 +176,14 @@ const ClienteNavbar = () => {
               </span>
             )}
           </Link>
-        </div>
 
+          {/* Logout */}
+          {usuario && (
+            <div onClick={handleLogout} className="relative hover:text-gray-200 transition-colors">
+              <img src='../../../../logout.svg' alt="icono contacto" className="h-6 w-6" />
+            </div>
+          )}
+        </div>
         <div className="flex max-mm:hidden items-center space-x-4">
 
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
@@ -214,9 +253,8 @@ const ClienteNavbar = () => {
             </div>
 
             {resultados.length > 0 && (
-              <ul className={`bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg overflow-hidden ${
-                resultados.length > 4 ? 'max-h-64 overflow-y-auto' : ''
-              }`}>
+              <ul className={`bg-white border border-t-0 border-gray-300 rounded-b-md shadow-lg overflow-hidden ${resultados.length > 4 ? 'max-h-64 overflow-y-auto' : ''
+                }`}>
                 {resultados.map((producto) => (
                   <Link
                     to={`/productos/${producto.id}`}
@@ -242,29 +280,29 @@ const ClienteNavbar = () => {
           </div>
 
           <div className="flex flex-col space-y-2">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Home
             </Link>
-            <Link 
-              to="/productos" 
+            <Link
+              to="/productos"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Galería
             </Link>
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
               Contacto
             </Link>
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="block px-4 py-2 hover:bg-white/10 rounded transition-colors"
               onClick={cerrarMenuMovil}
             >
