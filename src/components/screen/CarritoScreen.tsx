@@ -7,7 +7,6 @@ import { FaShoppingBag } from "react-icons/fa";
 import { IDetalle } from "../../types/IDetalle";
 import Swal from "sweetalert2";
 
-// Servicio para obtener detalles actualizados desde el backend
 const fetchDetalleById = async (detalleId: number): Promise<IDetalle> => {
   try {
     const response = await fetch(`http://localhost:8080/detalle/${detalleId}`);
@@ -60,14 +59,14 @@ export const CarritoScreen: React.FC = () => {
     loadDetallesActualizados();
   }, [items]);
 
-  // Función para calcular precio final con descuentos (usando datos del backend)
+  // Calcular precio final con descuentos
   const calcularPrecioFinal = (detalle: IDetalle) => {
     const precioBase = detalle.precio?.precioVenta || 0;
     const descuento = detalle.producto?.descuento?.porcentaje ?? 0;
     return Math.round(precioBase * (1 - descuento / 100));
   };
 
-  // Función para calcular el total del carrito (usando datos actualizados del backend)
+  // Calcular el total del carrito 
   const calcularTotal = () => {
     return items.reduce((total, itemCarrito) => {
       const detalleActualizado = detallesActualizados.find(
@@ -77,26 +76,10 @@ export const CarritoScreen: React.FC = () => {
       if (detalleActualizado) {
         return total + calcularPrecioFinal(detalleActualizado) * itemCarrito.cantidad;
       }
-      
-      // Fallback: usar datos del carrito si no se encontró el detalle actualizado
+
       return total + calcularPrecioFinal(itemCarrito.detalle) * itemCarrito.cantidad;
     }, 0);
   };
-
-  // Funciones originales comentadas (ya no se usan)
-  /*
-  const calcularPrecioFinal = (item: typeof items[number]["detalle"]) => {
-    const precioBase = item.precio.precioVenta;
-    const descuento = item.producto.descuento?.porcentaje ?? 0;
-    return Math.round(precioBase * (1 - descuento / 100));
-  };
-
-  const calcularTotal = () => {
-    return items.reduce((total, { detalle, cantidad }) => {
-      return total + calcularPrecioFinal(detalle) * cantidad;
-    }, 0);
-  };
-  */
 
   const handleComprar = () => {
  if (!usuario){
