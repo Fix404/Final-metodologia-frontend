@@ -160,14 +160,14 @@ const DetalleScreen: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#fcfcd3] min-h-screen py-8 max-sm:py-4 px-4 flex flex-col items-center justify-start">
-      <div className="max-w-6xl w-full max-sm:pb-20">
+    <div className="bg-[#fcfcd3] min-h-screen py-8 max-xs:py-4 px-4 flex flex-col items-center justify-start">
+      <div className="max-w-6xl w-full max-sx:pb-20">
         {/* Contenedor principal */}
-        <div className="flex flex-col lg:flex-row gap-8 max-sm:gap-6 h-[400px] lg:h-[500px] max-sm:h-auto">
+        <div className="flex flex-col lg:flex-row gap-8 max-xs:gap-6 h-[400px] lg:h-[500px] max-sm:h-auto">
           
           {/* Imagen */}
-          <div className="w-full lg:w-1/2 h-full max-sm:h-auto">
-            <div className="w-full h-full max-sm:aspect-square max-sm:max-w-sm max-sm:mx-auto rounded-lg shadow-sm overflow-hidden">
+          <div className="w-full lg:w-1/2 h-full max-sx:h-auto">
+            <div className="w-full h-full max-xs:aspect-square max-sm:max-w-sm max-sm:mx-auto rounded-lg shadow-sm overflow-hidden">
               <img
                 src={producto?.imagen?.url}
                 alt={producto?.imagen?.altDescripcion}
@@ -180,12 +180,12 @@ const DetalleScreen: React.FC = () => {
           <div className="w-full lg:w-1/2 h-full max-sm:h-auto flex flex-col justify-between max-sm:justify-start pl-0 lg:pl-5">
             
             {/* Info del producto */}
-            <div className="space-y-6 max-sm:space-y-4 flex-1 max-sm:flex-none max-sm:mt-6">
+            <div className="space-y-6 max-sx:space-y-4 flex-1 max-xs:flex-none">
               <div>
-                <h1 className="text-3xl max-sm:text-2xl font-bold text-gray-800 max-sm:text-center">
+                <h1 className="text-3xl max-xs:text-2xl font-bold text-gray-800 max-sm:text-center">
                   {producto?.nombre.toUpperCase()}
                 </h1>
-                <p className="text-lg max-sm:text-base text-gray-600 mt-2 max-sm:text-center max-sm:px-2">
+                <p className="text-lg max-xs:text-base text-gray-600 mt-2 max-sm:text-center max-sm:px-2">
                   {producto?.descripcion}
                 </p>
               </div>
@@ -199,7 +199,7 @@ const DetalleScreen: React.FC = () => {
                       key={index}
                       onClick={() => setSelectedColor(color.color)}
                       style={{ backgroundColor: getColorHex(color.color) }}
-                      className={`w-12 h-12 max-sm:w-10 max-sm:h-10 rounded-full border-4 transition-all ${
+                      className={`w-12 h-12 max-xs:w-10 max-xs:h-10 rounded-full border-4 transition-all ${
                         selectedColor === color.color
                           ? 'border-gray-600 scale-110 hover:cursor-pointer'
                           : 'border-gray-300 hover:border-gray-400 hover:cursor-pointer'

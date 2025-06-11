@@ -19,6 +19,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
   detalle,
   cantidad,
 }) => {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
   };
 
   const handleAumentarCantidad = () => {
-    if (cantidad < detalle.stock) {
+    if (cantidad < detalle.stock!) {
       dispatch(aumentarCantidad(detalle.id));
     }
   };
@@ -119,7 +120,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
               </span>
               <button
                 onClick={handleAumentarCantidad}
-                disabled={cantidad >= detalle.stock}
+                disabled={cantidad >= detalle.stock!}
                 className="text-white p-2 hover:bg-[#357ABD] hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <FaPlus className="text-xs" />
@@ -148,7 +149,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
                 </div>
               )}
 
-              {detalle.stock <= 3 && (
+              {detalle.stock! <= 3 && (
                 <p className="text-xs text-orange-500 mt-1">
                   ¡Solo quedan {detalle.stock}!
                 </p>

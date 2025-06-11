@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { IOrdenCompra } from "../../types/IOrdenCompra";
 import { ordenesCompraService } from "../../services/ordenesCompraService";
 
-// Thunk para obtener todas las órdenes de compra
 export const fetchOrdenesCompra = createAsyncThunk<
   IOrdenCompra[]
 >(
@@ -29,7 +28,6 @@ const ordenesCompraSlice = createSlice({
   name: "ordenesCompra",
   initialState,
   reducers: {
-    // aquí podrías añadir reducers síncronos si los necesitas
   },
   extraReducers: (builder) => {
     builder

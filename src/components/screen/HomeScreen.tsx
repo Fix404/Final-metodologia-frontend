@@ -35,13 +35,13 @@ export const HomeScreen: React.FC = () => {
   const productosConDescuentoActivo = productos.filter(producto => {
     return producto.descuento &&
       producto.descuento !== null &&
-      producto.activo && // También filtrar por productos activos
+      producto.activo && 
       new Date() >= new Date(producto.descuento.fechaInicio) &&
       new Date() <= new Date(producto.descuento.fechaFin);
   });
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-[#DDA853] pb-10">
+    <div className="bg-gradient-to-r from-blue-500 to-[#DDA853] max-xs:pb-6 pb-2">
 
       {/* Seccion principal */}
       <section className="flex flex-row items-center justify-center text-white pt-16 mb-4  max-sm:pt-0">
@@ -73,7 +73,7 @@ export const HomeScreen: React.FC = () => {
 
       {/* Productos destacados */}
       <section>
-        <h2 className="text-3xl text-neutral-900 font-bold mt-10 mb-4 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS EN PROMOCIÓN</h2>
+        <h2 className="text-3xl text-neutral-900 font-bold mt-10 text-left ml-8 max-xs:text-left max-xs:mb-4 max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS EN PROMOCIÓN</h2>
         {loading && <p className="ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Cargando productos...</p>}
         {error && <p className="ml-8 text-red-500 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Error: {error}</p>}
 

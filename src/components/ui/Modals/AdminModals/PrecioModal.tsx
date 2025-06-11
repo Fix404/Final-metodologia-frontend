@@ -77,7 +77,6 @@ export const PrecioModal = ({
         {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo Precio de Compra */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="precioCompra">
               Precio de Compra <span className="text-red-500">*</span>
@@ -102,8 +101,6 @@ export const PrecioModal = ({
               />
             )}
           </div>
-
-          {/* Campo Precio de Venta */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="precioVenta">
               Precio de Venta <span className="text-red-500">*</span>
@@ -128,8 +125,6 @@ export const PrecioModal = ({
               />
             )}
           </div>
-
-          {/* Campo Estado Activo */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Estado
@@ -156,7 +151,6 @@ export const PrecioModal = ({
             )}
           </div>
 
-          {/* Mostrar ID solo en modo ver o editar */}
           {(openModalSee || activePrecio?.id) && (
             <div>
               <label className="block text-sm font-medium mb-1">
