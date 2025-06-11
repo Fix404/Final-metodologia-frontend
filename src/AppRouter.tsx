@@ -18,6 +18,7 @@ import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaA
 import { PagoScreen } from './components/screen/PagoScreen';
 import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
+import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
 
 
 export const AppRouter = () => {
@@ -26,17 +27,6 @@ export const AppRouter = () => {
   return (
         <Router>
             <Routes>
-                {/*Landing Page sin Footer*/}
-                <Route path="/" element={
-                    <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E]">
-                            <ClienteNavbar />
-                        </div>
-                        <div>
-                            <HomeScreen />
-                        </div>
-                    </div>
-                } />
 
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
@@ -180,6 +170,31 @@ export const AppRouter = () => {
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
                 <TablaAdminCatalogo />
+              </div>
+            </div>
+            : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/admin/productos/inventario"
+          element={
+            rol?.includes("ADMIN") ?
+            <div
+              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
+              style={{ backgroundSize: "385px auto",
+                backgroundPosition: 'center 140px'
+               }}
+            >
+              <div className="w-full bg-[#183B4E]">
+                <AdminNavBar />
+              </div>
+
+              <div>
+                <AdminSubNavBar />
+              </div>
+
+              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
+                <TablaAdminInventario />
               </div>
             </div>
             : <Navigate to="/" replace />

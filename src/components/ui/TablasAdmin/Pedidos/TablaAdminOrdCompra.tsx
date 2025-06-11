@@ -18,47 +18,73 @@ export const TablaAdminOrdCompra = () => {
   }, [activeSubMenu, dispatch]);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="py-3 px-4 text-left font-semibold border-b">ID</th>
-            <th className="py-3 px-4 text-left font-semibold border-b">Fecha</th>
-            <th className="py-3 px-4 text-left font-semibold border-b">Precio total</th>
-            <th className="py-3 px-4 text-left font-semibold border-b">Cantidad de producto</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan={4} className="py-8 px-4 text-center text-gray-500 border-b">
-                Cargando órdenes...
-              </td>
-            </tr>
-          ) : error ? (
-            <tr>
-              <td colSpan={4} className="py-8 px-4 text-center text-red-600 border-b">
-                Error: {error}
-              </td>
-            </tr>
-          ) : ordenes.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="py-8 px-4 text-center text-gray-500 border-b">
-                No hay órdenes de compra para mostrar
-              </td>
-            </tr>
-          ) : (
-            ordenes.map((orden: IOrdenCompra) => (
-              <tr key={orden.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b font-medium">{orden.id}</td>
-                <td className="py-2 px-4 border-b">{orden.fecha}</td>
-                <td className="py-2 px-4 border-b">${orden.precio_total.toLocaleString()}</td>
-                <td className="py-2 px-4 border-b">{orden.producto_cantidad_id.cantidad}</td>
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">ÓRDENES DE COMPRA</h1>
+      </div>
+
+      {/* Table Container */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  ID
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Fecha
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Precio total
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Cantidad de producto
+                </th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                    Cargando órdenes...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-red-600">
+                    Error: {error}
+                  </td>
+                </tr>
+              ) : ordenes.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                    No hay órdenes de compra para mostrar
+                  </td>
+                </tr>
+              ) : (
+                ordenes.map((orden: IOrdenCompra) => (
+                  <tr key={orden.id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {orden.id}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {orden.fecha}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      ${orden.precio_total.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {orden.producto_cantidad_id.cantidad}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

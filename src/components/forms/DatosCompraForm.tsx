@@ -6,7 +6,7 @@ import { IUsuario } from "../../types/IUsuario";
 
 interface DatosCompraFormProps {
   usuario: IUsuario;
-  compraDni: string | null;
+  compraDni: number | null;
 }
 
 export const DatosCompraForm: React.FC<DatosCompraFormProps> = ({
@@ -26,7 +26,7 @@ export const DatosCompraForm: React.FC<DatosCompraFormProps> = ({
 
   const handleGuardarDni = () => {
     if (dniTemporal.trim().length >= 7) {
-      dispatch(setDni(dniTemporal.trim()));
+      dispatch(setDni(Number(dniTemporal.trim())));
       setMostrarFormularioDni(false);
       setDniTemporal("");
     } else {
