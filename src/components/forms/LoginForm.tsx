@@ -147,7 +147,7 @@ export const LoginForm = () => {
         <button
           type="submit"
           disabled={isLoading || !formik.isValid}
-          className={`w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 ${isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
+          className={`w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-[#27548A] hover:bg-[#1e3e66] ${isLoading || !formik.isValid ? 'opacity-70 cursor-not-allowed' : ''
             }`}
         >
           {isLoading ? 'Procesando...' : 'Iniciar Sesión'}

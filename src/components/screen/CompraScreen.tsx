@@ -36,10 +36,7 @@ export const CompraScreen: React.FC = () => {
       if (!usuario?.id) {
         setLoading(false);
         return;
-
-
       }
-
       try {
         const data = await usuariosService.obtenerUsuarioPorId(usuario.id);
         setDatosUsuario(data);
@@ -56,7 +53,7 @@ export const CompraScreen: React.FC = () => {
   if (loading) {
     return <div>Cargando...</div>;
   }
-  console.log("DATOOOOSSSS:", "dni:", datosUsuario?.dni, "nombre:", datosUsuario?.nombre, "apellido:", datosUsuario?.apellido)
+  console.log("DATOS:", "dni:", datosUsuario?.dni, "nombre:", datosUsuario?.nombre, "apellido:", datosUsuario?.apellido)
 
  // COMENTÉ ESTO DE ABAJO PORQUE SI NO, NO RENDERIZA. VER!!!!!!
  
@@ -103,10 +100,28 @@ export const CompraScreen: React.FC = () => {
     return tieneDni && tieneDireccion;
   };
 
-  const handleFinalizarCompra = () => {
-    if (puedeFinalizarCompra()) {
-      navigate("/shop/pagar");
+  const handleFinalizarCompra = async () => {
+    if (!puedeFinalizarCompra()) return;
+
+    if (usuario?.id) {
+      // Construyo el usuario actualizado
+      const updatedUser: IUsuario = {
+        ...usuario,
+        dni: datosUsuario?.dni ?? compraState.dni ?? null,
+        direccion: datosUsuario?.direccion ?? compraState.direccionEnvio ?? null,
+      };
+
+      try {
+        await usuariosService.actualizarUsuario(usuario.id, updatedUser);
+        console.log("Usuario actualizado con DNI y dirección.");
+      } catch (err) {
+        console.error("Error al actualizar usuario:", err);
+        // Opcional: mostrar un mensaje al usuario
+      }
     }
+
+    // Finalmente, voy a la pantalla de pago
+    navigate("/pagar");
   };
 
   if (!usuario) {

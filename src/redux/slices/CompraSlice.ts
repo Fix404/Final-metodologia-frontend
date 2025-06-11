@@ -9,12 +9,12 @@ interface OrdenCompraInput {
   detalles: (IDetalle & { cantidadComprada: number })[];
   total: number;
   metodoPago: 'transferencia' | 'mercadopago';
-  dni?: string;
+  dni?: number | null;
   direccionEnvio: IDireccion;
 }
 
 interface CompraState {
-  dni: string | null;
+  dni: number | null;
   direccionEnvio: IDireccion | null;
   metodoPago: 'transferencia' | 'mercadopago' | null;
   procesando: boolean;
@@ -95,7 +95,7 @@ export const compraSlice = createSlice({
   name: 'compra',
   initialState,
   reducers: {
-    setDni: (state, action: PayloadAction<string>) => {
+    setDni: (state, action: PayloadAction<number>) => {
       state.dni = action.payload;
     },
     

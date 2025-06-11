@@ -27,17 +27,6 @@ export const AppRouter = () => {
   return (
         <Router>
             <Routes>
-                {/*Landing Page sin Footer*/}
-                <Route path="/" element={
-                    <div className="flex flex-col min-h-screen">
-                        <div className="w-full bg-[#183B4E]">
-                            <ClienteNavbar />
-                        </div>
-                        <div>
-                            <HomeScreen />
-                        </div>
-                    </div>
-                } />
 
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
