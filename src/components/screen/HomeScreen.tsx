@@ -1,90 +1,295 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { ProductoDestacadoCard } from "../ui/CardList/ProductoDestacadoCard";
-import { fetchProducto } from "../../redux/slices/productoSlice";
-import styles from "./HomeScreen.module.css";
-import imglustrativa from '../../images/G97977_F_beauty_B2C-removebg-preview.png';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { FaCartPlus } from 'react-icons/fa';
+import { IDetalle } from '../../types/IDetalle';
+import { ITalle } from '../../types/ITalle';
+import { IColor } from '../../types/IColor';
+import { useDispatch, useSelector } from 'react-redux';
+import { agregarAlCarrito } from '../../redux/slices/CarritoSlice';
+import { descontarStock } from '../../redux/slices/detalleProductoSlice';
+import { RootState } from '../../redux/store';
 
-export const HomeScreen: React.FC = () => {
-  const dispatch = useDispatch();
-  const productos = useSelector((state: RootState) => state.producto.productos);
+const fetchDetallesByProductoId = async (productoId: string): Promise<IDetalle[]> => {
+  try {
+    const response = await fetch(`http://localhost:8080/detalle/productos/${productoId}`);
+    if (!response.ok) {
+      throw new Error('Error al obtener los detalles del producto');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching detalles:', error);
+    throw error;
+  }
+};
 
-  const [loading, setLoading] = useState(false);
+const DetalleScreen: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const [detalles, setDetalles] = useState<IDetalle[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedTalle, setSelectedTalle] = useState<string | null>(null);
+
+  const dispatch = useDispatch();
+  const carritoItems = useSelector((state: RootState) => state.carrito.items);
 
   useEffect(() => {
-    const fetchProductos = async () => {
-      setLoading(true);
-      setError(null);
+    const loadDetalles = async () => {
+      if (!id) {
+        setError('ID de producto requerido');
+        setLoading(false);
+        return;
+      }
       try {
-        const response = await axios.get("http://localhost:8080/productos");
-        dispatch(fetchProducto(response.data));
-      } catch (err: any) {
-        setError(err.message || "Error al cargar productos");
+        setLoading(true);
+        setError(null);
+        const detallesData = await fetchDetallesByProductoId(id);
+
+        if (!Array.isArray(detallesData) || detallesData.length === 0) {
+          setError('No se encontraron detalles para este producto');
+          setDetalles([]);
+        } else {
+          setDetalles(detallesData);
+        }
+      } catch (err) {
+        setError('Error al cargar los detalles del producto');
+        console.error('Error loading detalles:', err);
       } finally {
         setLoading(false);
       }
     };
+    loadDetalles();
+  }, [id]);
 
-    fetchProductos();
-  }, [dispatch]);
+  useEffect(() => {
+    if (detalles.length > 0) {
+      const coloresDisponibles = getColoresDisponibles();
+      const tallesDisponibles = getTallesDisponibles();
 
-  const productosConDescuentoActivo = productos.filter(producto => {
-    return producto.descuento &&
-      producto.descuento !== null &&
-      producto.activo && // También filtrar por productos activos
-      new Date() >= new Date(producto.descuento.fechaInicio) &&
-      new Date() <= new Date(producto.descuento.fechaFin);
-  });
+      if (coloresDisponibles.length > 0 && !selectedColor) {
+        setSelectedColor(coloresDisponibles[0].color);
+      }
+      if (tallesDisponibles.length > 0 && !selectedTalle) {
+        setSelectedTalle(tallesDisponibles[0].talle);
+      }
+    }
+  }, [detalles, selectedColor, selectedTalle]);
+
+  const getColoresDisponibles = (): IColor[] => {
+    if (!Array.isArray(detalles) || detalles.length === 0) return [];
+    return Array.from(
+      new Map(detalles.map(d => [d.color.color, d.color])).values()
+    );
+  };
+
+  const getTallesDisponibles = (): ITalle[] => {
+    if (!Array.isArray(detalles) || detalles.length === 0) return [];
+    return Array.from(
+      new Map(detalles.map(d => [d.talle.talle, d.talle])).values()
+    );
+  };
+
+  const getColorHex = (colorName: string): string => {
+    const colorMap: { [key: string]: string } = {
+      'Blanco': '#FFFFFF', 'Negro': '#000000', 'Rojo': '#FF0000',
+      'Azul': '#0000FF', 'Verde': '#008000', 'Rosa': '#FFC0CB',
+      'Gris': '#808080', 'Amarillo': '#FFFF00', 'Naranja': '#FFA500',
+      'Marrón': '#8B4513'
+    };
+    return colorMap[colorName] || '#CCCCCC';
+  };
+
+  const calculateFinalPrice = (detalle: IDetalle): number => {
+    const base = detalle.precio?.precioVenta || 0;
+    const descuento = detalle.producto?.descuento?.porcentaje ?? 0;
+    return Math.round(base * (1 - descuento / 100));
+  };
+
+  const producto = detalles.length > 0 ? detalles[0]?.producto : null;
+  const detalleSeleccionado = Array.isArray(detalles) ? detalles.find(
+    d => d.color.color === selectedColor && d.talle.talle === selectedTalle
+  ) : null;
+  const cantidadEnCarrito = carritoItems.find(
+    item => item.detalle.id === detalleSeleccionado?.id
+  )?.cantidad || 0;
+
+  const handleAgregarAlCarrito = () => {
+    if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
+    if (cantidadEnCarrito >= detalleSeleccionado.stock!) return;
+
+    dispatch(agregarAlCarrito(detalleSeleccionado));
+    dispatch(descontarStock(detalleSeleccionado.id));
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1c4577] mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando detalles del producto...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+        <div className="text-center bg-white p-8 rounded-lg shadow-md">
+          <p className="text-red-600 font-semibold mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#1c4577] text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (detalles.length === 0) {
+    return (
+      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">No se encontró el detalle del producto</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-[#DDA853] pb-10">
-
-      {/* Seccion principal */}
-      <section className="flex flex-row items-center justify-center text-white pt-16 mb-4  max-sm:pt-0">
-        <div className="flex flex-row items-start max-w-screen-lg flex-wrap max-xs:flex-col max-sm:p-8 max-xs:items-center max-sm:flex-row max-sm:justify-between">
-          <div className="max-w-lg max-xs:w-full max-xs:px-4 max-sm:w-2/3 max-sm:px-6">
-            <h1 className="text-5xl font-bold mb-4 w-full max-xs:text-3xl max-sm:text-4xl">
-              ¡ATREVETE A MARCAR LA DIFERENCIA!
-            </h1>
-            <p className="text-3xl mb-8 w-full max-xs:text-[17px] max-sm:text-[20px]">
-              ¡Aprovechá las ofertas exclusivas que tenemos para vos!
-            </p>
-
-            <Link
-              to="/productos"
-              className="bg-white text-blue-700 px-6 py-3 rounded-md font-bold hover:bg-gray-100 hover:cursor-pointer transition-colors max-xs:px-4 max-xs:py-2 max-sm:px-5 max-sm:py-3">
-              ¡Comprar ahora!
-            </Link>
+    <div className="bg-[#fcfcd3] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
+      <div className="max-w-6xl w-full">
+        {/* Contenedor principal*/}
+        <div className="flex flex-col lg:flex-row gap-8 h-[400px] lg:h-[500px]">
+          
+          {/*Imagen*/}
+          <div className="w-full lg:w-1/2 h-full">
+            <div className="w-full h-full rounded-lg shadow-sm overflow-hidden">
+              <img
+                src={producto?.imagen?.url}
+                alt={producto?.imagen?.altDescripcion}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
 
-          <div className="flex justify-center max-xs:mt-4 max-xs:mb-6 max-sm:w-1/3 max-sm:mt-0">
-            <img
-              src={imglustrativa}
-              alt="Zapatilla deportiva"
-              className="max-w-xs md:max-w-sm max-xs:w-11/12 max-sm:w-full"
-            />
+          {/*Info */}
+          <div className="w-full lg:w-1/2 h-full flex flex-col justify-between pl-0 lg:pl-5">
+            
+            {/* Información del producto */}
+            <div className="space-y-6 flex-1">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre.toUpperCase()}</h1>
+                <p className="text-lg text-gray-600 mt-2">{producto?.descripcion}</p>
+              </div>
+
+              {/* Colores */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Color</h3>
+                <div className="flex gap-2">
+                  {getColoresDisponibles().map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(color.color)}
+                      style={{ backgroundColor: getColorHex(color.color) }}
+                      className={`w-12 h-12 rounded-full border-4 transition-all ${
+                        selectedColor === color.color
+                          ? 'border-gray-600 scale-110 hover:cursor-pointer'
+                          : 'border-gray-300 hover:border-gray-400 hover:cursor-pointer'
+                      }`}
+                      title={color.color}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Talles */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Talle</h3>
+                <div className="flex gap-3">
+                  {getTallesDisponibles().map((talle, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedTalle(talle.talle)}
+                      className={`h-11 w-11 px-3 py-1 rounded-md text-lg font-semibold transition-all ${
+                        selectedTalle === talle.talle
+                          ? 'bg-[#1c4577] hover:cursor-pointer text-white'
+                          : 'bg-gray-300 hover:bg-gray-400 hover:cursor-pointer text-gray-700'
+                      }`}
+                    >
+                      {talle.talle}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Info de compra */}
+            <div className="space-y-4 mt-6">
+              <div className="flex justify-between items-center">
+                
+                {/* Stock */}
+                <div className="flex flex-col">
+                  <span className="font-semibold text-xl text-gray-700">
+                    En carrito: {cantidadEnCarrito}
+                  </span>
+                  <span className="font-semibold text-gray-700">
+                    Stock disponible: {detalleSeleccionado?.stock != null
+                      ? detalleSeleccionado.stock - cantidadEnCarrito
+                      : 0}
+                  </span>
+                </div>
+
+                {/* Precio */}
+                {detalleSeleccionado && detalleSeleccionado.stock! > 0 && (
+                  <div className="flex items-center gap-4">
+                    {producto?.descuento?.porcentaje ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500 line-through font-semibold text-xl">
+                          ${detalleSeleccionado.precio?.precioVenta}
+                        </span>
+                        <span className="text-green-600 text-xl font-semibold">
+                          -{producto.descuento.porcentaje}%
+                        </span>
+                        <span className="text-black font-bold text-3xl">
+                          ${calculateFinalPrice(detalleSeleccionado)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-900 font-bold text-2xl">
+                        ${detalleSeleccionado.precio?.precioVenta}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Botón agregar al carrito */}
+              <button
+                onClick={handleAgregarAlCarrito}
+                disabled={
+                  !detalleSeleccionado ||
+                  detalleSeleccionado.stock === 0 ||
+                  cantidadEnCarrito >= detalleSeleccionado.stock!
+                }
+                className={`w-full flex items-center justify-center gap-3 text-white py-4 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${
+                  detalleSeleccionado && detalleSeleccionado.stock! > 0
+                    ? 'bg-[#1c4577] hover:bg-blue-900'
+                    : 'bg-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <FaCartPlus size={18} />
+                Agregar al carrito
+              </button>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* Productos destacados */}
-      <section>
-        <h2 className="text-3xl text-neutral-900 font-bold mt-10 mb-4 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS EN PROMOCIÓN</h2>
-        {loading && <p className="ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Cargando productos...</p>}
-        {error && <p className="ml-8 text-red-500 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Error: {error}</p>}
-
-        <div className={`${styles.scrollContainer}`}>
-          <div className={`${styles.cardsHorizontal}`}>
-            {productosConDescuentoActivo.map(producto => (
-              <ProductoDestacadoCard key={producto.id} producto={producto} />
-            ))}
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };
+
+export default DetalleScreen;

@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
-import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
@@ -20,6 +19,7 @@ import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
 import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
 import { TablaAdminPrecios } from './components/ui/TablasAdmin/Productos/TablaAdminPrecios';
+import HomeScreen from './components/screen/HomeScreen';
 
 
 export const AppRouter = () => {
