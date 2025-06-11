@@ -19,6 +19,8 @@ import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
 import { TablaAdminDetalles } from './components/ui/TablasAdmin/Productos/TablaAdminDetalles';
 import { HomeScreen } from './components/screen/HomeScreen';
+import { EditarUsuarioScreen } from './components/screen/EditarUsuarioScreen';
+import { PasswordScreen } from './components/screen/PasswordScreen';
 
 
 export const AppRouter = () => {
@@ -50,6 +52,8 @@ export const AppRouter = () => {
           <Route path="/productos/:id" element={<DetalleScreen />} />
           <Route path='/comprar' element={<CompraScreen />} />
           <Route path="/pagar" element={<PagoScreen />} />
+          <Route path="/datos-usuario" element={<EditarUsuarioScreen/>} />
+          <Route path="/cambiar-contrasenia" element={<PasswordScreen/>} />
 
         </Route>
 
