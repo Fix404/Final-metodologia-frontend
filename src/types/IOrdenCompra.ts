@@ -5,7 +5,7 @@ import { IUsuario } from "./IUsuario";
 export interface IOrdenCompra {
   activo?: boolean;
   id: number;
-  fecha:String;
+  fecha:string;
   precio_total: number;
   usuario: IUsuario;
   movimiento?: string;
