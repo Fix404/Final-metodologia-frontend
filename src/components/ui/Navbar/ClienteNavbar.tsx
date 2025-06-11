@@ -64,9 +64,7 @@ const ClienteNavbar = () => {
     setMenuAbierto(false);
   };
 
-const handleEditarusuario = () => {
-  navigate('/datos-usuario')
-}
+
 
   const handleLogout = () => {
     Swal.fire({
@@ -184,20 +182,50 @@ const handleEditarusuario = () => {
                 </svg>
               )}
             </svg>
-            {cantidadEnCarrito > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cantidadEnCarrito}
-              </span>
-            )}
-          </Link>
+          </button>
+        </div>
+        </div>
 
-          {/* Info del Usuario */}
-          <div
-          onClick={handleEditarusuario}
-            className="relative hover:text-gray-200 transition-colors cursor-pointer"
-          >
-            <img src='../../../../editarUsuario.png' alt="icono contacto" className="h-6 w-6" />
-          </div>
+        <div className="flex items-center space-x-4">
+          {/* Usuario */}
+          {usuario ? (
+            <div className="relative">
+              <div
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center space-x-2 rounded-full hover:bg-white/10 transition-all duration-200 cursor-pointer group"
+              >
+                <div className="relative hover:text-gray-200 transition-colors cursor-pointer">
+                  <img
+                    src='../../../../editarUsuario.png'
+                    alt="icono contacto"
+                    className="h-6 w-6"
+                  />
+                </div>
+              </div>
+
+              {/* Dropdown de Usuario */}
+              {isOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 z-20 overflow-hidden">
+                    <div className="px-4 py-3 bg-zinc-100 border-b border-gray-300">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-500 flex items-center justify-center hover:brightness-110 cursor-pointer transition-all">
+                          <img
+                            src='../../../../editarUsuario.png'
+                            alt="icono contacto"
+                            className="h-6 w-6 object-contain"
+                          />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {usuario.email?.split('@')[0]}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">{usuario.email}</p>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Menu Items */}
                     <div className="py-2">
