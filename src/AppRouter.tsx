@@ -19,7 +19,7 @@ import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
 import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
 import { TablaAdminPrecios } from './components/ui/TablasAdmin/Productos/TablaAdminPrecios';
-import HomeScreen from './components/screen/HomeScreen';
+import { HomeScreen } from './components/screen/HomeScreen';
 
 
 export const AppRouter = () => {
@@ -28,7 +28,6 @@ export const AppRouter = () => {
   return (
         <Router>
             <Routes>
-
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
           <div className="
