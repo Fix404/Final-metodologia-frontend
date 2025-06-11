@@ -9,5 +9,5 @@ export interface IOrdenCompra {
   precio_total: number;
   usuario: IUsuario;
   movimiento?: string;
-  producto_cantidad_id: IProductoCantidad[];
+  producto_cantidad_id: number[];
 }
