@@ -17,7 +17,7 @@ export const TablaAdminClientes = () => {
   const usuarioActivo=useAppSelector((state) => state.usuario.usuarioActivo);
   const dispatch=useDispatch()
 
-  // Función para cargar usuarios
+  // cargar usuarios
   const cargarUsuarios = async () => {
   try {
     const data = await usuariosService.obtenerUsuariosActivos();
@@ -31,7 +31,6 @@ export const TablaAdminClientes = () => {
   }
 };
 
-  // Función cambiar admin
   const hacerAdmin = async (idUsuario: number, usuario: IUsuario) => {
     try {
       const usuarioActualizado: IUsuario = { ...usuario, rol: "ADMIN" };
@@ -41,7 +40,6 @@ export const TablaAdminClientes = () => {
       );
       console.log(data);
 
-      // Opcional: actualizar el estado local para reflejar el cambio
       setUsuarios((prev) =>
         prev.map((u) => (u.id === idUsuario ? { ...u, rol: "ADMIN" } : u))
       );
@@ -106,7 +104,6 @@ export const TablaAdminClientes = () => {
   return (
     <>
     <div className="p-6">
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">CLIENTES</h1>
         <button
@@ -117,7 +114,6 @@ export const TablaAdminClientes = () => {
         </button>
       </div>
 
-      {/* Table Container */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">

@@ -16,8 +16,21 @@ const initialState: IUsuario = {
   contrasenia: '',
   direccion: null,
   dni: null,
-  rol: '',
+  rol: 'ADMIN',
   activo: true
+};
+
+const initialDireccionState = {
+  id: 0,
+  calle: '',
+  numero: '',
+  codigoPostal: '',
+  localidad: {
+    id: 0,
+    localidad: '',
+    codigo_postal: 0,
+  },
+  provincia: '',
 };
 
 export const UsuarioModal = ({
@@ -26,6 +39,8 @@ export const UsuarioModal = ({
   handleCloseModal,
 }: IModalProps) => {
   const [formValues, setFormValues] = useState<IUsuario>(initialState);
+  const [direccionForm, setDireccionForm] = useState(initialDireccionState);
+  const [mostrarFormularioDireccion, setMostrarFormularioDireccion] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,6 +50,67 @@ export const UsuarioModal = ({
       ...prev,
       [name]: name === 'dni' ? parseInt(value) || null : value,
     }));
+  };
+
+  const handleDireccionChange = (field: string, value: string) => {
+    if (field === 'localidad') {
+      setDireccionForm(prev => ({
+        ...prev,
+        localidad: {
+          ...prev.localidad,
+          localidad: value,
+        }
+      }));
+    } else if (field === 'codigoPostal') {
+      const numericValue = parseInt(value) || 0;
+      setDireccionForm(prev => ({
+        ...prev,
+        codigoPostal: value,
+        localidad: {
+          ...prev.localidad,
+          codigo_postal: numericValue,
+        }
+      }));
+    } else {
+      setDireccionForm(prev => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
+
+  const handleGuardarDireccion = () => {
+    if (
+      direccionForm.calle.trim() &&
+      direccionForm.numero.trim() &&
+      direccionForm.codigoPostal.trim() &&
+      direccionForm.localidad.localidad.trim() &&
+      direccionForm.provincia.trim() &&
+      direccionForm.localidad.codigo_postal > 0
+    ) {
+      setFormValues(prev => ({
+        ...prev,
+        direccion: direccionForm
+      }));
+      setMostrarFormularioDireccion(false);
+    } else {
+      alert('Todos los campos de dirección son obligatorios.');
+    }
+  };
+
+  const handleEliminarDireccion = () => {
+    setFormValues(prev => ({
+      ...prev,
+      direccion: null
+    }));
+    setDireccionForm(initialDireccionState);
+  };
+
+  const handleEditarDireccion = () => {
+    if (formValues.direccion) {
+      setDireccionForm(formValues.direccion);
+    }
+    setMostrarFormularioDireccion(true);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -56,11 +132,153 @@ export const UsuarioModal = ({
     }
   };
 
-
   useEffect(() => {
     setFormValues(activeUser ?? initialState);
+    if (activeUser?.direccion) {
+      setDireccionForm(activeUser.direccion);
+    } else {
+      setDireccionForm(initialDireccionState);
+    }
+    setMostrarFormularioDireccion(false);
     setError(null);
   }, [activeUser]);
+
+  const renderDireccionSection = () => {
+    if (openModalSee) {
+      return (
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Dirección
+          </label>
+          <div className="px-3 py-2 border border-gray-200 bg-gray-100 rounded">
+            {formValues.direccion ? (
+              <div>
+                <p>{formValues.direccion.calle} {formValues.direccion.numero}</p>
+                <p>{formValues.direccion.localidad.localidad}, {formValues.direccion.provincia}</p>
+                {formValues.direccion.codigoPostal && <p>CP: {formValues.direccion.codigoPostal}</p>}
+              </div>
+            ) : (
+              <span>—</span>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Dirección
+        </label>
+        
+        {formValues.direccion && !mostrarFormularioDireccion ? (
+          <div className="border border-gray-300 rounded p-3 bg-gray-50">
+            <div className="mb-2">
+              <p className="text-sm text-gray-700">
+                {formValues.direccion.calle} {formValues.direccion.numero}
+              </p>
+              <p className="text-sm text-gray-700">
+                {formValues.direccion.localidad.localidad}, {formValues.direccion.provincia}
+              </p>
+              {formValues.direccion.codigoPostal && (
+                <p className="text-sm text-gray-700">CP: {formValues.direccion.codigoPostal}</p>
+              )}
+            </div>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={handleEditarDireccion}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                disabled={loading}
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                onClick={handleEliminarDireccion}
+                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                disabled={loading}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ) : mostrarFormularioDireccion ? (
+          <div className="border border-gray-300 rounded p-3 space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                type="text"
+                placeholder="Calle *"
+                value={direccionForm.calle}
+                onChange={(e) => handleDireccionChange('calle', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                disabled={loading}
+              />
+              <input
+                type="text"
+                placeholder="Número *"
+                value={direccionForm.numero}
+                onChange={(e) => handleDireccionChange('numero', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                disabled={loading}
+              />
+              <input
+                type="number"
+                placeholder="Código Postal *"
+                value={direccionForm.codigoPostal}
+                onChange={(e) => handleDireccionChange('codigoPostal', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                disabled={loading}
+              />
+              <input
+                type="text"
+                placeholder="Provincia *"
+                value={direccionForm.provincia}
+                onChange={(e) => handleDireccionChange('provincia', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                disabled={loading}
+              />
+              <input
+                type="text"
+                placeholder="Localidad *"
+                value={direccionForm.localidad.localidad}
+                onChange={(e) => handleDireccionChange('localidad', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring col-span-2"
+                disabled={loading}
+              />
+            </div>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={handleGuardarDireccion}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+                disabled={loading}
+              >
+                Confirmar Dirección
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioDireccion(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-sm"
+                disabled={loading}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setMostrarFormularioDireccion(true)}
+            className="w-full px-3 py-2 border border-gray-300 rounded text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring text-left"
+            disabled={loading}
+          >
+            + Agregar dirección
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -77,8 +295,6 @@ export const UsuarioModal = ({
             { name: 'apellido', label: 'Apellido' },
             { name: 'dni', label: 'DNI' },
             { name: 'email', label: 'Email', type: 'email' },
-            { name: 'direccion', label: 'Direccion'},      
-            { name: 'rol', label: 'Rol' },
           ].map(({ name, label, type = 'text' }) => (
             <div key={name}>
               <label className="block text-sm font-medium mb-1" htmlFor={name}>
@@ -106,6 +322,26 @@ export const UsuarioModal = ({
               )}
             </div>
           ))}
+
+          {renderDireccionSection()}
+
+          {!openModalSee && (
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="contrasenia">
+                Contraseña
+              </label>
+              <input
+                type="password"
+                id="contrasenia"
+                name="contrasenia"
+                value={formValues.contrasenia || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                required={!activeUser?.id}
+                disabled={loading}
+              />
+            </div>
+          )}
 
           <div className="flex justify-end space-x-4 mt-6">
             <button

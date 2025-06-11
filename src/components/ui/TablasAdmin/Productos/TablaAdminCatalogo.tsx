@@ -19,7 +19,6 @@ export const TablaAdminCatalogo = () => {
   const [expandedDescriptions, setExpandedDescriptions] = useState<number[]>([]);
   const productoActivo=useAppSelector((state) => state.producto.productoActivo);
 
-  // Función para cargar productos
   const cargarProductos = async () => {
     try {
       const response = await productoService.obtenerProductosActivos();
@@ -123,7 +122,6 @@ export const TablaAdminCatalogo = () => {
     }
   };
 
-  // Effect para cargar productos cuando se activa el menú
   useEffect(() => {
     if (activeSubMenu === "Catálogo") {
       cargarProductos()
@@ -133,7 +131,6 @@ export const TablaAdminCatalogo = () => {
   return (
     <>
       <div className="p-6">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">PRODUCTOS</h1>
           <button
@@ -143,8 +140,6 @@ export const TablaAdminCatalogo = () => {
             + Crear producto
           </button>
         </div>
-
-        {/* Table Container */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <table className="w-full table-fixed">
             <thead className="bg-gray-50">
