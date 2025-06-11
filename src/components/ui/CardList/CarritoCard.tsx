@@ -73,7 +73,7 @@ export const CarritoCard: React.FC<CarritoCardProps> = ({
         {/* Info principal */}
         <div className="flex-1 min-w-0 flex flex-col justify-between">
 
-          {/* Header: título + eliminar */}
+          {/* Título y eliminar */}
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h3

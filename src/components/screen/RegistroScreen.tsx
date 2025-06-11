@@ -4,7 +4,6 @@ import { RegistroForm } from '../forms/RegistroForm';
 export const RegistroScreen = () => {
   const navigate = useNavigate();
 
-  // Función que se ejecuta cuando el formulario se envía con éxito
   const handleSuccess = () => {
     navigate('/login');
   };

@@ -21,7 +21,7 @@ export const CompraCard: React.FC<CompraCardProps> = ({
 
   return (
     <div className="flex gap-3 py-3 border-b border-gray-100 last:border-b-0">
-      {/* Imagen pequeña */}
+      {/* Imagen */}
       <div className="w-16 h-16 flex-shrink-0">
         <img
           src={detalle.producto.imagen?.url}
@@ -30,7 +30,7 @@ export const CompraCard: React.FC<CompraCardProps> = ({
         />
       </div>
 
-      {/* Información del producto */}
+      {/* Info del producto */}
       <div className="flex-1 min-w-0">
         <h4 className="text-sm font-medium text-gray-800 truncate">
           {detalle.producto.nombre}

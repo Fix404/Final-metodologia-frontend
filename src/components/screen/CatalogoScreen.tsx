@@ -58,10 +58,10 @@ export const CatalogoScreen = () => {
 
     // Filtrado de productos según filtros
     const filteredProducts = productos.filter((producto: IProducto) => {
-        const matchesTipo = tipo ? producto.tipo.toLowerCase() === tipo.toLowerCase() : true;
-        const matchesSexo = sexo ? producto.sexoProducto.toLowerCase() === sexo.toLowerCase() : true;
+        const matchesTipo = tipo ? producto.tipo!.toLowerCase() === tipo.toLowerCase() : true;
+        const matchesSexo = sexo ? producto.sexoProducto!.toLowerCase() === sexo.toLowerCase() : true;
         const matchesCategoria = categoria
-            ? producto.categoria?.id.toString() === categoria
+            ? producto.categoria?.id!.toString() === categoria
             : true;
 
         return matchesTipo && matchesSexo && matchesCategoria;

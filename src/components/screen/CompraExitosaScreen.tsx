@@ -26,13 +26,11 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
     const timeoutId = setTimeout(() => {
       dispatch(vaciarCarrito());
       dispatch(limpiarCompra());
-    }, 2000); // Esperar 2 segundos antes de limpiar para asegurar que se muestren los datos
-
+    }, 2000); 
     return () => clearTimeout(timeoutId);
   }, [dispatch]);
 
   const handleVolverAInicio = () => {
-    // Asegurar limpieza antes de navegar
     dispatch(vaciarCarrito());
     dispatch(limpiarCompra());
     navigate("/");

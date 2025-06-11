@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { CompraCard } from "../ui/CardList/CompraCard";
 import { FaShieldAlt } from "react-icons/fa";
-import { limpiarCompra } from "../../redux/slices/CompraSlice";
 import { IUsuario } from "../../types/IUsuario";
 import { IDireccion} from "../../types/IDireccion";
 import {ILocalidad } from "../../types/ILocalidad";
@@ -16,7 +15,6 @@ import { direccionService } from "../../services/direccionService";
 import { localidadService } from "../../services/localidadService";
 
 export const CompraScreen: React.FC = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [datosUsuario, setDatosUsuario] = useState<IUsuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -91,7 +89,6 @@ export const CompraScreen: React.FC = () => {
       // 1. Verificar si necesitamos crear una nueva dirección
       if (compraState.direccionEnvio) {
         if (compraState.direccionEnvio.id === 0 || !compraState.direccionEnvio.id) {
-          // Es una dirección nueva, necesitamos crear localidad y dirección
           console.log("Procesando nueva dirección...");
           
           let localidadId: number | null = null;
@@ -99,18 +96,15 @@ export const CompraScreen: React.FC = () => {
           // 1.1. Verificar si la localidad existe o crearla
           if (compraState.direccionEnvio.localidad) {
             try {
-              // Intentar buscar la localidad existente
               const localidadesExistentes = await localidadService.buscarLocalidad(
                 compraState.direccionEnvio.localidad.localidad,
                 compraState.direccionEnvio.localidad.codigo_postal
               );
               
               if (localidadesExistentes && localidadesExistentes.length > 0) {
-                // Usar la localidad existente
                 localidadId = localidadesExistentes[0].id;
                 console.log("Usando localidad existente con ID:", localidadId);
               } else {
-                // Crear nueva localidad
                 console.log("Creando nueva localidad...");
                 const nuevaLocalidad: Omit<ILocalidad, 'id'> = {
                   localidad: compraState.direccionEnvio.localidad.localidad,
@@ -123,7 +117,6 @@ export const CompraScreen: React.FC = () => {
               }
             } catch (error) {
               console.error("Error al buscar localidad, creando nueva:", error);
-              // Si falla la búsqueda, crear nueva localidad
               const nuevaLocalidad: Omit<ILocalidad, 'id'> = {
                 localidad: compraState.direccionEnvio.localidad.localidad,
                 codigo_postal: compraState.direccionEnvio.localidad.codigo_postal
@@ -155,11 +148,9 @@ export const CompraScreen: React.FC = () => {
             console.log("Dirección creada con ID:", direccionId);
           }
         } else {
-          // Usar la dirección existente
           direccionId = compraState.direccionEnvio.id;
         }
       } else if (datosUsuario.direccion?.id) {
-        // Usar la dirección existente del usuario
         direccionId = datosUsuario.direccion.id;
       }
 
@@ -181,14 +172,12 @@ export const CompraScreen: React.FC = () => {
       await usuariosService.actualizarUsuario(usuario.id, updatedUser);
       console.log("Usuario actualizado exitosamente");
       
-      // Actualizar el estado local
       setDatosUsuario(prev => prev ? {
         ...prev,
         dni: updatedUser.dni,
         direccion: updatedUser.direccion
       } : null);
       
-      // Navegar al pago
       navigate("/pagar");
       
     } catch (err: any) {
@@ -233,7 +222,7 @@ export const CompraScreen: React.FC = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Columna izquierda - Formularios */}
+          {/*Formularios */}
           <div className="lg:col-span-2 space-y-6">
             {datosUsuario && (
               <DatosCompraForm usuario={datosUsuario} compraDni={compraState.dni} />
@@ -244,7 +233,7 @@ export const CompraScreen: React.FC = () => {
             )}
           </div>
 
-          {/* Columna derecha - Resumen */}
+          {/*Resumen */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
