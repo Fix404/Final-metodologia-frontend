@@ -44,7 +44,8 @@ export const PagoScreen: React.FC = () => {
 
   const total = calcularTotal(items);
 
-  if (pagoCompletado && compraState.ordenGenerada) {
+
+  if (compraState.ordenGenerada) {
     return (
       <CompraExitosa
         ordenCompra={compraState.ordenGenerada}

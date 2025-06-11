@@ -40,7 +40,6 @@ export const TablaAdminPrecios = () => {
   
   const dispatch = useDispatch();
 
-  // Funciones de carga de datos
   const cargarProductos = async () => {
     try {
       const response = await productoService.obtenerProductos();
@@ -86,7 +85,6 @@ export const TablaAdminPrecios = () => {
     }
   };
 
-  // Funciones de modal - Categorías
   const handleOpenModalVerCategoria = (categoria: ICategoria) => {
     setOpenModalSee(true);
     dispatch(setCategoriaActivo(categoria));
@@ -108,7 +106,6 @@ export const TablaAdminPrecios = () => {
     setOpenModal(true);
   };
 
-  // Funciones de modal - Colores
   const handleOpenModalVerColor = (color: IColor) => {
     setOpenModalSee(true);
     dispatch(setColorActivo(color));
@@ -130,7 +127,6 @@ export const TablaAdminPrecios = () => {
     setOpenModal(true);
   };
 
-  // Funciones de modal - Precios
   const handleOpenModalVerPrecio = (precio: IPrecio) => {
     setOpenModalSee(true);
     dispatch(setPrecioActivo(precio));
@@ -158,7 +154,7 @@ export const TablaAdminPrecios = () => {
     dispatch(limpiarPrecioActivo());
     setOpenModal(false);
     setActiveModalType(null);
-    // Recargar datos según el tipo de modal que se cerró
+
     switch (activeModalType) {
       case 'categoria':
         cargarCategorias();
@@ -172,7 +168,6 @@ export const TablaAdminPrecios = () => {
     }
   };
 
-  // Funciones de eliminación
   const handleEliminarCategoria = async (id: number) => {
     if (window.confirm('¿Está seguro de que desea eliminar esta categoría?')) {
       try {
@@ -206,12 +201,10 @@ export const TablaAdminPrecios = () => {
     }
   };
 
-  // Función para obtener los detalles de un producto específico
   const obtenerDetallesProducto = (productoId: number) => {
     return detalles.filter(detalle => detalle.producto?.id === productoId);
   };
 
-  // Crear filas de la tabla combinando productos con sus detalles
   const crearFilasTabla = () => {
     const filas: any[] = [];
     
@@ -264,12 +257,10 @@ export const TablaAdminPrecios = () => {
   return (
     <>
       <div className="p-6">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">GESTIÓN DE PRECIOS</h1>
         </div>
 
-        {/* Tabs */}
         <div className="mb-6">
           <nav className="flex space-x-8" aria-label="Tabs">
             {[
@@ -292,8 +283,6 @@ export const TablaAdminPrecios = () => {
             ))}
           </nav>
         </div>
-
-        {/* Tabla de Productos */}
         {activeTab === 'productos' && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
@@ -336,8 +325,6 @@ export const TablaAdminPrecios = () => {
             </div>
           </div>
         )}
-
-        {/* Tabla de Categorías */}
         {activeTab === 'categorias' && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-4 border-b border-gray-200">
@@ -403,8 +390,6 @@ export const TablaAdminPrecios = () => {
             </div>
           </div>
         )}
-
-        {/* Tabla de Colores */}
         {activeTab === 'colores' && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-4 border-b border-gray-200">
@@ -470,8 +455,6 @@ export const TablaAdminPrecios = () => {
             </div>
           </div>
         )}
-
-        {/* Tabla de Precios */}
         {activeTab === 'precios' && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-4 border-b border-gray-200">
@@ -540,8 +523,6 @@ export const TablaAdminPrecios = () => {
           </div>
         )}
       </div>
-
-      {/* Modales */}
       {openModal && activeModalType === 'categoria' && (
         <CategoriaModal 
           activeCategoria={categoriaActiva} 

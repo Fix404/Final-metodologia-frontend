@@ -73,7 +73,6 @@ export const ColorModal = ({
         {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo Color */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="color">
               Color <span className="text-red-500">*</span>
@@ -101,7 +100,6 @@ export const ColorModal = ({
                   disabled={loading}
                   placeholder="Ingrese el color (ej: #FF0000 o rojo)"
                 />
-                {/* Selector de color adicional */}
                 <div className="flex items-center space-x-2">
                   <input
                     type="color"
@@ -116,7 +114,6 @@ export const ColorModal = ({
             )}
           </div>
 
-          {/* Campo Estado Activo */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Estado
@@ -143,7 +140,6 @@ export const ColorModal = ({
             )}
           </div>
 
-          {/* Mostrar ID solo en modo ver o editar */}
           {(openModalSee || activeColor?.id) && (
             <div>
               <label className="block text-sm font-medium mb-1">

@@ -73,7 +73,6 @@ export const CategoriaModal = ({
         {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo Nombre */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="nombre">
               Nombre <span className="text-red-500">*</span>
@@ -96,8 +95,6 @@ export const CategoriaModal = ({
               />
             )}
           </div>
-
-          {/* Mostrar ID solo en modo ver o editar */}
           {(openModalSee || activeCategoria?.id) && (
             <div>
               <label className="block text-sm font-medium mb-1">

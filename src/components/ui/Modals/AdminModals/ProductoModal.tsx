@@ -8,7 +8,7 @@ import { categoriaService } from "../../../../services/categoriaService";
 import { descuentoService } from "../../../../services/descuentoService";
 import { imagenService } from "../../../../services/imagenService";
 
-// Interfaces para las opciones
+// Interfaces 
 
 interface IModalProps {
   activeProduct: IProducto | null;
@@ -39,17 +39,14 @@ export const ProductoModal = ({
   const tiposProducto = ['CALZADO', 'ROPA'];
   const sexosProducto = ['MUJER', 'HOMBRE', 'UNISEX'];
   
-  // Estados para las opciones de los dropdowns
   const [categorias, setCategorias] = useState<ICategoria[]>([]);
   const [descuentos, setDescuentos] = useState<IDescuento[]>([]);
   const [imagenes, setImagenes] = useState<IImagen[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(false);
 
-  // Función para cargar las opciones desde el backend
   const cargarOpciones = async () => {
     setLoadingOptions(true);
     try {
-      // Reemplaza estos servicios con los reales de tu aplicación
       
          const categoriasRes=await categoriaService.obtenerCategoriasActivos()
          const descuentosRes=await descuentoService.obtenerDescuentosActivos() 
@@ -127,7 +124,6 @@ export const ProductoModal = ({
         {loadingOptions && <p className="text-blue-500 mb-4 text-sm text-center">Cargando opciones...</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campos de texto */}
           {[
             { name: 'nombre', label: 'Nombre', type: "text", required: true },
             { name: 'descripcion', label: 'Descripción', type: "text", required: false },
@@ -154,8 +150,6 @@ export const ProductoModal = ({
               )}
             </div>
           ))}
-
-          {/* Dropdown Tipo */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="tipo">
               Tipo <span className="text-red-500">*</span>
@@ -184,7 +178,6 @@ export const ProductoModal = ({
             )}
           </div>
 
-          {/* Dropdown Sexo */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="sexoProducto">
               Sexo <span className="text-red-500">*</span>
@@ -212,8 +205,6 @@ export const ProductoModal = ({
               </select>
             )}
           </div>
-
-          {/* Dropdown Categoría */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="categoria">
               Categoría <span className="text-red-500">*</span>
@@ -242,7 +233,6 @@ export const ProductoModal = ({
             )}
           </div>
 
-          {/* Dropdown Descuento */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="descuento">
               Descuento
@@ -270,7 +260,6 @@ export const ProductoModal = ({
             )}
           </div>
 
-          {/* Dropdown Imagen */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="imagen">
               Imagen
