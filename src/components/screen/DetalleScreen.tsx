@@ -160,14 +160,14 @@ const DetalleScreen: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#fcfcd3] min-h-screen py-8 px-4 flex flex-col items-center justify-start">
-      <div className="max-w-6xl w-full">
+    <div className="bg-[#fcfcd3] min-h-screen py-8 max-sm:py-4 px-4 flex flex-col items-center justify-start">
+      <div className="max-w-6xl w-full max-sm:pb-20">
         {/* Contenedor principal */}
-        <div className="flex flex-col lg:flex-row gap-8 h-[400px] lg:h-[500px]">
+        <div className="flex flex-col lg:flex-row gap-8 max-sm:gap-6 h-[400px] lg:h-[500px] max-sm:h-auto">
           
           {/* Imagen */}
-          <div className="w-full lg:w-1/2 h-full">
-            <div className="w-full h-full rounded-lg shadow-sm overflow-hidden">
+          <div className="w-full lg:w-1/2 h-full max-sm:h-auto">
+            <div className="w-full h-full max-sm:aspect-square max-sm:max-w-sm max-sm:mx-auto rounded-lg shadow-sm overflow-hidden">
               <img
                 src={producto?.imagen?.url}
                 alt={producto?.imagen?.altDescripcion}
@@ -177,25 +177,29 @@ const DetalleScreen: React.FC = () => {
           </div>
 
           {/*Info */}
-          <div className="w-full lg:w-1/2 h-full flex flex-col justify-between pl-0 lg:pl-5">
+          <div className="w-full lg:w-1/2 h-full max-sm:h-auto flex flex-col justify-between max-sm:justify-start pl-0 lg:pl-5">
             
             {/* Info del producto */}
-            <div className="space-y-6 flex-1">
+            <div className="space-y-6 max-sm:space-y-4 flex-1 max-sm:flex-none max-sm:mt-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">{producto?.nombre.toUpperCase()}</h1>
-                <p className="text-lg text-gray-600 mt-2">{producto?.descripcion}</p>
+                <h1 className="text-3xl max-sm:text-2xl font-bold text-gray-800 max-sm:text-center">
+                  {producto?.nombre.toUpperCase()}
+                </h1>
+                <p className="text-lg max-sm:text-base text-gray-600 mt-2 max-sm:text-center max-sm:px-2">
+                  {producto?.descripcion}
+                </p>
               </div>
 
               {/* Colores */}
-              <div>
+              <div className="max-sm:text-center">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">Color</h3>
-                <div className="flex gap-2">
+                <div className="flex gap-2 max-sm:justify-center max-sm:flex-wrap">
                   {getColoresDisponibles().map((color, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedColor(color.color)}
                       style={{ backgroundColor: getColorHex(color.color) }}
-                      className={`w-12 h-12 rounded-full border-4 transition-all ${
+                      className={`w-12 h-12 max-sm:w-10 max-sm:h-10 rounded-full border-4 transition-all ${
                         selectedColor === color.color
                           ? 'border-gray-600 scale-110 hover:cursor-pointer'
                           : 'border-gray-300 hover:border-gray-400 hover:cursor-pointer'
@@ -207,14 +211,14 @@ const DetalleScreen: React.FC = () => {
               </div>
 
               {/* Talles */}
-              <div>
+              <div className="max-sm:text-center">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">Talle</h3>
-                <div className="flex gap-3">
+                <div className="flex gap-3 max-sm:justify-center max-sm:flex-wrap max-sm:gap-2">
                   {getTallesDisponibles().map((talle, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedTalle(talle.talle)}
-                      className={`h-11 w-11 px-3 py-1 rounded-md text-lg font-semibold transition-all ${
+                      className={`h-11 w-11 max-sm:h-10 max-sm:w-10 px-3 py-1 rounded-md text-lg max-sm:text-base font-semibold transition-all ${
                         selectedTalle === talle.talle
                           ? 'bg-[#1c4577] hover:cursor-pointer text-white'
                           : 'bg-gray-300 hover:bg-gray-400 hover:cursor-pointer text-gray-700'
@@ -228,15 +232,15 @@ const DetalleScreen: React.FC = () => {
             </div>
 
             {/* Información de compra */}
-            <div className="space-y-4 mt-6">
-              <div className="flex justify-between items-center">
+            <div className="space-y-4 mt-6 max-sm:mt-8 max-sm:space-y-6">
+              <div className="flex justify-between items-center max-sm:flex-col max-sm:items-center max-sm:gap-4 max-sm:text-center">
                 
                 {/* Stock */}
-                <div className="flex flex-col">
-                  <span className="font-semibold text-xl text-gray-700">
+                <div className="flex flex-col max-sm:items-center">
+                  <span className="font-semibold text-xl max-sm:text-lg text-gray-700">
                     En carrito: {cantidadEnCarrito}
                   </span>
-                  <span className="font-semibold text-gray-700">
+                  <span className="font-semibold max-sm:text-base text-gray-700">
                     Stock disponible: {detalleSeleccionado?.stock != null
                       ? detalleSeleccionado.stock - cantidadEnCarrito
                       : 0}
@@ -245,21 +249,21 @@ const DetalleScreen: React.FC = () => {
 
                 {/* Precio */}
                 {detalleSeleccionado && detalleSeleccionado.stock! > 0 && (
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 max-sm:flex-col max-sm:gap-2">
                     {producto?.descuento?.porcentaje ? (
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-500 line-through font-semibold text-xl">
+                      <div className="flex items-center gap-2 max-sm:flex-row max-sm:gap-1">
+                        <span className="text-gray-500 line-through font-semibold text-xl max-sm:text-lg">
                           ${detalleSeleccionado.precio?.precioVenta}
                         </span>
-                        <span className="text-green-600 text-xl font-semibold">
+                        <span className="text-green-600 text-xl max-sm:text-lg font-semibold">
                           -{producto.descuento.porcentaje}%
                         </span>
-                        <span className="text-black font-bold text-3xl">
+                        <span className="text-black font-bold text-3xl max-sm:text-2xl">
                           ${calculateFinalPrice(detalleSeleccionado)}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-gray-900 font-bold text-2xl">
+                      <span className="text-gray-900 font-bold text-2xl max-sm:text-xl">
                         ${detalleSeleccionado.precio?.precioVenta}
                       </span>
                     )}
@@ -275,7 +279,7 @@ const DetalleScreen: React.FC = () => {
                   detalleSeleccionado.stock === 0 ||
                   cantidadEnCarrito >= detalleSeleccionado.stock!
                 }
-                className={`w-full flex items-center justify-center gap-3 text-white py-4 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${
+                className={`w-full max-sm:max-w-sm max-sm:mx-auto flex items-center justify-center gap-3 text-white py-4 px-4 max-sm:py-3 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${
                   detalleSeleccionado && detalleSeleccionado.stock! > 0
                     ? 'bg-[#1c4577] hover:bg-blue-900'
                     : 'bg-gray-400 cursor-not-allowed'
