@@ -3,9 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   usuario: {
-    id:number,
+    id: number;
+    nombre: "", 
+  apellido: null,
     email: string;
-  } | null;
+    } | null;
   rol: string[] | null;
 }
 

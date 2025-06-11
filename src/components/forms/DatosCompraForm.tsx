@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { setDni } from "../../redux/slices/CompraSlice";
 import { IUsuario } from "../../types/IUsuario";
 
+
 interface DatosCompraFormProps {
   usuario: IUsuario;
   compraDni: number | null;
@@ -16,6 +17,8 @@ export const DatosCompraForm: React.FC<DatosCompraFormProps> = ({
   const dispatch = useDispatch();
   const [dniTemporal, setDniTemporal] = useState("");
   const [mostrarFormularioDni, setMostrarFormularioDni] = useState(false);
+
+
 
   useEffect(() => {
     // Verificar si no tiene DNI para mostrar el formulario
@@ -33,6 +36,7 @@ export const DatosCompraForm: React.FC<DatosCompraFormProps> = ({
       alert("El DNI debe tener al menos 7 dígitos.");
     }
   };
+
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">

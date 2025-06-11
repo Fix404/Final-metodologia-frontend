@@ -111,6 +111,11 @@ export const compraSlice = createSlice({
       state.pasoActual = action.payload;
     },
     
+    // NUEVA ACCIÓN: Establecer orden generada
+    establecerOrdenGenerada: (state, action: PayloadAction<IOrdenCompra>) => {
+      state.ordenGenerada = action.payload;
+    },
+    
     limpiarCompra: (state) => {
       state.dni = null;
       state.direccionEnvio = null;
@@ -162,6 +167,7 @@ export const {
   setDireccionEnvio,
   setMetodoPago,
   setPasoActual,
+  establecerOrdenGenerada, // EXPORTAR LA NUEVA ACCIÓN
   limpiarCompra,
   limpiarError,
 } = compraSlice.actions;

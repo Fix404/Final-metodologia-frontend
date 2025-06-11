@@ -1,6 +1,7 @@
 import { IDetalle } from "./IDetalle";
 
 export interface IProductoCantidad {
-    detalle: IDetalle;
+    id: number;
+    detalle_id: IDetalle;
     cantidad: number;
 }
