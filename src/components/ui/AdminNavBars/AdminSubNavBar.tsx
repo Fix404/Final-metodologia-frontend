@@ -14,8 +14,7 @@ export const AdminSubNavBar = () => {
     ],
     PRODUCTOS: [
       "Catálogo",
-      "Inventario", 
-      "Precios",
+      "Detalles de productos",
     ],
     PEDIDOS: [
       "Órdenes de compra",

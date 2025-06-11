@@ -3,10 +3,12 @@ import { IDetalle } from '../../types/IDetalle';
 
 interface DetalleProductoState {
   detalles: IDetalle[];
+  detalleActivo: IDetalle | null;
 }
 
 const initialState: DetalleProductoState = {
   detalles: [],
+  detalleActivo: null
 };
 
 const detalleProductoSlice = createSlice({
@@ -35,6 +37,15 @@ const detalleProductoSlice = createSlice({
         detalle.stock!++;
       }
     },
+    setDetalleActivo:(state, action: PayloadAction<IDetalle>) => {
+              state.detalleActivo = action.payload;
+            },
+    limpiarDetalleActivo: (state) => {
+          state.detalleActivo = null;
+        },
+        setDetalles: (state, action: PayloadAction<IDetalle[]>) => {
+                      state.detalles = action.payload;
+                    },
   },
 });
 
@@ -44,6 +55,9 @@ export const {
   clearDetalles,
   descontarStock,
   restaurarStock,
+  setDetalleActivo,
+  limpiarDetalleActivo,
+  setDetalles
 } = detalleProductoSlice.actions;
 
 export default detalleProductoSlice.reducer;

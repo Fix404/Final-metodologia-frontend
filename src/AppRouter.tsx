@@ -17,8 +17,7 @@ import { TablaAdminEmpleados } from './components/ui/TablasAdmin/Usuarios/TablaA
 import { PagoScreen } from './components/screen/PagoScreen';
 import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
-import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
-import { TablaAdminPrecios } from './components/ui/TablasAdmin/Productos/TablaAdminPrecios';
+import { TablaAdminDetalles } from './components/ui/TablasAdmin/Productos/TablaAdminDetalles';
 import { HomeScreen } from './components/screen/HomeScreen';
 
 
@@ -151,7 +150,7 @@ export const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/productos/precios"
+          path="/admin/productos/detalles-de-productos"
           element={
             rol?.includes("ADMIN") ?
             <div
@@ -169,32 +168,7 @@ export const AppRouter = () => {
               </div>
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminPrecios />
-              </div>
-            </div>
-            : <Navigate to="/" replace />
-          }
-        />
-        <Route
-          path="/admin/productos/inventario"
-          element={
-            rol?.includes("ADMIN") ?
-            <div
-              className="flex flex-col min-h-screen bg-[url('/logoDesaturado.png')] bg-no-repeat bg-center"
-              style={{ backgroundSize: "385px auto",
-                backgroundPosition: 'center 140px'
-               }}
-            >
-              <div className="w-full bg-[#183B4E]">
-                <AdminNavBar />
-              </div>
-
-              <div>
-                <AdminSubNavBar />
-              </div>
-
-              <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminInventario />
+                <TablaAdminDetalles />
               </div>
             </div>
             : <Navigate to="/" replace />
