@@ -63,7 +63,9 @@ const ClienteNavbar = () => {
     setMenuAbierto(false);
   };
 
-
+const handleEditarusuario = () => {
+  navigate('/datos-usuario')
+}
 
   const handleLogout = () => {
     Swal.fire({
@@ -178,8 +180,9 @@ const ClienteNavbar = () => {
             )}
           </Link>
 
-          {/* Usuario */}
+          {/* Info del Usuario */}
           <div
+          onClick={handleEditarusuario}
             className="relative hover:text-gray-200 transition-colors cursor-pointer"
           >
             <img src='../../../../editarUsuario.png' alt="icono contacto" className="h-6 w-6" />
