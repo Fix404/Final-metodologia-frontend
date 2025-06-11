@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AdminScreen } from './components/screen/AdminScreen';
 import { AdminNavBar } from './components/ui/AdminNavBars/AdminNavBar';
 import { AdminSubNavBar } from './components/ui/AdminNavBars/AdminSubNavBar';
-import { HomeScreen } from './components/screen/HomeScreen';
 import { MainLayout } from './layouts/MainLayout';
 import { RegistroScreen } from './components/screen/RegistroScreen';
 import { CatalogoScreen } from './components/screen/CatalogoScreen';
@@ -19,6 +18,8 @@ import { PagoScreen } from './components/screen/PagoScreen';
 import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
 import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
+import { TablaAdminPrecios } from './components/ui/TablasAdmin/Productos/TablaAdminPrecios';
+import { HomeScreen } from './components/screen/HomeScreen';
 
 
 export const AppRouter = () => {
@@ -27,7 +28,6 @@ export const AppRouter = () => {
   return (
         <Router>
             <Routes>
-
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
           <div className="
@@ -169,7 +169,7 @@ export const AppRouter = () => {
               </div>
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminCatalogo />
+                <TablaAdminPrecios />
               </div>
             </div>
             : <Navigate to="/" replace />

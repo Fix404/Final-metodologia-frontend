@@ -8,6 +8,9 @@ import productoReducer from './slices/productoSlice';
 import usuarioReducer from './slices/usuarioSlice'
 import authReducer from './slices/authSlice'
 import ordenesCompraReducer from "./slices/ordenesCompraSlice";
+import colorReducer from "./slices/colorSlice"
+import categoriaReducer from "./slices/categoriaSlice"
+import precioReducer from "./slices/precioSlice"
 
 
 const store = configureStore({
@@ -21,6 +24,9 @@ const store = configureStore({
         busqueda: busquedaReducer,
         usuario: usuarioReducer,
         ordenesCompra: ordenesCompraReducer,
+        color:colorReducer,
+        categoria:categoriaReducer,
+        precio:precioReducer
     },
 });
 
