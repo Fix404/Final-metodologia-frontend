@@ -4,17 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/axiosConfig';
 import { PasswordForm } from '../forms/passwordForm';
 import { useAppSelector } from '../../hooks/redux';
+import { useDispatch } from 'react-redux';
+import { setUsuario } from '../../redux/slices/authSlice';
 
 interface CambioContraseniaFormData {
-  contraseniaActual: string;
-  contraseniaNueva: string;
-  confirmarContrasenia: string;
+    contraseniaActual: string;
+    contraseniaNueva: string;
+    confirmarContrasenia: string;
 }
 
 export const PasswordScreen = () => {
     const [serverError, setServerError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const usuario = useAppSelector(state => state.auth.usuario);
 
     const handleSuccess = () => {
@@ -37,7 +40,14 @@ export const PasswordScreen = () => {
                 contraseniaActual: formData.contraseniaActual,
                 contraseniaNueva: formData.contraseniaNueva,
             };
-            const response = await api.put(`/${usuario?.id}/cambiar-contrasenia`, data);
+            const response = await api.put(`/usuarios/${usuario?.id}/cambiar-contrasenia`, data);
+
+            const { token, usuario:usuarioActualizado } = response.data;
+
+            // Guardar el nuevo token en localStorage
+            localStorage.setItem('authToken', token);
+
+             dispatch(setUsuario(usuarioActualizado));
             handleSuccess();
             return response.data;
 
