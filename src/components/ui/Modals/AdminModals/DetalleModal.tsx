@@ -20,7 +20,7 @@ interface IModalProps {
 }
 
 const initialState: IDetalle = {
-  id: null,
+  id: 0,
   talle: null,
   color: null,
   precio: null,
@@ -96,19 +96,25 @@ export const DetalleModal = ({
     setError(null);
 
     try {
-      // Preparar los datos para enviar - solo IDs de las entidades relacionadas
-      const dataToSend = {
-        ...formValues,
+      // Preparar los datos para enviar
+      const dataToSend: any = {
+        stock: formValues.stock,
+        estado: formValues.estado,
         talleId: formValues.talle?.id,
         colorId: formValues.color?.id,
         precioId: formValues.precio?.id,
-        productoId: formValues.producto?.id,
-        // Remover las entidades completas para evitar problemas de serialización
-        talle: undefined,
-        color: undefined,
-        precio: undefined,
-        producto: undefined
+        productoId: formValues.producto?.id
       };
+
+      // Solo incluir ID y version si estamos editando
+      if (activeDetalle?.id) {
+        dataToSend.id = activeDetalle.id;
+        // Incluir version si existe en la entidad para manejo de optimistic locking
+        if (activeDetalle.version !== undefined) {
+          dataToSend.version = activeDetalle.version;
+        }
+      }
+      // Para crear: NO incluir id (debe ser null o undefined)
 
       console.log('Enviando datos:', dataToSend);
       

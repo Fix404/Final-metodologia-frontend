@@ -14,14 +14,15 @@ import { productoService } from "../../../../services/productoService";
 import { colorService } from "../../../../services/colorService";
 import { categoriaService } from "../../../../services/categoriaService";
 import { detalleService } from "../../../../services/detalleService";
-import { fetchDetalles } from "../../../../redux/slices/detalleProductoSlice";
+import { fetchDetalles, limpiarDetalleActivo, setDetalleActivo } from "../../../../redux/slices/detalleProductoSlice";
 import { CategoriaModal } from "../../Modals/AdminModals/CategoriaModal";
 import { ColorModal } from "../../Modals/AdminModals/ColorModal";
 import { PrecioModal } from "../../Modals/AdminModals/PrecioModal";
 import { precioService } from "../../../../services/precioService";
 import { fetchPrecio, limpiarPrecioActivo, setPrecioActivo } from "../../../../redux/slices/precioSlice";
+import { DetalleModal } from "../../Modals/AdminModals/DetalleModal";
 
-type ModalType = 'categoria' | 'color' | 'precio' | null;
+type ModalType = 'categoria' | 'color' | 'precio' | 'detalle'| null;
 
 export const TablaAdminDetalles = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
@@ -33,11 +34,12 @@ export const TablaAdminDetalles = () => {
   const categoriaActiva = useSelector((state: RootState) => state.categoria.categoriaActivo);
   const colorActivo = useSelector((state: RootState) => state.color.colorActivo);
   const precioActivo = useSelector((state: RootState) => state.precio.precioActivo);
+  const detalleActivo=useSelector((state: RootState) => state.detalleProducto.detalleActivo);
   
   const [openModal, setOpenModal] = useState(false);
   const [openModalSee, setOpenModalSee] = useState(false);
   const [activeModalType, setActiveModalType] = useState<ModalType>(null);
-  const [activeTab, setActiveTab] = useState<'detalles' | 'categorias' | 'colores' | 'precios'>('detalles');
+  const [activeTab, setActiveTab] = useState<'detalle' | 'categorias' | 'colores' | 'precios'>('detalle');
   const [expandedProducts, setExpandedProducts] = useState<Set<number>>(new Set());
   
   const dispatch = useDispatch();
@@ -85,6 +87,13 @@ export const TablaAdminDetalles = () => {
     } catch (error) {
       console.error("Error al obtener los detalles", error);
     }
+  };
+
+  const handleOpenModalCrearDetalle = () => {
+    dispatch(limpiarDetalleActivo());
+    setOpenModalSee(false);
+    setActiveModalType('detalle');
+    setOpenModal(true);
   };
 
   const handleOpenModalVerCategoria = (categoria: ICategoria) => {
@@ -242,6 +251,12 @@ export const TablaAdminDetalles = () => {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Detalles de productos</h1>
+          <button
+            onClick={() => handleOpenModalCrearDetalle()}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
+          >
+            + Crear Detalle
+          </button>
         </div>
         <div className="mb-6">
           <nav className="flex space-x-8" aria-label="Tabs">
@@ -597,6 +612,13 @@ export const TablaAdminDetalles = () => {
           </div>
         )}
       </div>
+      {openModal && activeModalType === 'detalle' && (
+        <DetalleModal 
+          activeDetalle={detalleActivo} 
+          openModalSee={openModalSee} 
+          handleCloseModal={handleCloseModal} 
+        />
+      )}
       {openModal && activeModalType === 'categoria' && (
         <CategoriaModal 
           activeCategoria={categoriaActiva} 
