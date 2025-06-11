@@ -1,26 +1,32 @@
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import logoEmpresa from '../../../images/logo.png';
+
 import {
   setTexto,
   setResultados,
   limpiarBusqueda,
 } from '../../../redux/slices/busquedaSlice';
 import { useAppSelector } from '../../../hooks/redux';
+import Swal from 'sweetalert2';
+import { logout } from '../../../redux/slices/authSlice';
 
 
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const rolUsuario = useAppSelector((state) => state.auth.rol);
   const productos = useSelector((state: RootState) => state.producto.productos);
-  const cantidadEnCarrito = useSelector((state: RootState) => state.carrito!.items.length);
+  const cantidadEnCarrito = useSelector((state: RootState) => state.carrito.items.length);
   const query = useSelector((state: RootState) => state.busqueda.texto);
   const resultados = useSelector((state: RootState) => state.busqueda.resultados);
   const containerRef = useRef<HTMLDivElement>(null);
+  const usuario = useAppSelector(state => state.auth.usuario);
 
+  const containerRefMobile = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const texto = e.target.value;
@@ -41,7 +47,9 @@ const ClienteNavbar = () => {
     function handleClickOutside(event: MouseEvent) {
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        !containerRef.current.contains(event.target as Node) &&
+        containerRefMobile.current &&
+        !containerRefMobile.current.contains(event.target as Node)
       ) {
         dispatch(limpiarBusqueda());
       }
@@ -53,6 +61,31 @@ const ClienteNavbar = () => {
 
   const cerrarMenuMovil = () => {
     setMenuAbierto(false);
+  };
+
+
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: 'Estás a punto de salir de tu cuenta',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Quedarme',
+      confirmButtonText: 'Salir',
+      customClass: {
+        confirmButton: 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600',
+        cancelButton: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        navigate('/login');
+      } else {
+        navigate('/');
+      }
+    });
   };
 
   return (
@@ -143,8 +176,14 @@ const ClienteNavbar = () => {
               </span>
             )}
           </Link>
-        </div>
 
+          {/* Logout */}
+          {usuario && (
+            <div onClick={handleLogout} className="relative hover:text-gray-200 transition-colors">
+              <img src='../../../../logout.svg' alt="icono contacto" className="h-6 w-6" />
+            </div>
+          )}
+        </div>
         <div className="flex max-mm:hidden items-center space-x-4">
 
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
@@ -174,12 +213,16 @@ const ClienteNavbar = () => {
         </div>
       </div>
 
-      {menuAbierto && (
-        <div className="max-mm:hidden mt-4 pb-4 border-t border-white/20">
-
-          <div className="mb-4 px-2" ref={containerRef}>
-            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
-              }`}>
+      <div className={`max-mm:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+        menuAbierto 
+          ? 'max-h-96 opacity-100 transform translate-y-0' 
+          : 'max-h-0 opacity-0 transform -translate-y-2'
+      }`}>
+        <div className="mt-4 pb-4 border-t border-white/20">
+          <div className="mb-4 px-2" ref={containerRefMobile}>
+            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${
+              resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
+            }`}>
               <input
                 type="text"
                 placeholder="Buscar productos..."
@@ -267,7 +310,7 @@ const ClienteNavbar = () => {
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

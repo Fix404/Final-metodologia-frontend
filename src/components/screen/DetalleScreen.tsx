@@ -120,7 +120,7 @@ const DetalleScreen: React.FC = () => {
 
   const handleAgregarAlCarrito = () => {
     if (!detalleSeleccionado || detalleSeleccionado.stock === 0) return;
-    if (cantidadEnCarrito >= detalleSeleccionado.stock) return;
+    if (cantidadEnCarrito >= detalleSeleccionado.stock!) return;
 
     dispatch(agregarAlCarrito(detalleSeleccionado));
     dispatch(descontarStock(detalleSeleccionado.id));
@@ -238,7 +238,7 @@ const DetalleScreen: React.FC = () => {
               </div>
 
               {/* Precio */}
-              {detalleSeleccionado && detalleSeleccionado.stock > 0 && (
+              {detalleSeleccionado && detalleSeleccionado.stock! > 0 && (
                 <div className="flex items-center gap-4">
                   {producto?.descuento?.porcentaje ? (
                     <div className="flex items-center gap-2">
@@ -261,16 +261,15 @@ const DetalleScreen: React.FC = () => {
               )}
             </div>
 
-
             {/* Botón agregar al carrito */}
             <button
               onClick={handleAgregarAlCarrito}
               disabled={
                 !detalleSeleccionado ||
                 detalleSeleccionado.stock === 0 ||
-                cantidadEnCarrito >= detalleSeleccionado.stock
+                cantidadEnCarrito >= detalleSeleccionado.stock!
               }
-              className={`w-full flex items-center justify-center gap-3 text-white py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${detalleSeleccionado && detalleSeleccionado.stock > 0
+              className={`w-full flex items-center justify-center gap-3 text-white py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer ${detalleSeleccionado && detalleSeleccionado.stock! > 0
                 ? 'bg-[#1c4577] hover:bg-blue-900'
                 : 'bg-gray-400 cursor-not-allowed'
                 }`}
