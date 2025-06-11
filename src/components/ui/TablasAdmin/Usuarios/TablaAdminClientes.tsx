@@ -105,106 +105,118 @@ export const TablaAdminClientes = () => {
   }, [activeSubMenu]);
   return (
     <>
-    <div className="overflow-x-auto">
-      <div className="text-4xl font-bold justify-self-center py-7">
-        <h1>CLIENTES</h1>
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">CLIENTES</h1>
+        <button
+          onClick={() => handleOpenModalCrear()}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
+        >
+          + Crear cliente
+        </button>
       </div>
-      <button
-              onClick={() => handleOpenModalCrear()}
-              className="bg-blue-700 hover:bg-blue-500 text-white text-2xl mb-2 font-semibold py-1 px-2 cursor-pointer rounded shadow-md transition"
-            >
-              <p>Crear cliente</p>
-            </button>
-      <div className="flex justify-end items-center mb-4"></div>
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>ID</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Nombre</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Apellido</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Email</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Dirección</p>
-            </th>
-            <th className="py-3 px-4 text-left font-semibold border-b">
-              <p>Rol</p>
-            </th>
-            <th className="py-3 px-4 text-center font-semibold border-b">
-              <p>Acciones</p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.length === 0 ? (
-            <tr>
-              <td className="py-8 px-4 text-center text-gray-500 border-b">
-                No hay usuarios para mostrar
-              </td>
-            </tr>
-          ) : (
-            usuarios.map((usuario) => (
-              <tr key={usuario.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b font-medium">{usuario.id}</td>
-                <td className="py-2 px-4 border-b">
-                  {usuario.nombre || "Sin nombre"}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {usuario.apellido}
-                </td>
-                <td className="py-2 px-4 border-b">{usuario.email}</td>
-                <td className="py-2 px-4 border-b">
-                   {typeof usuario.direccion === "object" && usuario.direccion !== null
-    ? usuario.direccion.calle
-    : usuario.direccion || "No especificada"}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {usuario.rol}
-                </td>
-                <td className="py-2 px-4 border-b">
-  <div className="flex justify-center gap-2">
-    <button
-    title="Convertir a administrador"
-      onClick={() => hacerAdmin(usuario.id!, usuario)}
-      className="bg-[#183B4E] hover:bg-blue-700 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
-    >
-      <IoShieldCheckmarkOutline />
-    </button>
-    <button
-    title="Ver"
-      onClick={() => handleOpenModalVer(usuario)}
-      className="bg-green-500 hover:bg-green-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
-    >
-      <IoEyeSharp />
-    </button>
-    <button
-      title="Editar"
-      onClick={() => handleOpenModalEdit(usuario)}
-      className="bg-purple-500 hover:bg-purple-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
-    >
-      <MdEdit />
-    </button>
-    <button
-      title="Eliminar"
-      onClick={() => handleDelete(usuario.id!)}
-      className="bg-red-500 hover:bg-red-400 text-white cursor-pointer w-auto font-semibold py-2 px-2 rounded shadow-md transition"
-    >
-      <IoTrashBinOutline />
-    </button>
-  </div>
-</td>
+
+      {/* Table Container */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  ID
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Nombre
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Apellido
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Email
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Dirección
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Rol
+                </th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                  Acciones
+                </th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {usuarios.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    No hay usuarios para mostrar
+                  </td>
+                </tr>
+              ) : (
+                usuarios.map((usuario) => (
+                  <tr key={usuario.id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {usuario.id}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {usuario.nombre || "Sin nombre"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {usuario.apellido}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {usuario.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {typeof usuario.direccion === "object" && usuario.direccion !== null
+                        ? usuario.direccion.calle
+                        : usuario.direccion || "No especificada"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                        {usuario.rol}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          title="Convertir a administrador"
+                          onClick={() => hacerAdmin(usuario.id!, usuario)}
+                          className="p-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-all duration-200"
+                        >
+                          <IoShieldCheckmarkOutline size={18} />
+                        </button>
+                        <button
+                          title="Ver"
+                          onClick={() => handleOpenModalVer(usuario)}
+                          className="p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg transition-all duration-200"
+                        >
+                          <IoEyeSharp size={18} />
+                        </button>
+                        <button
+                          title="Editar"
+                          onClick={() => handleOpenModalEdit(usuario)}
+                          className="p-2 text-purple-600 hover:text-white hover:bg-purple-600 rounded-lg transition-all duration-200"
+                        >
+                          <MdEdit size={18} />
+                        </button>
+                        <button
+                          title="Eliminar"
+                          onClick={() => handleDelete(usuario.id!)}
+                          className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200"
+                        >
+                          <IoTrashBinOutline size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
     {openModal && <UsuarioModal activeUser={usuarioActivo} openModalSee={openModalSee} handleCloseModal={handleCloseModal}/>}
     </>
