@@ -76,7 +76,7 @@ export const TablaAdminOrdCompra = () => {
                       ${orden.precio_total.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {orden.producto_cantidad_id.cantidad}
+                      {orden.productoCantidad.cantidad}
                     </td>
                   </tr>
                 ))

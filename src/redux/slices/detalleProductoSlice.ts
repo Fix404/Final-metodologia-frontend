@@ -25,14 +25,14 @@ const detalleProductoSlice = createSlice({
     },
     descontarStock: (state, action: PayloadAction<number>) => {
       const detalle = state.detalles.find(d => d.id === action.payload);
-      if (detalle && detalle.stock > 0) {
-        detalle.stock--;
+      if (detalle && detalle.stock! > 0) {
+        detalle.stock!--;
       }
     },
     restaurarStock: (state, action: PayloadAction<number>) => {
       const detalle = state.detalles.find(d => d.id === action.payload);
       if (detalle) {
-        detalle.stock++;
+        detalle.stock!++;
       }
     },
   },
