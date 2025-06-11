@@ -1,5 +1,6 @@
 
 export interface ICategoria {
-    id:number
+    id:number | null
     nombre: string
+    activo: boolean
 }

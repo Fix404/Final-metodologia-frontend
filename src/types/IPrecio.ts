@@ -1,5 +1,6 @@
 export interface IPrecio {
-    id: number
+    id: number | null
     precioCompra: number
     precioVenta:number
+    activo: boolean
 }

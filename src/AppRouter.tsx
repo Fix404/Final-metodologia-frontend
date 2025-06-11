@@ -19,6 +19,7 @@ import { PagoScreen } from './components/screen/PagoScreen';
 import { useAppSelector } from './hooks/redux';
 import { CompraScreen } from './components/screen/CompraScreen';
 import { TablaAdminInventario } from './components/ui/TablasAdmin/Productos/TablaAdminInventario';
+import { TablaAdminPrecios } from './components/ui/TablasAdmin/Productos/TablaAdminPrecios';
 
 
 export const AppRouter = () => {
@@ -169,7 +170,7 @@ export const AppRouter = () => {
               </div>
 
               <div className="flex-grow flex items-start justify-center px-4 py-15 z-6 relative">
-                <TablaAdminCatalogo />
+                <TablaAdminPrecios />
               </div>
             </div>
             : <Navigate to="/" replace />

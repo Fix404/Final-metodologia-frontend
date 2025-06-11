@@ -35,7 +35,7 @@ export const categoriaService= {
 
   // Eliminar categoria (baja lógica)
   eliminarCategoria: async (id: number) => {
-    const response = await api.put(`/categorias/baja/${id}`);
+    const response = await api.put(`/categorias/estado/${id}?activo=false`);
     return response.data;
-  }
+  },
 }

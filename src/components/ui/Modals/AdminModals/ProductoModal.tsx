@@ -25,7 +25,7 @@ const initialState: IProducto = {
   sexoProducto: null,
   descuento: null,
   imagen: null,
-  disponible: true
+  activo: true
 };
 
 export const ProductoModal = ({

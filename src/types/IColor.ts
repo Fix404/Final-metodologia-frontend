@@ -1,5 +1,6 @@
 
 export interface IColor {
-    id:number
+    id:number | null
     color: string
+    activo: boolean
 }
