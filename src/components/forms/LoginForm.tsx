@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useState } from 'react';
 import { loginSchema } from './schema/loginSchema';
@@ -7,6 +7,8 @@ import { login } from '../../services/authService';
 import { jwtDecode } from 'jwt-decode';
 import { useAppDispatch} from '../../hooks/redux';
 import { setRoles, setUsuario } from '../../redux/slices/authSlice';
+import { logout } from '../../redux/slices/authSlice'
+
 
 interface DecodedToken {
   id: number,
@@ -58,11 +60,12 @@ export const LoginForm = () => {
         if (decodedToken.exp < currentTime) {
           setServerError('Sesión expirada. Por favor, iniciá sesión nuevamente.');
           localStorage.removeItem('authToken');
+          dispatch(logout())
           return;
         }
 
         if (decodedToken.rol && decodedToken.rol.includes('CLIENTE')) {
-          navigate('/'); // deberia ir al carrito? 
+          navigate('/');
         } else {
           navigate('/admin');
         }

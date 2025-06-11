@@ -20,6 +20,7 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
     initialValues: {
       nombre: '',
       apellido: '',
+      dni:0,
       email: '',
       contrasenia: '',
       confirmarContrasenia: '',
@@ -116,11 +117,10 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               placeholder="Tu apellido"
             />
           </div>
-          {formik.touched.nombre && formik.errors.nombre && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.nombre}</p>
+          {formik.touched.apellido && formik.errors.apellido && (
+            <p className="mt-1 text-sm text-red-600">{formik.errors.apellido}</p>
           )}
         </div>
-
 
         {/* Email */}
         <div>
