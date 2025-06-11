@@ -166,7 +166,7 @@ const ClienteNavbar = () => {
           </div>
 
           {/*Carrito */}
-          
+
           <Link to="/carrito" className="relative hover:text-gray-200 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h11L17 13M9 21h0M15 21h0" />
@@ -177,6 +177,14 @@ const ClienteNavbar = () => {
               </span>
             )}
           </Link>
+
+          {/* Usuario */}
+          <div
+            className="relative hover:text-gray-200 transition-colors cursor-pointer"
+          >
+            <img src='../../../../editarUsuario.png' alt="icono contacto" className="h-6 w-6" />
+          </div>
+
 
           {/* Logout */}
           {usuario && (
@@ -218,16 +226,14 @@ const ClienteNavbar = () => {
         </div>
       </div>
 
-      <div className={`max-mm:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-        menuAbierto 
-          ? 'max-h-96 opacity-100 transform translate-y-0' 
+      <div className={`max-mm:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuAbierto
+          ? 'max-h-96 opacity-100 transform translate-y-0'
           : 'max-h-0 opacity-0 transform -translate-y-2'
-      }`}>
+        }`}>
         <div className="mt-4 pb-4 border-t border-white/20">
           <div className="mb-4 px-2" ref={containerRefMobile}>
-            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${
-              resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
-            }`}>
+            <div className={`flex items-center bg-white px-3 py-2 transition-all duration-200 ${resultados.length > 0 ? 'rounded-t-md' : 'rounded-md'
+              }`}>
               <input
                 type="text"
                 placeholder="Buscar productos..."
