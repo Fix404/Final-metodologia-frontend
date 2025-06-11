@@ -28,7 +28,6 @@ export const AppRouter = () => {
   return (
         <Router>
             <Routes>
-
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
           <div className="
