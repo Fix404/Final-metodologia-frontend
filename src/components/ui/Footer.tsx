@@ -5,7 +5,7 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#DDA853] text-center py-6">
       <div className="container mx-auto">
         <div className="flex justify-center space-x-6">
-          {/* Instagram Icon */}
+          {/* Instagram Icono */}
           <a 
             href="https://instagram.com" 
             target="_blank" 

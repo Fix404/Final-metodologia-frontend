@@ -176,10 +176,14 @@ const ClienteNavbar = () => {
 
           {/* Logout */}
           {usuario && (
-            <div onClick={handleLogout} className="relative hover:text-gray-200 transition-colors">
+            <div
+              onClick={handleLogout}
+              className="relative hover:text-gray-200 transition-colors cursor-pointer"
+            >
               <img src='../../../../logout.svg' alt="icono contacto" className="h-6 w-6" />
             </div>
           )}
+
         </div>
         <div className="flex max-mm:hidden items-center space-x-4">
 

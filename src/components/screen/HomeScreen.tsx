@@ -35,7 +35,7 @@ export const HomeScreen: React.FC = () => {
   return (
     <div className="bg-gradient-to-r from-blue-500 to-[#DDA853] pb-10">
       
-      {/* Hero Section */}
+      {/* Seccion principal */}
       <section className="flex flex-row items-center justify-center text-white pt-16 mb-4  max-sm:pt-0">
         <div className="flex flex-row items-start max-w-screen-lg flex-wrap max-xs:flex-col max-sm:p-8 max-xs:items-center max-sm:flex-row max-sm:justify-between">
           <div className="max-w-lg max-xs:w-full max-xs:px-4 max-sm:w-2/3 max-sm:px-6">
@@ -63,7 +63,7 @@ export const HomeScreen: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Products Section */}
+      {/* Productos destacados */}
       <section>
         <h2 className="text-3xl text-neutral-900 font-bold mb-4 text-left ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">PRODUCTOS DESTACADOS</h2>
         {loading && <p className="ml-8 max-xs:text-left max-xs:ml-4 max-sm:text-left max-sm:ml-6">Cargando productos...</p>}
