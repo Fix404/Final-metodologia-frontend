@@ -11,5 +11,5 @@ export interface IProducto {
     sexoProducto: string | null
     descuento?: IDescuento | null
     imagen?: IImagen | null,
-    disponible: boolean
+    activo: boolean
 }

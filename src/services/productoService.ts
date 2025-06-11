@@ -24,7 +24,11 @@ export const productoService={
     return response.data;
   },
   eliminarProducto: async (id: number) => {
-    const response = await api.put(`/productos/baja/${id}`);
+    const response = await api.put(`/productos/estado/${id}?activo=false`);
+    return response.data;
+  },
+  cambiarEstadoProducto: async (id: number, activo: boolean) => {
+    const response = await api.put(`/productos/estado/${id}?activo=${activo}`);
     return response.data;
   }
 }
