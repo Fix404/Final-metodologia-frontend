@@ -22,12 +22,10 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
     codigoPostal: "",
     localidad: {
       id: 0,
-      nombre: "",
-      provincia: {
-        id: 0,
-        nombre: "",
-      },
+      localidad: "",
+      codigo_postal: 0,
     },
+    provincia: "",
   });
 
   useEffect(() => {
@@ -37,8 +35,8 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
       (!compraDireccionEnvio ||
         !compraDireccionEnvio.calle ||
         !compraDireccionEnvio.numero ||
-        !compraDireccionEnvio.localidad?.nombre ||
-        !compraDireccionEnvio.localidad?.provincia?.nombre)
+        !compraDireccionEnvio.localidad?.localidad ||
+        !compraDireccionEnvio.provincia)
     ) {
       setMostrarFormularioDireccion(true);
     }
@@ -49,8 +47,9 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
       direccionTemporal.calle.trim() &&
       direccionTemporal.numero.trim() &&
       direccionTemporal.codigoPostal.trim() &&
-      direccionTemporal.localidad.nombre.trim() &&
-      direccionTemporal.localidad.provincia.nombre.trim()
+      direccionTemporal.localidad.localidad.trim() &&
+      direccionTemporal.provincia.trim() &&
+      direccionTemporal.localidad.codigo_postal > 0
     ) {
       dispatch(setDireccionEnvio(direccionTemporal));
       setMostrarFormularioDireccion(false);
@@ -62,12 +61,10 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
         codigoPostal: "",
         localidad: {
           id: 0,
-          nombre: "",
-          provincia: {
-            id: 0,
-            nombre: "",
-          },
+          localidad: "",
+          codigo_postal: 0,
         },
+        provincia: "",
       });
     } else {
       alert("Todos los campos son obligatorios.");
@@ -90,14 +87,24 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
       codigoPostal: "",
       localidad: {
         id: 0,
-        nombre: "",
-        provincia: {
-          id: 0,
-          nombre: "",
-        },
+        localidad: "",
+        codigo_postal: 0,
       },
+      provincia: "",
     });
     setMostrarFormularioDireccion(true);
+  };
+
+  const handleCodigoPostalChange = (value: string) => {
+    const numericValue = parseInt(value) || 0;
+    setDireccionTemporal({
+      ...direccionTemporal,
+      codigoPostal: value,
+      localidad: {
+        ...direccionTemporal.localidad,
+        codigo_postal: numericValue,
+      },
+    });
   };
 
   return (
@@ -118,7 +125,8 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
               </p>
               <p className="text-gray-700">
                 {usuario.direccion?.calle} {usuario.direccion?.numero},{" "}
-                {usuario.direccion?.localidad?.nombre}
+                {usuario.direccion?.localidad?.localidad}, {usuario.direccion?.provincia}
+                {usuario.direccion?.codigoPostal && ` - CP: ${usuario.direccion.codigoPostal}`}
               </p>
               <button
                 onClick={handleUsarDireccionExistente}
@@ -155,31 +163,20 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
             />
             <input
-              type="text"
-              placeholder="Código Postal"
+              type="number"
+              placeholder="Código Postal *"
               value={direccionTemporal.codigoPostal}
-              onChange={(e) =>
-                setDireccionTemporal({
-                  ...direccionTemporal,
-                  codigoPostal: e.target.value,
-                })
-              }
+              onChange={(e) => handleCodigoPostalChange(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
             />
             <input
               type="text"
               placeholder="Provincia *"
-              value={direccionTemporal.localidad.provincia.nombre}
+              value={direccionTemporal.provincia}
               onChange={(e) =>
                 setDireccionTemporal({
                   ...direccionTemporal,
-                  localidad: {
-                    ...direccionTemporal.localidad,
-                    provincia: {
-                      ...direccionTemporal.localidad.provincia,
-                      nombre: e.target.value,
-                    },
-                  },
+                  provincia: e.target.value,
                 })
               }
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
@@ -188,17 +185,17 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
             <input
               type="text"
               placeholder="Localidad *"
-              value={direccionTemporal.localidad.nombre}
+              value={direccionTemporal.localidad.localidad}
               onChange={(e) =>
                 setDireccionTemporal({
                   ...direccionTemporal,
                   localidad: {
                     ...direccionTemporal.localidad,
-                    nombre: e.target.value,
+                    localidad: e.target.value,
                   },
                 })
               }
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A90E2] md:col-span-1"
             />
           </div>
 
@@ -216,14 +213,12 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
             compraDireccionEnvio.calle &&
             compraDireccionEnvio.numero &&
             compraDireccionEnvio.localidad &&
-            compraDireccionEnvio.localidad.nombre &&
-            compraDireccionEnvio.localidad.provincia &&
-            compraDireccionEnvio.localidad.provincia.nombre ? (
+            compraDireccionEnvio.localidad.localidad &&
+            compraDireccionEnvio.provincia ? (
               <p className="text-gray-700">
                 {compraDireccionEnvio.calle} {compraDireccionEnvio.numero}
                 <br />
-                {compraDireccionEnvio.localidad.nombre},{" "}
-                {compraDireccionEnvio.localidad.provincia.nombre}
+                {compraDireccionEnvio.localidad.localidad}, {compraDireccionEnvio.provincia}
                 {compraDireccionEnvio.codigoPostal &&
                   ` - CP: ${compraDireccionEnvio.codigoPostal}`}
               </p>

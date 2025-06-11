@@ -1,7 +1,5 @@
-import { IProvincia } from "./IProvincia";
-
 export interface ILocalidad {
   id: number;
-  nombre: string;
-  provincia: IProvincia;
+  localidad: string;
+  codigo_postal: number;
 }

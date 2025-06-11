@@ -6,30 +6,25 @@ import { CompraCard } from "../ui/CardList/CompraCard";
 import { FaShieldAlt } from "react-icons/fa";
 import { limpiarCompra } from "../../redux/slices/CompraSlice";
 import { IUsuario } from "../../types/IUsuario";
+import { IDireccion} from "../../types/IDireccion";
+import {ILocalidad } from "../../types/ILocalidad";
 import { DatosCompraForm } from "../forms/DatosCompraForm";
 import { DireccionForm } from "../forms/DireccionForm";
 import { useAppSelector } from "../../hooks/redux";
 import { usuariosService } from "../../services/usuarioService";
+import { direccionService } from "../../services/direccionService";
+import { localidadService } from "../../services/localidadService";
 
 export const CompraScreen: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [datosUsuario, setDatosUsuario] = useState<IUsuario | null>(null);
   const [loading, setLoading] = useState(true);
+  const [procesandoCompra, setProcesandoCompra] = useState(false);
 
   const items = useSelector((state: RootState) => state.carrito.items);
-  // Obtener el usuario del Redux store
   const usuario = useAppSelector((state) => state.auth.usuario);
   const compraState = useSelector((state: RootState) => state.compra);
-
-  /* USUARIO SIMULADO PARA TESTING - Remover cuando tengas auth real
-  const usuario: IUsuario = {
-    id: 1,
-    nombre: "Juan",
-    apellido: "Pérez",
-    email: "juan@ejemplo.com",
-    contrasenia: "123456",
-  };*/
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,20 +48,6 @@ export const CompraScreen: React.FC = () => {
   if (loading) {
     return <div>Cargando...</div>;
   }
-  console.log("DATOS:", "dni:", datosUsuario?.dni, "nombre:", datosUsuario?.nombre, "apellido:", datosUsuario?.apellido)
-
- // COMENTÉ ESTO DE ABAJO PORQUE SI NO, NO RENDERIZA. VER!!!!!!
- 
-  /*useEffect(() => {
-    if (items.length === 0) {
-      navigate("/carrito");
-      return;
-    }*/
-
-    /*return () => {
-      dispatch(limpiarCompra());
-    };
-  }, [items, navigate, dispatch]);*/
 
   const calcularPrecioFinal = (item: (typeof items)[number]["detalle"]) => {
     const precioBase = item.precio.precioVenta;
@@ -81,47 +62,157 @@ export const CompraScreen: React.FC = () => {
   };
 
   const puedeFinalizarCompra = () => {
-    // Verificar que tenga DNI (del usuario o del estado de compra)
     const tieneDni = datosUsuario?.dni || compraState.dni;
-
-    // Verificar que tenga dirección completa
     const tieneDireccion =
       (datosUsuario?.direccion &&
         datosUsuario.direccion.calle &&
         datosUsuario.direccion.numero &&
-        datosUsuario.direccion.localidad?.nombre &&
-        datosUsuario.direccion.localidad?.provincia?.nombre) ||
+        datosUsuario.direccion.localidad?.localidad &&
+        datosUsuario.direccion.provincia) ||
       (compraState.direccionEnvio &&
         compraState.direccionEnvio.calle &&
         compraState.direccionEnvio.numero &&
-        compraState.direccionEnvio.localidad?.nombre &&
-        compraState.direccionEnvio.localidad?.provincia?.nombre);
+        compraState.direccionEnvio.localidad?.localidad &&
+        compraState.direccionEnvio.provincia);
 
     return tieneDni && tieneDireccion;
   };
 
   const handleFinalizarCompra = async () => {
-    if (!puedeFinalizarCompra()) return;
-
-    if (usuario?.id) {
-      // Construyo el usuario actualizado
-      const updatedUser: IUsuario = {
-        ...usuario,
-        dni: datosUsuario?.dni ?? compraState.dni ?? null,
-        direccion: datosUsuario?.direccion ?? compraState.direccionEnvio ?? null,
-      };
-
-      try {
-        await usuariosService.actualizarUsuario(usuario.id, updatedUser);
-        console.log("Usuario actualizado con DNI y dirección.");
-      } catch (err) {
-        console.error("Error al actualizar usuario:", err);
-        // Opcional: mostrar un mensaje al usuario
-      }
+    if (!puedeFinalizarCompra() || !usuario?.id || !datosUsuario) {
+      return;
     }
 
-    // Finalmente, voy a la pantalla de pago
-    navigate("/pagar");
+    setProcesandoCompra(true);
+
+    try {
+      let direccionId: number | null = null;
+
+      // 1. Verificar si necesitamos crear una nueva dirección
+      if (compraState.direccionEnvio) {
+        if (compraState.direccionEnvio.id === 0 || !compraState.direccionEnvio.id) {
+          // Es una dirección nueva, necesitamos crear localidad y dirección
+          console.log("Procesando nueva dirección...");
+          
+          let localidadId: number | null = null;
+          
+          // 1.1. Verificar si la localidad existe o crearla
+          if (compraState.direccionEnvio.localidad) {
+            try {
+              // Intentar buscar la localidad existente
+              const localidadesExistentes = await localidadService.buscarLocalidad(
+                compraState.direccionEnvio.localidad.localidad,
+                compraState.direccionEnvio.localidad.codigo_postal
+              );
+              
+              if (localidadesExistentes && localidadesExistentes.length > 0) {
+                // Usar la localidad existente
+                localidadId = localidadesExistentes[0].id;
+                console.log("Usando localidad existente con ID:", localidadId);
+              } else {
+                // Crear nueva localidad
+                console.log("Creando nueva localidad...");
+                const nuevaLocalidad: Omit<ILocalidad, 'id'> = {
+                  localidad: compraState.direccionEnvio.localidad.localidad,
+                  codigo_postal: compraState.direccionEnvio.localidad.codigo_postal
+                };
+                
+                const localidadCreada = await localidadService.crearLocalidad(nuevaLocalidad);
+                localidadId = localidadCreada.id;
+                console.log("Localidad creada con ID:", localidadId);
+              }
+            } catch (error) {
+              console.error("Error al buscar localidad, creando nueva:", error);
+              // Si falla la búsqueda, crear nueva localidad
+              const nuevaLocalidad: Omit<ILocalidad, 'id'> = {
+                localidad: compraState.direccionEnvio.localidad.localidad,
+                codigo_postal: compraState.direccionEnvio.localidad.codigo_postal
+              };
+              
+              const localidadCreada = await localidadService.crearLocalidad(nuevaLocalidad);
+              localidadId = localidadCreada.id;
+              console.log("Localidad creada con ID:", localidadId);
+            }
+          }
+
+          // 1.2. Crear la dirección con la localidad
+          if (localidadId) {
+            console.log("Creando nueva dirección...");
+            const nuevaDireccion: Omit<IDireccion, 'id'> = {
+              calle: compraState.direccionEnvio.calle,
+              numero: compraState.direccionEnvio.numero,
+              codigoPostal: compraState.direccionEnvio.codigoPostal,
+              localidad: { 
+                id: localidadId,
+                localidad: compraState.direccionEnvio.localidad.localidad,
+                codigo_postal: compraState.direccionEnvio.localidad.codigo_postal
+              },
+              provincia: compraState.direccionEnvio.provincia
+            };
+
+            const direccionCreada = await direccionService.crearDireccion(nuevaDireccion);
+            direccionId = direccionCreada.id;
+            console.log("Dirección creada con ID:", direccionId);
+          }
+        } else {
+          // Usar la dirección existente
+          direccionId = compraState.direccionEnvio.id;
+        }
+      } else if (datosUsuario.direccion?.id) {
+        // Usar la dirección existente del usuario
+        direccionId = datosUsuario.direccion.id;
+      }
+
+      // 2. Actualizar el usuario con DNI y dirección
+      const updatedUser: IUsuario = {
+        id: datosUsuario.id,
+        nombre: datosUsuario.nombre,
+        apellido: datosUsuario.apellido,
+        email: datosUsuario.email,
+        contrasenia: datosUsuario.contrasenia,
+        dni: compraState.dni ?? datosUsuario.dni,
+        direccion: direccionId ? { id: direccionId } as IDireccion : null,
+        rol: datosUsuario.rol,
+        activo: datosUsuario.activo
+      };
+
+      console.log("Actualizando usuario con datos:", updatedUser);
+      
+      await usuariosService.actualizarUsuario(usuario.id, updatedUser);
+      console.log("Usuario actualizado exitosamente");
+      
+      // Actualizar el estado local
+      setDatosUsuario(prev => prev ? {
+        ...prev,
+        dni: updatedUser.dni,
+        direccion: updatedUser.direccion
+      } : null);
+      
+      // Navegar al pago
+      navigate("/pagar");
+      
+    } catch (err: any) {
+      console.error("Error en el proceso de finalizar compra:", err);
+      
+      if (err.response) {
+        console.error("Error response:", err.response.data);
+        console.error("Status:", err.response.status);
+        
+        if (err.response.status === 403) {
+          alert("Sesión expirada. Por favor, inicia sesión nuevamente.");
+          return;
+        }
+        
+        if (err.response.status === 400) {
+          alert("Error en los datos enviados. Verifica la información.");
+          return;
+        }
+      }
+      
+      alert("Error al procesar la compra. Inténtalo de nuevo.");
+    } finally {
+      setProcesandoCompra(false);
+    }
   };
 
   if (!usuario) {
@@ -129,7 +220,6 @@ export const CompraScreen: React.FC = () => {
       <div className="bg-[#fdfae8] min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-lg text-gray-600">Cargando usuario...</p>
-          {/* Cuando tengas auth real, esto será: "Redirigiendo al login..." */}
         </div>
       </div>
     );
@@ -145,12 +235,10 @@ export const CompraScreen: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Columna izquierda - Formularios */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Datos del comprador */}
             {datosUsuario && (
               <DatosCompraForm usuario={datosUsuario} compraDni={compraState.dni} />
             )}
 
-            {/* Dirección de envío */}
             {datosUsuario && (
               <DireccionForm usuario={datosUsuario} compraDireccionEnvio={compraState.direccionEnvio} />
             )}
@@ -201,15 +289,16 @@ export const CompraScreen: React.FC = () => {
 
               <button
                 onClick={handleFinalizarCompra}
-                disabled={!puedeFinalizarCompra()}
+                disabled={!puedeFinalizarCompra() || procesandoCompra}
                 className="w-full bg-[#4A90E2] hover:bg-[#357ABD] disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors text-lg"
               >
-                CONTINUAR CON EL PAGO
+                {procesandoCompra ? 'PROCESANDO...' : 'CONTINUAR CON EL PAGO'}
               </button>
 
               <button
                 onClick={() => navigate("/carrito")}
-                className="w-full mt-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+                disabled={procesandoCompra}
+                className="w-full mt-3 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 Volver al carrito
               </button>
