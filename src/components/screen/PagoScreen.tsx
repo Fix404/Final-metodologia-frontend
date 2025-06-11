@@ -9,7 +9,9 @@ import {
   FaSpinner,
   FaShieldAlt,
   FaCopy,
-  FaArrowLeft
+  FaArrowLeft,
+  FaExclamationTriangle,
+  FaTimes
 } from "react-icons/fa";
 import { usePago } from "../../hooks/usePago";
 import { datosTransferencia } from "../../constants/pagoConstant";
@@ -22,14 +24,14 @@ export const PagoScreen: React.FC = () => {
   const items = useSelector((state: RootState) => state.carrito.items);
   const compraState = useSelector((state: RootState) => state.compra);
  
-
   const {
     metodoPago,
     setMetodoPago,
     procesandoPago,
     pagoCompletado,
-    codigoPedido,
-    handleFinalizarCompra
+    error,
+    handleFinalizarCompra,
+    limpiarError
   } = usePago();
 
   useEffect(() => {
@@ -42,13 +44,11 @@ export const PagoScreen: React.FC = () => {
 
   const total = calcularTotal(items);
 
-  if (pagoCompletado) {
+  if (pagoCompletado && compraState.ordenGenerada) {
     return (
       <CompraExitosa
-        codigoPedido={codigoPedido}
+        ordenCompra={compraState.ordenGenerada}
         metodoPago={metodoPago!}
-        total={total}
-        direccionEnvio={compraState.direccionEnvio}
       />
     );
   }
@@ -60,6 +60,22 @@ export const PagoScreen: React.FC = () => {
           <h1 className="text-4xl font-bold text-gray-800">MÉTODO DE PAGO</h1>
           <p className="text-gray-600 mt-2">Selecciona cómo quieres pagar tu pedido</p>
         </div>
+
+        {/* Mensaje de error */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <FaExclamationTriangle className="text-red-500 mr-3" />
+              <span className="text-red-800">{error}</span>
+            </div>
+            <button
+              onClick={limpiarError}
+              className="text-red-500 hover:text-red-700 transition-colors"
+            >
+              <FaTimes />
+            </button>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Columna izquierda - Métodos de pago */}
@@ -270,7 +286,8 @@ export const PagoScreen: React.FC = () => {
 
                 <button
                   onClick={() => navigate("/")}
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
+                  disabled={procesandoPago}
+                  className="w-full bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
                 >
                   <FaArrowLeft className="mr-2" />
                   Volver atrás

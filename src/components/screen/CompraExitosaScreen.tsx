@@ -1,26 +1,25 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
 import { MetodoPago } from "../../types/pago";
 import { vaciarCarrito } from "../../redux/slices/CarritoSlice";
 import { limpiarCompra } from "../../redux/slices/CompraSlice";
+import { IOrdenCompra } from "../../types/IOrdenCompra";
+import { RootState } from "../../redux/store";
 
 interface CompraExitosaProps {
-  codigoPedido: string;
+  ordenCompra: IOrdenCompra;
   metodoPago: MetodoPago;
-  total: number;
-  direccionEnvio: any;
 }
 
 export const CompraExitosa: React.FC<CompraExitosaProps> = ({
-  codigoPedido,
-  metodoPago,
-  total,
-  direccionEnvio
+  ordenCompra,
+  metodoPago
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const compraState = useSelector((state: RootState) => state.compra);
 
   // Limpiar el carrito y los datos de compra cuando se monta este componente
   useEffect(() => {
@@ -39,6 +38,17 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
     navigate("/");
   };
 
+  // Formatear dirección de envío
+  const formatearDireccion = () => {
+    if (!compraState.direccionEnvio) return "Dirección no disponible";
+    
+    const { calle, numero, localidad } = compraState.direccionEnvio;
+    const localidadNombre = localidad?.localidad || "Localidad no especificada";
+    const codigoPostal = compraState.direccionEnvio.codigoPostal || "CP no disponible";
+    
+    return `${calle} ${numero}, ${localidadNombre}, Mendoza - CP: ${codigoPostal}`;
+  };
+
   return (
     <div className="bg-[#fdfae8] min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -51,13 +61,13 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
           
           <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
             <p className="text-lg text-gray-700 mb-2">
-              Tu código de pedido es:
+              Tu número de pedido es:
             </p>
             <p className="text-2xl font-bold text-green-600 mb-4">
-              {codigoPedido}
+              #{ordenCompra.id}
             </p>
             <p className="text-sm text-gray-600">
-              Guarda este código para hacer seguimiento de tu pedido
+              Guarda este número para hacer seguimiento de tu pedido
             </p>
           </div>
 
@@ -73,9 +83,9 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
           <div className="space-y-4 text-left mb-6">
             <h3 className="text-lg font-semibold text-gray-800">Resumen del pedido:</h3>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p><strong>Total:</strong> ${total.toLocaleString()}</p>
+              <p><strong>Total:</strong> ${ordenCompra.precio_total.toLocaleString()}</p>
               <p><strong>Método de pago:</strong> {metodoPago === "transferencia" ? "Transferencia bancaria" : "MercadoPago"}</p>
-              <p><strong>Dirección de envío:</strong> {direccionEnvio?.calle} {direccionEnvio?.numero}, {direccionEnvio?.localidad?.nombre}</p>
+              <p><strong>Dirección de envío:</strong> {formatearDireccion()}</p>
             </div>
           </div>
 
