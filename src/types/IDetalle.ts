@@ -5,11 +5,11 @@ import { IProducto } from "./IProducto"
 import { ITalle } from "./ITalle"
 
 export interface IDetalle {
-    id: number
-    talle: ITalle
-    color: IColor
-    precio: IPrecio 
+    id: number | null
+    talle: ITalle | null
+    color: IColor | null
+    precio: IPrecio | null
     stock?: number
     estado?: Estado 
-    producto: IProducto
+    producto: IProducto | null
 }
