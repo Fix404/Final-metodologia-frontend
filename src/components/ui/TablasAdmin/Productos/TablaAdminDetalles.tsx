@@ -20,7 +20,7 @@ import { ColorModal } from "../../Modals/AdminModals/ColorModal";
 import { PrecioModal } from "../../Modals/AdminModals/PrecioModal";
 import { precioService } from "../../../../services/precioService";
 import { fetchPrecio, limpiarPrecioActivo, setPrecioActivo } from "../../../../redux/slices/precioSlice";
-import { DetalleModal } from "../../Modals/AdminModals/DetalleModal";
+import { DetalleModal} from "../../Modals/AdminModals/DetalleModal";
 
 type ModalType = 'categoria' | 'color' | 'precio' | 'detalle'| null;
 
@@ -83,6 +83,7 @@ export const TablaAdminDetalles = () => {
   const cargarDetalles = async () => {
     try {
       const response = await detalleService.obtenerDetalles();
+      console.log("RESPUESTA: ", response)
       dispatch(fetchDetalles(response));
     } catch (error) {
       console.error("Error al obtener los detalles", error);

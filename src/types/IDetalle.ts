@@ -12,4 +12,5 @@ export interface IDetalle {
     stock?: number
     estado?: Estado 
     producto: IProducto | null
+    version?: number
 }

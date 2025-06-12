@@ -10,9 +10,9 @@ import { productoService } from "../../../../services/productoService";
 import { talleService } from "../../../../services/talleService";
 import { colorService } from "../../../../services/colorService";
 import { precioService } from "../../../../services/precioService";
+import { ICreateDetalleDto } from "../../../../types/ICreateDetalleDTO";
 
 // Interfaces 
-
 interface IModalProps {
   activeDetalle: IDetalle | null;
   openModalSee: boolean;
@@ -48,11 +48,10 @@ export const DetalleModal = ({
   const cargarOpciones = async () => {
     setLoadingOptions(true);
     try {
-      
-         const productosRes = await productoService.obtenerProductosActivos()
-         const tallesRes = await talleService.obtenerTallesActivos() 
-         const coloresRes = await colorService.obtenerColoresActivos()
-         const preciosRes = await precioService.obtenerPreciosActivos()
+      const productosRes = await productoService.obtenerProductosActivos()
+      const tallesRes = await talleService.obtenerTallesActivos() 
+      const coloresRes = await colorService.obtenerColoresActivos()
+      const preciosRes = await precioService.obtenerPreciosActivos()
       
       setProductos(productosRes);
       setTalles(tallesRes);
@@ -78,7 +77,8 @@ export const DetalleModal = ({
     } else if (name === 'color') {
       const color = colores.find(c => c.id === parseInt(value)) || null;
       setFormValues(prev => ({ ...prev, color }));
-    } else if (name === 'precioCompra' || name === 'precioVenta') {
+    } else if (name === 'precio') {
+      // Cambié esto para usar solo 'precio'
       const precio = precios.find(p => p.id === parseInt(value)) || null;
       setFormValues(prev => ({ ...prev, precio }));
     } else if (name === 'stock') {
@@ -90,50 +90,41 @@ export const DetalleModal = ({
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+ const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    try {
-      // Preparar los datos para enviar
-      const dataToSend: any = {
-        stock: formValues.stock,
-        estado: formValues.estado,
-        talleId: formValues.talle?.id,
-        colorId: formValues.color?.id,
-        precioId: formValues.precio?.id,
-        productoId: formValues.producto?.id
-      };
+  try {
+    if (!formValues.producto?.id)  throw new Error("Debe seleccionar un producto");
+    if (!formValues.precio?.id)    throw new Error("Debe seleccionar un precio");
+    if (!formValues.talle?.id)     throw new Error("Debe seleccionar un talle");
+    if (!formValues.color?.id)     throw new Error("Debe seleccionar un color");
 
-      // Solo incluir ID y version si estamos editando
-      if (activeDetalle?.id) {
-        dataToSend.id = activeDetalle.id;
-        // Incluir version si existe en la entidad para manejo de optimistic locking
-        if (activeDetalle.version !== undefined) {
-          dataToSend.version = activeDetalle.version;
-        }
-      }
-      // Para crear: NO incluir id (debe ser null o undefined)
+    const dto: ICreateDetalleDto = {
+      stock:     formValues.stock,
+      estado:    formValues.estado,
+      talleId:   formValues.talle.id,
+      colorId:   formValues.color.id,
+      precioId:  formValues.precio.id,
+      productoId:formValues.producto.id,
+      version:   activeDetalle?.version,   // opcional
+    };
 
-      console.log('Enviando datos:', dataToSend);
-      
-      if (activeDetalle?.id) {
-        const result = await detalleService.actualizarDetalle(activeDetalle.id, dataToSend);
-        console.log('Detalle actualizado:', result);
-      } else {
-        const result = await detalleService.crearDetalle(dataToSend);
-        console.log('Detalle creado:', result);
-      }
-      handleCloseModal();
-    } catch (err: any) {
-      console.error('Error al guardar:', err);
-      setError(err.response?.data?.message || 'Error al guardar el Detalle');
-    } finally {
-      setLoading(false);
+    if (activeDetalle?.id) {
+      await detalleService.actualizarDetalle(activeDetalle.id, dto);
+    } else {
+      await detalleService.crearDetalle(dto);
     }
-  };
 
+    handleCloseModal();
+  } catch (err: any) {
+    console.error(err);
+    setError(err.response?.data?.message ?? err.message ?? "Error al guardar");
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     setFormValues(activeDetalle ?? initialState);
     setError(null);
@@ -154,7 +145,7 @@ export const DetalleModal = ({
         {loadingOptions && <p className="text-blue-500 mb-4 text-sm text-center">Cargando opciones...</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Producto - Movido al primer lugar */}
+          {/* Producto */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="producto">
               Producto <span className="text-red-500">*</span>
@@ -174,15 +165,16 @@ export const DetalleModal = ({
                 disabled={loading || loadingOptions}
               >
                 <option value="">Seleccionar producto</option>
-                {productos.map(producto => (
-                  <option key={producto.id} value={producto.id}>
-                    {producto.nombre}
-                  </option>
-                ))}
+              {productos.map(producto => (
+  <option key={producto.id} value={producto.id}>
+    {producto.nombre}
+  </option>
+))}
               </select>
             )}
           </div>
 
+          {/* Stock */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="stock">
               Stock
@@ -205,6 +197,7 @@ export const DetalleModal = ({
             )}
           </div>
 
+          {/* Estado */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="estado">
               Estado
@@ -232,64 +225,39 @@ export const DetalleModal = ({
             )}
           </div>
 
-          {/* Precio de Compra - Campo separado */}
+          {/* Precio - Un solo campo que muestra ambos precios */}
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="precioCompra">
-              Precio de compra <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-1" htmlFor="precio">
+              Precio <span className="text-red-500">*</span>
             </label>
             {openModalSee ? (
               <p className="px-3 py-2 border border-gray-200 bg-gray-100 rounded">
-                {formValues.precio?.precioCompra ? `$${formValues.precio.precioCompra}` : '—'}
+                {formValues.precio ? 
+                  `Compra: $${formValues.precio.precioCompra} - Venta: $${formValues.precio.precioVenta}` : 
+                  '—'
+                }
               </p>
             ) : (
               <select
-                id="precioCompra"
-                name="precioCompra"
+                id="precio"
+                name="precio"
                 value={formValues.precio?.id || ''}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
                 required
                 disabled={loading || loadingOptions}
               >
-                <option value="">Seleccionar precio de compra</option>
+                <option value="">Seleccionar precio</option>
                 {precios.map(precio => (
-                  <option key={precio.id} value={precio.id}>
-                    ${precio.precioCompra}
-                  </option>
-                ))}
+  <option key={precio.id} value={precio.id}>
+    Compra: ${precio.precioCompra} - Venta: ${precio.precioVenta}
+  </option>
+))}
               </select>
             )}
           </div>
 
-          {/* Precio de Venta - Campo separado nuevo */}
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="precioVenta">
-              Precio de venta <span className="text-red-500">*</span>
-            </label>
-            {openModalSee ? (
-              <p className="px-3 py-2 border border-gray-200 bg-gray-100 rounded">
-                {formValues.precio?.precioVenta ? `$${formValues.precio.precioVenta}` : '—'}
-              </p>
-            ) : (
-              <select
-                id="precioVenta"
-                name="precioVenta"
-                value={formValues.precio?.id || ''}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
-                required
-                disabled={loading || loadingOptions}
-              >
-                <option value="">Seleccionar precio de venta</option>
-                {precios.map(precio => (
-                  <option key={precio.id} value={precio.id}>
-                    ${precio.precioVenta}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
+          {/* Talle */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="talle">
               Talle <span className="text-red-500">*</span>
@@ -318,6 +286,7 @@ export const DetalleModal = ({
             )}
           </div>
 
+          {/* Color */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="color">
               Color <span className="text-red-500">*</span>
