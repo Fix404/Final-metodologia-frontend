@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { vaciarCarrito } from "../redux/slices/CarritoSlice";
-import { limpiarCompra, establecerOrdenGenerada } from "../redux/slices/CompraSlice";
+import {
+  limpiarCompra,
+  establecerOrdenGenerada,
+} from "../redux/slices/CompraSlice";
 import { MetodoPago } from "../types/pago";
-import { generarCodigoPedido } from "../utils/pagoUtils";
+import { generarCodigoPedido, calcularTotal } from "../utils/pagoUtils";
 import { ordenesCompraService } from "../services/ordenesCompraService";
 import { productoCantidadService } from "../services/productoCantidadService";
 import { IOrdenCompra } from "../types/IOrdenCompra";
@@ -16,10 +19,12 @@ import axios from "axios";
 export const usePago = () => {
   const dispatch = useDispatch();
 
+
   // Estados para obtener datos necesarios
   const items = useSelector((state: RootState) => state.carrito.items);
   const usuario = useAppSelector((state) => state.auth.usuario);
   const compraState = useSelector((state: RootState) => state.compra);
+
 
   const [metodoPago, setMetodoPago] = useState<MetodoPago | null>(null);
   const [procesandoPago, setProcesandoPago] = useState(false);
@@ -27,14 +32,14 @@ export const usePago = () => {
   const [codigoPedido, setCodigoPedido] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const calcularTotal = () => {
+  /*const calcularTotal = () => {
     return items.reduce((total, { detalle, cantidad }) => {
       const precioBase = detalle.precio.precioVenta;
       const descuento = detalle.producto.descuento?.porcentaje ?? 0;
       const precioFinal = Math.round(precioBase * (1 - descuento / 100));
       return total + precioFinal * cantidad;
     }, 0);
-  };
+  };*/
 
   // CORRECTO
   const crearOObtenerProductoCantidad = async (detalle: IDetalle, cantidad: number): Promise<number | null> => {
@@ -63,7 +68,6 @@ export const usePago = () => {
     }
   };
 
-
   const crearOrdenCompra = async (): Promise<IOrdenCompra | null> => {
     if (!usuario?.id) {
       setError("Usuario no encontrado");
@@ -74,16 +78,32 @@ export const usePago = () => {
       // Crear o obtener ProductoCantidad para cada item del carrito
       const productoCantidadIds: number[] = [];
 
+      const listaProductoCantidad: IProductoCantidad[] = [];
+
       for (const { detalle, cantidad } of items) {
         const productoCantidadId = await crearOObtenerProductoCantidad(detalle, cantidad);
 
+        const productoCantidadId = await crearOObtenerProductoCantidad(
+          detalle,
+          cantidad
+        );
+
         if (productoCantidadId === null) {
-          throw new Error(`Error al procesar producto: ${detalle.producto.nombre}`);
+          throw new Error(
+            `Error al procesar producto: ${detalle.producto?.nombre}`
+          );
         }
 
         productoCantidadIds.push(productoCantidadId);
-      }
 
+        listaProductoCantidad.push({
+          id: productoCantidadId,
+          detalle,
+          cantidad,
+        });
+      }
+      const total = calcularTotal(items);
+      
       // Crear la orden de compra
       // CORRECTO
       const ordenCompra: Omit<IOrdenCompra, 'id'> = {
@@ -98,22 +118,24 @@ export const usePago = () => {
           activo: true
         },
         movimiento: 'ENVIO',
-        producto_cantidad_id: productoCantidadIds, // ✅ Nombre correcto
+        producto_cantidad_id: productoCantidadIds,
         activo: true
       };
-
       console.log("Creando orden de compra:", ordenCompra);
 
       const response = await ordenesCompraService.crearOrdenCompra(ordenCompra as IOrdenCompra);
       console.log("Orden de compra creada exitosamente:", response);
 
+
       return response;
     } catch (error: any) {
       console.error("Error al crear orden de compra:", error);
 
+
       if (error.response) {
         console.error("Error response:", error.response.data);
         console.error("Status:", error.response.status);
+
 
         if (error.response.status === 403) {
           setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
@@ -130,6 +152,7 @@ export const usePago = () => {
         setError("Error de conexión. Verifica tu conexión a internet.");
       }
 
+
       return null;
     }
   };
@@ -138,9 +161,11 @@ export const usePago = () => {
     setProcesandoPago(true);
     setError(null);
 
+
     try {
       // Crear la orden de compra en la base de datos
       const ordenCreada = await crearOrdenCompra();
+
 
       if (!ordenCreada) {
         setProcesandoPago(false);
@@ -152,6 +177,8 @@ export const usePago = () => {
 
       // Simular procesamiento de transferencia
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const codigo = generarCodigoPedido();
       setCodigoPedido(codigo);
@@ -185,9 +212,11 @@ export const usePago = () => {
     setProcesandoPago(true);
     setError(null);
 
+
     try {
       // Crear la orden de compra en la base de datos
       const ordenCreada = await crearOrdenCompra();
+
       if (!ordenCreada) {
         setProcesandoPago(false);
         return;
@@ -202,7 +231,7 @@ export const usePago = () => {
       // **Generar pago con MercadoPago**
       const urlPago = await generarPago(usuario?.id!, carrito);
       if (urlPago) {
-        window.location.href = urlPago; // 🔹 Redirige al usuario a MercadoPago
+        window.location.href = urlPago; 
       } else {
         throw new Error("Error al generar el pago con MercadoPago.");
       }
@@ -259,6 +288,7 @@ export const usePago = () => {
     error,
     handleFinalizarCompra,
     limpiarDatosPago,
-    limpiarError
+    limpiarError,
+    crearOObtenerProductoCantidad
   };
 };
