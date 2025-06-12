@@ -3,24 +3,17 @@ import React from "react";
 import { useAppSelector } from "../../../../hooks/redux";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { fetchProducto } from "../../../../redux/slices/productoSlice";
-import { fetchColor, setColorActivo, limpiarColorActivo } from "../../../../redux/slices/colorSlice";
-import { fetchCategoria, setCategoriaActivo, limpiarCategoriaActivo } from "../../../../redux/slices/categoriaSlice";
-import { ICategoria } from "../../../../types/ICategoria";
-import { IColor } from "../../../../types/IColor";
-import { IPrecio } from "../../../../types/IPrecio";
+import { limpiarColorActivo } from "../../../../redux/slices/colorSlice";
+import { limpiarCategoriaActivo } from "../../../../redux/slices/categoriaSlice";
 import { IDetalle } from "../../../../types/IDetalle";
-import { productoService } from "../../../../services/productoService";
-import { colorService } from "../../../../services/colorService";
-import { categoriaService } from "../../../../services/categoriaService";
-import { detalleService } from "../../../../services/detalleService";
-import { fetchDetalles, limpiarDetalleActivo, setDetalleActivo } from "../../../../redux/slices/detalleProductoSlice";
 import { CategoriaModal } from "../../Modals/AdminModals/CategoriaModal";
 import { ColorModal } from "../../Modals/AdminModals/ColorModal";
 import { PrecioModal } from "../../Modals/AdminModals/PrecioModal";
-import { precioService } from "../../../../services/precioService";
-import { fetchPrecio, limpiarPrecioActivo, setPrecioActivo } from "../../../../redux/slices/precioSlice";
+import { limpiarPrecioActivo } from "../../../../redux/slices/precioSlice";
 import { DetalleModal} from "../../Modals/AdminModals/DetalleModal";
+import { cargarCategorias, cargarColores, cargarDetalles, cargarPrecios, cargarProductos } from "../../../../utils/tablaDetalleUtils";
+import { useTablaDetalleHandlers } from "../../../../hooks/useTablaDetalleHandlers";
+import { limpiarDetalleActivo } from "../../../../redux/slices/detalleProductoSlice";
 
 type ModalType = 'categoria' | 'color' | 'precio' | 'detalle'| null;
 
@@ -35,172 +28,57 @@ export const TablaAdminDetalles = () => {
   const colorActivo = useSelector((state: RootState) => state.color.colorActivo);
   const precioActivo = useSelector((state: RootState) => state.precio.precioActivo);
   const detalleActivo=useSelector((state: RootState) => state.detalleProducto.detalleActivo);
-  
+
   const [openModal, setOpenModal] = useState(false);
   const [openModalSee, setOpenModalSee] = useState(false);
   const [activeModalType, setActiveModalType] = useState<ModalType>(null);
   const [activeTab, setActiveTab] = useState<'detalle' | 'categorias' | 'colores' | 'precios'>('detalle');
   const [expandedProducts, setExpandedProducts] = useState<Set<number>>(new Set());
+
+  const {handleOpenModalCrearDetalle,handleOpenModalVerCategoria,handleOpenModalCrearCategoria,
+    handleOpenModalCrearColor,
+    handleOpenModalCrearPrecio,
+    handleOpenModalEditCategoria,
+    handleOpenModalEditColor,
+    handleOpenModalEditPrecio,
+    handleOpenModalVerColor,
+    handleOpenModalVerPrecio, handleEliminarCategoria,
+    handleEliminarColor, handleEliminarPrecio} = useTablaDetalleHandlers({
+  setOpenModal,
+  setOpenModalSee,
+  setActiveModalType,
+});
+  
   
   const dispatch = useDispatch();
 
-  const cargarProductos = async () => {
-    try {
-      const response = await productoService.obtenerProductos();
-      dispatch(fetchProducto(response));
-    } catch (err) {
-      console.error("Error al obtener productos:", err);
-    }
-  };
-
-  const cargarColores = async () => {
-    try {
-      const response = await colorService.obtenerColores();
-      dispatch(fetchColor(response));
-    } catch (err) {
-      console.error("Error al obtener colores:", err);
-    }
-  };
-
-  const cargarCategorias = async () => {
-    try {
-      const response = await categoriaService.obtenerCategorias();
-      dispatch(fetchCategoria(response));
-    } catch (error) {
-      console.error("Error al obtener las categorías", error);
-    }
-  };
-
-  const cargarPrecios = async () => {
-    try {
-      const response = await precioService.obtenerPrecios();
-      dispatch(fetchPrecio(response));
-    } catch (error) {
-      console.error("Error al obtener los precios", error);
-    }
-  };
-
-  const cargarDetalles = async () => {
-    try {
-      const response = await detalleService.obtenerDetalles();
-      console.log("RESPUESTA: ", response)
-      dispatch(fetchDetalles(response));
-    } catch (error) {
-      console.error("Error al obtener los detalles", error);
-    }
-  };
-
-  const handleOpenModalCrearDetalle = () => {
-    dispatch(limpiarDetalleActivo());
-    setOpenModalSee(false);
-    setActiveModalType('detalle');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalVerCategoria = (categoria: ICategoria) => {
-    setOpenModalSee(true);
-    dispatch(setCategoriaActivo(categoria));
-    setActiveModalType('categoria');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalEditCategoria = (categoria: ICategoria) => {
-    setOpenModalSee(false);
-    dispatch(setCategoriaActivo(categoria));
-    setActiveModalType('categoria');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalCrearCategoria = () => {
-    dispatch(limpiarCategoriaActivo());
-    setOpenModalSee(false);
-    setActiveModalType('categoria');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalVerColor = (color: IColor) => {
-    setOpenModalSee(true);
-    dispatch(setColorActivo(color));
-    setActiveModalType('color');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalEditColor = (color: IColor) => {
-    setOpenModalSee(false);
-    dispatch(setColorActivo(color));
-    setActiveModalType('color');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalCrearColor = () => {
-    dispatch(limpiarColorActivo());
-    setOpenModalSee(false);
-    setActiveModalType('color');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalVerPrecio = (precio: IPrecio) => {
-    setOpenModalSee(true);
-    dispatch(setPrecioActivo(precio));
-    setActiveModalType('precio');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalEditPrecio = (precio: IPrecio) => {
-    setOpenModalSee(false);
-    dispatch(setPrecioActivo(precio));
-    setActiveModalType('precio');
-    setOpenModal(true);
-  };
-
-  const handleOpenModalCrearPrecio = () => {
-    dispatch(limpiarPrecioActivo());
-    setOpenModalSee(false);
-    setActiveModalType('precio');
-    setOpenModal(true);
-  };
+  
 
   const handleCloseModal = () => {
     dispatch(limpiarCategoriaActivo());
     dispatch(limpiarColorActivo());
     dispatch(limpiarPrecioActivo());
+    dispatch(limpiarDetalleActivo())
     setOpenModal(false);
     setActiveModalType(null);
 
     switch (activeModalType) {
       case 'categoria':
-        cargarCategorias();
+        cargarCategorias(dispatch);
         break;
       case 'color':
-        cargarColores();
+        cargarColores(dispatch);
         break;
       case 'precio':
-        cargarPrecios();
+        cargarPrecios(dispatch);
+        break;
+        case 'detalle':
+        cargarDetalles(dispatch);
         break;
     }
   };
 
-  const handleEliminarCategoria = async (id: number) => {
-    if (window.confirm('¿Está seguro de que desea eliminar esta categoría?')) {
-      try {
-        await categoriaService.eliminarCategoria(id);
-        cargarCategorias();
-      } catch (error) {
-        console.error("Error al eliminar categoría:", error);
-      }
-    }
-  };
-
-  const handleEliminarColor = async (id: number) => {
-    if (window.confirm('¿Está seguro de que desea eliminar este color?')) {
-      try {
-        await colorService.eliminarColor(id);
-        cargarColores();
-      } catch (error) {
-        console.error("Error al eliminar color:", error);
-      }
-    }
-  };
+  
 
   const toggleProductExpansion = (productoId: number) => {
     const newExpanded = new Set(expandedProducts);
@@ -210,10 +88,6 @@ export const TablaAdminDetalles = () => {
       newExpanded.add(productoId);
     }
     setExpandedProducts(newExpanded);
-  };
-
-  const getProductoDetalles = (productoId: number) => {
-    return detalles.filter(detalle => detalle.producto?.id === productoId);
   };
 
   const getProductosConDetalles = () => {
@@ -239,11 +113,11 @@ export const TablaAdminDetalles = () => {
 
   useEffect(() => {
     if (activeSubMenu === "Detalles de productos") {
-      cargarProductos();
-      cargarColores();
-      cargarCategorias();
-      cargarPrecios();
-      cargarDetalles();
+      cargarProductos(dispatch);
+      cargarColores(dispatch);
+      cargarCategorias(dispatch);
+      cargarPrecios(dispatch);
+      cargarDetalles(dispatch);
     }
   }, [activeSubMenu]);
 
@@ -262,7 +136,7 @@ export const TablaAdminDetalles = () => {
         <div className="mb-6">
           <nav className="flex space-x-8" aria-label="Tabs">
             {[
-              { id: 'detalles', label: 'Detalles de productos' },
+              { id: 'detalle', label: 'Detalles de productos' },
               { id: 'categorias', label: 'Categorías' },
               { id: 'colores', label: 'Colores' },
               { id: 'precios', label: 'Precios' }
@@ -281,7 +155,7 @@ export const TablaAdminDetalles = () => {
             ))}
           </nav>
         </div>
-        {activeTab === 'detalles' && (
+        {activeTab === 'detalle' && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full table-auto min-w-full">
@@ -304,7 +178,7 @@ export const TablaAdminDetalles = () => {
                     </tr>
                   ) : (
                     getProductosConDetalles().map(({ producto, detalles: productDetalles }) => {
-                      const totalStock = productDetalles.reduce((sum, detalle) => sum + (detalle.stock || 0), 0);
+                      const totalStock = productDetalles.reduce((sum:number, detalle:IDetalle) => sum + (detalle.stock || 0), 0);
                       const precios = productDetalles.map(d => d.precio?.precioVenta).filter(Boolean);
                       const minPrecio = precios.length > 0 ? Math.min(...precios as number[]) : 0;
                       const maxPrecio = precios.length > 0 ? Math.max(...precios as number[]) : 0;
