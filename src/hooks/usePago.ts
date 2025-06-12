@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { vaciarCarrito } from "../redux/slices/CarritoSlice";
 import { limpiarCompra, establecerOrdenGenerada } from "../redux/slices/CompraSlice";
 import { MetodoPago } from "../types/pago";
-import { generarCodigoPedido } from "../utils/pagoUtils";
+import { generarCodigoPedido, calcularTotal } from "../utils/pagoUtils";
 import { ordenesCompraService } from "../services/ordenesCompraService";
 import { productoCantidadService } from "../services/productoCantidadService";
 import { IOrdenCompra } from "../types/IOrdenCompra";
@@ -26,14 +26,14 @@ export const usePago = () => {
   const [codigoPedido, setCodigoPedido] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const calcularTotal = () => {
+  /*const calcularTotal = () => {
     return items.reduce((total, { detalle, cantidad }) => {
       const precioBase = detalle.precio.precioVenta;
       const descuento = detalle.producto.descuento?.porcentaje ?? 0;
       const precioFinal = Math.round(precioBase * (1 - descuento / 100));
       return total + precioFinal * cantidad;
     }, 0);
-  };
+  };*/
 
   // CORRECTO
 const crearOObtenerProductoCantidad = async (detalle: IDetalle, cantidad: number): Promise<number | null> => {
@@ -77,12 +77,14 @@ const crearOObtenerProductoCantidad = async (detalle: IDetalle, cantidad: number
         
         productoCantidadIds.push(productoCantidadId);
       }
-
+const total = calcularTotal(items);
+console.log('total:',total);
+console.log('productoCantidad:',productoCantidadIds)
       // Crear la orden de compra
       // CORRECTO
 const ordenCompra: Omit<IOrdenCompra, 'id'> = {
   fecha: new Date().toISOString(),
-  precio_total: calcularTotal(),
+  precio_total: total,
   usuario: {
     id: usuario.id,
     nombre: usuario.nombre || "", // Valor por defecto ya que usuario.nombre puede no existir
@@ -92,7 +94,7 @@ const ordenCompra: Omit<IOrdenCompra, 'id'> = {
     activo: true
   },
   movimiento: 'ENVIO',
-  producto_cantidad_id: productoCantidadIds, // ✅ Nombre correcto
+  productoCantidad: productoCantidadIds, 
   activo: true
 };
 
