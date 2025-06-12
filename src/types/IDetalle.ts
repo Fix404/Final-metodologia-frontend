@@ -5,7 +5,7 @@ import { IProducto } from "./IProducto"
 import { ITalle } from "./ITalle"
 
 export interface IDetalle {
-    id: number | null
+    id: number 
     talle: ITalle | null
     color: IColor | null
     precio: IPrecio | null
