@@ -29,18 +29,16 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
   });
 
   useEffect(() => {
-    // Verificar si no tiene dirección para mostrar el formulario
-    if (
-      !usuario.direccion &&
-      (!compraDireccionEnvio ||
-        !compraDireccionEnvio.calle ||
-        !compraDireccionEnvio.numero ||
-        !compraDireccionEnvio.localidad?.localidad ||
-        !compraDireccionEnvio.provincia)
-    ) {
+    // Si el usuario tiene dirección guardada y no hay dirección en compra, usar la guardada
+    if (usuario.direccion && !compraDireccionEnvio) {
+      dispatch(setDireccionEnvio(usuario.direccion));
+    }
+    
+    // Solo mostrar formulario si no tiene dirección guardada Y no tiene dirección en compra
+    if (!usuario.direccion && !compraDireccionEnvio) {
       setMostrarFormularioDireccion(true);
     }
-  }, [usuario.direccion, compraDireccionEnvio]);
+  }, [usuario.direccion, compraDireccionEnvio, dispatch]);
 
   const handleGuardarDireccion = () => {
     if (
@@ -68,13 +66,6 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
       });
     } else {
       alert("Todos los campos son obligatorios.");
-    }
-  };
-
-  const handleUsarDireccionExistente = () => {
-    if (usuario?.direccion) {
-      dispatch(setDireccionEnvio(usuario.direccion));
-      setMostrarFormularioDireccion(false);
     }
   };
 
@@ -118,25 +109,6 @@ export const DireccionForm: React.FC<DireccionFormProps> = ({
 
       {mostrarFormularioDireccion ? (
         <div className="space-y-4">
-          {usuario.direccion && (
-            <div className="bg-gray-50 p-4 rounded-md">
-              <p className="text-sm text-gray-600 mb-2">
-                ¿Usar tu dirección guardada?
-              </p>
-              <p className="text-gray-700">
-                {usuario.direccion?.calle} {usuario.direccion?.numero},{" "}
-                {usuario.direccion?.localidad?.localidad}, {usuario.direccion?.provincia}
-                {usuario.direccion?.codigoPostal && ` - CP: ${usuario.direccion.codigoPostal}`}
-              </p>
-              <button
-                onClick={handleUsarDireccionExistente}
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm"
-              >
-                Usar esta dirección
-              </button>
-            </div>
-          )}
-
           <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"

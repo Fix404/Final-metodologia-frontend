@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
@@ -20,15 +20,6 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const compraState = useSelector((state: RootState) => state.compra);
-
-  // Limpiar el carrito y los datos de compra cuando se monta este componente
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      dispatch(vaciarCarrito());
-      dispatch(limpiarCompra());
-    }, 60000); 
-    return () => clearTimeout(timeoutId);
-  }, [dispatch]);
 
   const handleVolverAInicio = () => {
     dispatch(vaciarCarrito());

@@ -161,7 +161,6 @@ export const usePago = () => {
     }
   };
 
-
   const procesarPagoTransferencia = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
@@ -200,7 +199,6 @@ export const usePago = () => {
     }
   };
 
-  
   const procesarPagoMercadoPago = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
@@ -231,7 +229,6 @@ export const usePago = () => {
     }
   };
 
-
   const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
@@ -252,8 +249,8 @@ export const usePago = () => {
     setError(null);
 
     try {
-      
-     //const ordenCreada = await crearOrdenCompra();
+      // Crear la orden de compra una sola vez
+      const ordenCreada = await crearOrdenCompra();
       if (!ordenCreada) {
         setProcesandoPago(false);
         return;
@@ -262,7 +259,7 @@ export const usePago = () => {
       if (metodoPago === "transferencia") {
         await procesarPagoTransferencia(ordenCreada);
         dispatch(vaciarCarrito());
-        dispatch(limpiarCompra());
+        
         setPagoCompletado(true);
       } else if (metodoPago === "mercadopago") {
         await procesarPagoMercadoPago(ordenCreada);
@@ -288,6 +285,13 @@ export const usePago = () => {
     setError(null);
   };
 
+  // Nueva función para confirmar el pago de MercadoPago (llamar desde el componente de éxito)
+  const confirmarPagoMercadoPago = () => {
+    dispatch(vaciarCarrito());
+    dispatch(limpiarCompra());
+    setPagoCompletado(true);
+  };
+
   return {
     metodoPago,
     setMetodoPago,
@@ -298,5 +302,6 @@ export const usePago = () => {
     handleFinalizarCompra,
     limpiarDatosPago,
     limpiarError,
+    confirmarPagoMercadoPago, // Exportar la nueva función
   };
 };

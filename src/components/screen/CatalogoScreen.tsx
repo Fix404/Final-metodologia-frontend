@@ -5,6 +5,8 @@ import { ProductoCatalogoCardList } from "../ui/Lists/ProductoCatalogoCardList";
 import { fetchProducto } from "../../redux/slices/productoSlice";
 import { RootState } from "../../redux/store";
 import { IProducto } from "../../types/IProducto";
+import { IDetalle } from "../../types/IDetalle";
+import { detalleService } from "../../services/detalleService";
 
 interface ICategoria {
     id: number;
@@ -19,6 +21,11 @@ export const CatalogoScreen = () => {
     const [categoria, setCategoria] = useState("");
     const [tipo, setTipo] = useState("");
     const [sexo, setSexo] = useState("");
+    const [talle, setTalle] = useState(""); // Nuevo estado para talle
+    const [precioMin, setPrecioMin] = useState("");
+    const [precioMax, setPrecioMax] = useState("");
+    const [detalles, setDetalles] = useState<IDetalle[]>([]);
+    const [tallesDisponibles, setTallesDisponibles] = useState<string[]>([]); // Nuevo estado para talles
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -42,6 +49,31 @@ export const CatalogoScreen = () => {
         fetchProducts();
     }, [dispatch]);
 
+    // Traer detalles
+    useEffect(() => {
+        const fetchDetalles = async () => {
+            try {
+                const detallesData: IDetalle[] = await detalleService.obtenerDetallesActivos();
+                setDetalles(detallesData);
+                
+                // Extraer talles únicos de los detalles
+                const tallesUnicos = Array.from(
+                    new Set(
+                        detallesData
+                            .filter((detalle) => detalle.talle?.talle) // Filtrar detalles que tienen talle
+                            .map((detalle) => detalle.talle!.talle) // Extraer el string del talle
+                    )
+                ).sort(); // Orden alfabético simple
+                
+                setTallesDisponibles(tallesUnicos);
+            } catch (err) {
+                console.error("Error al obtener detalles:", err);
+            }
+        };
+
+        fetchDetalles();
+    }, []);
+
     // Traer categorías
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -56,6 +88,33 @@ export const CatalogoScreen = () => {
         fetchCategorias();
     }, []);
 
+    // Función para verificar si un producto tiene al menos un detalle en el rango de precio
+    const productoEnRangoPrecio = (productoId: number): boolean => {
+        if (!precioMin && !precioMax) return true;
+
+        const detallesProducto = detalles.filter(detalle => 
+            detalle.producto?.id === productoId && detalle.precio
+        );
+
+        const min = precioMin ? parseFloat(precioMin) : 0;
+        const max = precioMax ? parseFloat(precioMax) : Infinity;
+
+        return detallesProducto.some(detalle => {
+            const precio = detalle.precio!.precioVenta;
+            return precio >= min && precio <= max;
+        });
+    };
+
+    // Función para verificar si un producto tiene al menos un detalle con el talle seleccionado
+    const productoConTalle = (productoId: number): boolean => {
+        if (!talle) return true;
+
+        return detalles.some(detalle => 
+            detalle.producto?.id === productoId && 
+            detalle.talle?.talle === talle
+        );
+    };
+
     // Filtrado de productos según filtros
     const filteredProducts = productos.filter((producto: IProducto) => {
         const matchesTipo = tipo ? producto.tipo!.toLowerCase() === tipo.toLowerCase() : true;
@@ -63,8 +122,10 @@ export const CatalogoScreen = () => {
         const matchesCategoria = categoria
             ? producto.categoria?.id!.toString() === categoria
             : true;
+        const matchesPrecio = productoEnRangoPrecio(producto.id!);
+        const matchesTalle = productoConTalle(producto.id!); // Nueva validación de talle
 
-        return matchesTipo && matchesSexo && matchesCategoria;
+        return matchesTipo && matchesSexo && matchesCategoria && matchesPrecio && matchesTalle;
     });
 
     const renderFiltro = (
@@ -86,6 +147,42 @@ export const CatalogoScreen = () => {
                 </button>
             </div>
         );
+
+    const renderFiltroPrecio = () => {
+        if (!precioMin && !precioMax) return null;
+        
+        const rangoTexto = `$${precioMin || '0'} - $${precioMax || '∞'}`;
+        
+        return (
+            <div className="flex items-center gap-2 bg-[#1c4577]/10 text-[#1c4577] px-3 py-2 rounded-lg text-sm font-medium">
+                <span>Precio: {rangoTexto}</span>
+                <button
+                    onClick={() => {
+                        setPrecioMin("");
+                        setPrecioMax("");
+                    }}
+                    className="hover:bg-[#1c4577]/20 hover:cursor-pointer rounded-full p-1 transition-colors duration-200"
+                    title="Limpiar filtro"
+                >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        );
+    };
+
+    const handlePrecioChange = (value: string, tipo: 'min' | 'max') => {
+        // Solo permitir números y punto decimal
+        const regex = /^\d*\.?\d*$/;
+        if (regex.test(value) || value === '') {
+            if (tipo === 'min') {
+                setPrecioMin(value);
+            } else {
+                setPrecioMax(value);
+            }
+        }
+    };
 
     if (loading) {
         return (
@@ -176,10 +273,51 @@ export const CatalogoScreen = () => {
                             value="unisex">Unisex</option>
                     </select>
 
+                    {/* Filtro Talle - NUEVO */}
+                    <select
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        value={talle}
+                        onChange={(e) => setTalle(e.target.value)}
+                        disabled={tallesDisponibles.length === 0}
+                    >
+                        <option
+                            className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                            value="">Talle</option>
+                        {tallesDisponibles.map(talleOption => (
+                            <option
+                                className="bg-white text-[#25374d] font-medium hover:bg-blue-100"
+                                key={talleOption}
+                                value={talleOption}>
+                                {talleOption}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Filtro Precio - Rango */}
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            placeholder="Min."
+                            value={precioMin}
+                            onChange={(e) => handlePrecioChange(e.target.value, 'min')}
+                            className="w-20 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        />
+                        <span className="text-[#25374d] font-medium">-</span>
+                        <input
+                            type="text"
+                            placeholder="Max."
+                            value={precioMax}
+                            onChange={(e) => handlePrecioChange(e.target.value, 'max')}
+                            className="w-20 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        />
+                    </div>
+
                     {/* Etiquetas de filtros activos */}
                     {renderFiltro("Tipo", tipo, setTipo)}
                     {renderFiltro("Sexo", sexo, setSexo)}
+                    {renderFiltro("Talle", talle, setTalle)} {/* Nueva etiqueta para talle */}
                     {renderFiltro("Categoría", categoria ? categorias.find(c => c.id.toString() === categoria)?.nombre || "" : "", setCategoria)}
+                    {renderFiltroPrecio()}
 
                 </div>
 
