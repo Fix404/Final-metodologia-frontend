@@ -38,4 +38,10 @@ export const categoriaService= {
     const response = await api.put(`/categorias/estado/${id}?activo=false`);
     return response.data;
   },
+
+  // Restore
+  cambiarEstadoCategoria: async(id:number, activo:boolean)=>{
+    const response = await api.put(`/categorias/estado/${id}?activo=${activo}`);
+    return response.data;
+  }
 }
