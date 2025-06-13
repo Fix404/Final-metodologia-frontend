@@ -10,8 +10,4 @@ export interface IOrdenCompra {
   usuario: IUsuario;
   movimiento?: string;
   productoCantidad: IProductoCantidad[];
-<<<<<<< HEAD
-
-=======
->>>>>>> 8ac119b9b14b8a4ff645c265e80de217d391a577
 }
