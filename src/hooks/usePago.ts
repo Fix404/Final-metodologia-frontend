@@ -14,6 +14,7 @@ import { IProductoCantidad } from "../types/IProductoCantidad";
 import { RootState } from "../redux/store";
 import { useAppSelector } from "./redux";
 import { IDetalle } from "../types/IDetalle";
+import axios from "axios";
 
 export const usePago = () => {
   const dispatch = useDispatch();
@@ -101,7 +102,7 @@ export const usePago = () => {
         });
       }
       const total = calcularTotal(items);
-      
+
       // Crear la orden de compra
       // CORRECTO
       const ordenCompra: Omit<IOrdenCompra, "id"> = {
@@ -121,7 +122,6 @@ export const usePago = () => {
       };
 
       console.log("Creando orden de compra:", ordenCompra);
-
       const response = await ordenesCompraService.crearOrdenCompra(
         ordenCompra as IOrdenCompra
       );
@@ -184,37 +184,55 @@ export const usePago = () => {
     }
   };
 
+  const generarPago = async (usuarioId: number, carrito: IProductoCantidad[]) => {
+    try {
+      const response = await axios.post("http://localhost:8080/pay/mp", {
+        usuarioId,
+        carrito
+      });
+
+      console.log("Respuesta del backend:", response.data);
+      return response.data.urlPago;
+
+    } catch (error) {
+      console.error("Error al generar el pago:", error);
+      return null;
+    }
+  };
+
   const procesarPagoMercadoPago = async () => {
     setProcesandoPago(true);
     setError(null);
 
     try {
-      // Crear la orden de compra en la base de datos
       const ordenCreada = await crearOrdenCompra();
-
       if (!ordenCreada) {
         setProcesandoPago(false);
         return;
       }
 
-      // Guardar la orden en el estado para mostrar en CompraExitosa
-      dispatch(establecerOrdenGenerada(ordenCreada));
+      const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
+        id: 0,
+        detalle,
+        cantidad
+      }));
 
-      // Simular integración con MercadoPago
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const urlPago = await generarPago(usuario?.id!, carrito);
+      if (urlPago) {
+        window.location.href = urlPago;
+      } else {
+        throw new Error("Error al generar el pago con MercadoPago.");
+      }
 
-      const codigo = generarCodigoPedido();
-      setCodigoPedido(codigo);
-      setProcesandoPago(false);
-      setPagoCompletado(true);
     } catch (error) {
       console.error("Error en procesamiento de MercadoPago:", error);
       setError("Error al procesar el pago con MercadoPago.");
+    } finally {
       setProcesandoPago(false);
     }
   };
 
-  const handleFinalizarCompra = () => {
+  /*const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
       return;
@@ -230,12 +248,96 @@ export const usePago = () => {
       return;
     }
 
-    if (metodoPago === "transferencia") {
-      procesarPagoTransferencia();
-    } else {
-      procesarPagoMercadoPago();
+    setProcesandoPago(true);
+    setError(null);
+
+    try {
+      const ordenCreada = await crearOrdenCompra();
+      if (!ordenCreada) {
+        setProcesandoPago(false);
+        return;
+      }
+
+      if (metodoPago === "transferencia") {
+        procesarPagoTransferencia();
+      } else if (metodoPago === "mercadopago") {
+        const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
+          id: 0, 
+          detalle,
+          cantidad
+        }));
+
+        const urlPago = await generarPago(usuario.id, carrito);
+        if (urlPago) {
+          window.location.href = urlPago;
+        } else {
+          throw new Error("Error al generar el pago con MercadoPago.");
+        }
+      }
+
+    } catch (error) {
+      console.error("Error en el proceso de compra:", error);
+      setError("Error al procesar el pago.");
+    } finally {
+      setProcesandoPago(false);
     }
-  };
+  };*/
+const handleFinalizarCompra = async () => {
+    if (!metodoPago) {
+        setError("Selecciona un método de pago");
+        return;
+    }
+
+    if (items.length === 0) {
+        setError("El carrito está vacío");
+        return;
+    }
+
+    if (!usuario?.id) {
+        setError("Usuario no encontrado. Inicia sesión nuevamente.");
+        return;
+    }
+
+    setProcesandoPago(true);
+    setError(null);
+
+    try {
+        const ordenCreada = await crearOrdenCompra();
+        if (!ordenCreada) {
+            setProcesandoPago(false);
+            return;
+        }
+
+        if (metodoPago === "transferencia") {
+            await procesarPagoTransferencia();
+            dispatch(vaciarCarrito()); // ✅ Vaciar el carrito solo después del pago exitoso
+            dispatch(limpiarCompra());
+            setPagoCompletado(true);
+        } else if (metodoPago === "mercadopago") {
+            const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
+                id: 0, 
+                detalle,
+                cantidad
+            }));
+
+            const urlPago = await generarPago(usuario.id, carrito);
+            if (urlPago) {
+                console.log("Redirigiendo a MercadoPago:", urlPago);
+                window.location.href = urlPago;
+            } else {
+                throw new Error("Error al generar el pago con MercadoPago.");
+            }
+        }
+
+    } catch (error) {
+        console.error("Error en el proceso de compra:", error);
+        setError("Error al procesar el pago.");
+    } finally {
+        setProcesandoPago(false);
+    }
+};
+
+
 
   const limpiarDatosPago = () => {
     dispatch(vaciarCarrito());
