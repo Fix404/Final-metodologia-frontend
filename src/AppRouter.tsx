@@ -21,6 +21,8 @@ import { TablaAdminDetalles } from './components/ui/TablasAdmin/Productos/TablaA
 import { HomeScreen } from './components/screen/HomeScreen';
 import { EditarUsuarioScreen } from './components/screen/EditarUsuarioScreen';
 import { PasswordScreen } from './components/screen/PasswordScreen';
+import AuthVerifier from './components/AuthVerifier';
+import { ToastContainer } from 'react-toastify';
 
 
 export const AppRouter = () => {
@@ -28,6 +30,18 @@ export const AppRouter = () => {
 
   return (
         <Router>
+          <ToastContainer 
+        position="top-right"
+        autoClose={5000}  // duración 5 segundos
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+          <AuthVerifier />
             <Routes>
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
