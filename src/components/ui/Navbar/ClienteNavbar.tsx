@@ -231,7 +231,7 @@ const ClienteNavbar = () => {
 
                     {/* Menu Items */}
                     <div className="py-2">
-                      <button 
+                             <button 
                        onClick={() => navigate("/datos-usuario")}
                       className="w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors duration-150 group">
                         <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center group-hover:bg-blue-200 transition-colors">

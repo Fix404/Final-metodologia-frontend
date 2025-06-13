@@ -81,7 +81,7 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
           <div className="space-y-4 text-left mb-6">
             <h3 className="text-lg font-semibold text-gray-800">Resumen del pedido:</h3>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p><strong>Total:</strong> ${ordenCompra.precio_total.toLocaleString()}</p>
+              <p><strong>Total:</strong> ${ordenCompra.precioTotal}</p>
               <p><strong>Método de pago:</strong> {metodoPago === "transferencia" ? "Transferencia bancaria" : "MercadoPago"}</p>
               <p><strong>Dirección de envío:</strong> {formatearDireccion()}</p>
             </div>
