@@ -26,7 +26,7 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
     const timeoutId = setTimeout(() => {
       dispatch(vaciarCarrito());
       dispatch(limpiarCompra());
-    }, 2000); 
+    }, 60000); 
     return () => clearTimeout(timeoutId);
   }, [dispatch]);
 
