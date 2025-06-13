@@ -25,6 +25,7 @@ import AuthVerifier from './components/AuthVerifier';
 import { ToastContainer } from 'react-toastify';
 
 
+
 export const AppRouter = () => {
   const rol  = useAppSelector(state => state.auth.rol);
 
@@ -68,7 +69,7 @@ export const AppRouter = () => {
           <Route path="/pagar" element={<PagoScreen />} />
           <Route path="/datos-usuario" element={<EditarUsuarioScreen/>} />
           <Route path="/cambiar-contrasenia" element={<PasswordScreen/>} />
-
+           <Route path="/paymentFailure" element={<HomeScreen/>} />
         </Route>
 
         {/* Rutas SIN Navbar/Footer */}

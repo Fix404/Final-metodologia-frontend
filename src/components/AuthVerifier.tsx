@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import { logout } from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
+import { vaciarCarrito } from '../redux/slices/CarritoSlice';
+
 
 interface TokenPayload {
   exp: number;
@@ -16,7 +18,7 @@ const AuthVerifier: React.FC = () => {
   const isAuthenticated = useAppSelector(state => !!state.auth.usuario);
 
   useEffect(() => {
-    if (!isAuthenticated) return; // Si no está autenticado, no chequea ni pone timeout
+    if (!isAuthenticated) return; 
 
     const token = localStorage.getItem('authToken');
     if (!token) return;
@@ -29,6 +31,7 @@ const AuthVerifier: React.FC = () => {
 
       if (payload.exp < currentTime) {
         dispatch(logout());
+        dispatch(vaciarCarrito())
         localStorage.removeItem('authToken');
         navigate('/login');
         toast.info("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
@@ -39,6 +42,7 @@ const AuthVerifier: React.FC = () => {
           alert('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.');
           dispatch(logout());
           localStorage.removeItem('authToken');
+          dispatch(vaciarCarrito())
           navigate('/login');
         }, expiresInMs);
       }
@@ -46,6 +50,7 @@ const AuthVerifier: React.FC = () => {
       console.error('Error al decodificar el token:', error);
       dispatch(logout());
       localStorage.removeItem('authToken');
+      dispatch(vaciarCarrito())
       navigate('/login');
       toast.error("Error con la sesión. Por favor, vuelve a iniciar sesión.");
     }

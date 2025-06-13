@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { IUsuario } from '../../../../types/IUsuario';
 import { usuariosService } from '../../../../services/usuarioService';
 import { CreateUsuarioDireccion } from '../../../forms/CreateUsuarioDireccion';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 interface IModalProps {
   activeUser: IUsuario | null;
@@ -30,6 +31,7 @@ export const UsuarioModal = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [direccionEnvio, setDireccionEnvio] = useState<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -180,8 +182,8 @@ export const UsuarioModal = ({
                     {formValues[name as keyof IUsuario] == null
                       ? '—'
                       : typeof formValues[name as keyof IUsuario] === 'object'
-                      ? JSON.stringify(formValues[name as keyof IUsuario])
-                      : formValues[name as keyof IUsuario]!.toString()}
+                        ? JSON.stringify(formValues[name as keyof IUsuario])
+                        : formValues[name as keyof IUsuario]!.toString()}
                   </p>
                 ) : (
                   <input
@@ -208,8 +210,9 @@ export const UsuarioModal = ({
               <label className="block text-sm font-medium mb-1 text-gray-700" htmlFor="contrasenia">
                 Contraseña {!activeUser?.id && <span className="text-red-500">*</span>}
               </label>
+              <div className="relative">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="contrasenia"
                 name="contrasenia"
                 value={formValues.contrasenia || ''}
@@ -219,6 +222,18 @@ export const UsuarioModal = ({
                 disabled={loading}
                 placeholder={activeUser?.id ? 'Dejar en blanco para mantener actual' : ''}
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <FiEye className="text-gray-400 hover:text-gray-500" />
+                ) : (
+                  <FiEyeOff className="text-gray-400 hover:text-gray-500" />
+                )}
+              </button>
+            </div>
             </div>
           )}
 

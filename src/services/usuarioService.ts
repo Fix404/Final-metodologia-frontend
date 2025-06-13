@@ -22,7 +22,7 @@ export const usuariosService = {
 
   // Crear usuario
   crearUsuario: async (usuario: IUsuario) => {
-    const response = await api.post('/usuarios', usuario);
+    const response = await api.post('/usuarios/crear', usuario);
     return response.data;
   },
 

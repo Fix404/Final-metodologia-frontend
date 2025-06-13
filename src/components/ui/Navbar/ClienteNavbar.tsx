@@ -12,7 +12,7 @@ import {
 import { useAppSelector } from '../../../hooks/redux';
 import Swal from 'sweetalert2';
 import { logout } from '../../../redux/slices/authSlice';
-import { limpiarCarrito } from '../../../redux/slices/CarritoSlice';
+import { limpiarCarrito, vaciarCarrito } from '../../../redux/slices/CarritoSlice';
 
 const ClienteNavbar = () => {
   const dispatch = useDispatch();
@@ -83,7 +83,7 @@ const ClienteNavbar = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(logout());
-        limpiarCarrito();
+        dispatch(vaciarCarrito())
         navigate('/login');
       } else {
         navigate('/');
