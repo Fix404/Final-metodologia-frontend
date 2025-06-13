@@ -162,7 +162,7 @@ export const TablaAdminDetalles = () => {
                   <tr>
                     <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Producto</th>
                     <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Categoría</th>
-                    <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Total Variantes</th>
+                    <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Total Opciones</th>
                     <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Stock Total</th>
                     <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Rango Precios</th>
                     <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">Acciones</th>
@@ -210,7 +210,7 @@ export const TablaAdminDetalles = () => {
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-700">
                               <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {productDetalles.length} variantes
+                                {productDetalles.length} opciones
                               </span>
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-700">
@@ -254,11 +254,11 @@ export const TablaAdminDetalles = () => {
                               </td>
                               <td className="px-4 py-2 text-sm text-gray-600">
                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                  detalle.estado === 'DISPONIBLE' ? 'bg-green-100 text-green-800' : 
-                                  detalle.estado === 'NO_DISPONIBLE' ? 'bg-red-100 text-red-800' : 
+                                  detalle.activo ? 'bg-green-100 text-green-800' : 
+                                  'bg-red-100 text-red-800'}
                                   'bg-gray-100 text-gray-800'
                                 }`}>
-                                  {detalle.estado || 'Sin estado'}
+                                  {detalle.activo ? "Disponible" : "No disponible"}
                                 </span>
                               </td>
                               <td className="px-4 py-2 text-sm text-gray-600">
@@ -270,16 +270,16 @@ export const TablaAdminDetalles = () => {
                               <td className="px-4 py-2 text-sm text-gray-600">
                                 <div className="flex space-x-2">
                                   <button className="text-green-600 hover:text-green-800 text-xs"
-                                  onClick={() => handleOpenModalEditDetalle}>
+                                  onClick={() => handleOpenModalEditDetalle(detalle)}>
                                     Editar
                                   </button>
                                   <button className="text-red-600 hover:text-red-800 text-xs"
-                                  onClick={() => handleEliminarDetalle}>
+                                  onClick={() => handleEliminarDetalle(detalle.id)}>
                                     Eliminar
                                   </button>
-                                  {detalle.estado==="NO_DISPONIBLE" && <button
+                                  {!detalle.activo && <button
                           title="Restaurar"
-                          onClick={() => handleRestoreDetalle(producto.id!, true)}
+                          onClick={() => handleRestoreDetalle(detalle.id!, true)}
                           className="p-1.5 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg transition-all duration-200"
                         >
                           <GiAngelOutfit size={16}/>

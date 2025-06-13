@@ -9,7 +9,7 @@ interface IModalProps {
 }
 
 const initialState: IColor = {
-  id: 0,
+  id: null,
   color: '',
   activo: true
 };
@@ -100,16 +100,6 @@ export const ColorModal = ({
                   disabled={loading}
                   placeholder="Ingrese el color (ej: #FF0000 o rojo)"
                 />
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="color"
-                    value={formValues.color?.startsWith('#') ? formValues.color : '#000000'}
-                    onChange={(e) => setFormValues(prev => ({ ...prev, color: e.target.value }))}
-                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
-                    disabled={loading}
-                  />
-                  <span className="text-sm text-gray-500">O selecciona un color</span>
-                </div>
               </div>
             )}
           </div>

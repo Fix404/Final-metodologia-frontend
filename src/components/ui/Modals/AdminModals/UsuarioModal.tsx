@@ -268,4 +268,4 @@ export const UsuarioModal = ({
       </div>
     </div>
   );
-};
+}; //await procesarPagoMercadoPago(ordenCreada);

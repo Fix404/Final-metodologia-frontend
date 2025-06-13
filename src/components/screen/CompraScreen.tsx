@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { CompraCard } from "../ui/CardList/CompraCard";
@@ -48,8 +48,8 @@ export const CompraScreen: React.FC = () => {
   }
 
   const calcularPrecioFinal = (item: (typeof items)[number]["detalle"]) => {
-    const precioBase = item.precio.precioVenta;
-    const descuento = item.producto.descuento?.porcentaje ?? 0;
+    const precioBase = item.precio!.precioVenta;
+    const descuento = item.producto!.descuento?.porcentaje ?? 0;
     return Math.round(precioBase * (1 - descuento / 100));
   };
 

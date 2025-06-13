@@ -18,7 +18,6 @@ export const AdminSubNavBar = () => {
     ],
     PEDIDOS: [
       "Órdenes de compra",
-      "Historial de pedidos"
     ]
   };
 
