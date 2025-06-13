@@ -48,8 +48,8 @@ export const CompraScreen: React.FC = () => {
   }
 
   const calcularPrecioFinal = (item: (typeof items)[number]["detalle"]) => {
-    const precioBase = item.precio.precioVenta;
-    const descuento = item.producto.descuento?.porcentaje ?? 0;
+    const precioBase = item.precio!.precioVenta;
+    const descuento = item.producto!.descuento?.porcentaje ?? 0;
     return Math.round(precioBase * (1 - descuento / 100));
   };
 

@@ -110,7 +110,7 @@ export const usePago = () => {
         usuario: {
           id: usuario.id,
           nombre: usuario.nombre || "", // Valor por defecto ya que usuario.nombre puede no existir
-          apellido: "", // Usuario del auth no tiene apellido
+          apellido: usuario.apellido || "", // Usuario del auth no tiene apellido
           email: usuario.email,
           contrasenia: "",
           activo: true,

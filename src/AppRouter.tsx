@@ -21,6 +21,7 @@ import { TablaAdminDetalles } from './components/ui/TablasAdmin/Productos/TablaA
 import { HomeScreen } from './components/screen/HomeScreen';
 import { EditarUsuarioScreen } from './components/screen/EditarUsuarioScreen';
 import { PasswordScreen } from './components/screen/PasswordScreen';
+import { MisPedidosScreen } from './components/screen/MisPedidosScreen';
 
 
 export const AppRouter = () => {
@@ -54,6 +55,7 @@ export const AppRouter = () => {
           <Route path="/pagar" element={<PagoScreen />} />
           <Route path="/datos-usuario" element={<EditarUsuarioScreen/>} />
           <Route path="/cambiar-contrasenia" element={<PasswordScreen/>} />
+          <Route path="/mis-pedidos" element={<MisPedidosScreen />} />
 
         </Route>
 
