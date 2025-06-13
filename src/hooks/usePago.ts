@@ -232,7 +232,7 @@ export const usePago = () => {
     }
   };
 
-  const handleFinalizarCompra = async () => {
+  /*const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
       return;
@@ -281,7 +281,62 @@ export const usePago = () => {
     } finally {
       setProcesandoPago(false);
     }
-  };
+  };*/
+const handleFinalizarCompra = async () => {
+    if (!metodoPago) {
+        setError("Selecciona un método de pago");
+        return;
+    }
+
+    if (items.length === 0) {
+        setError("El carrito está vacío");
+        return;
+    }
+
+    if (!usuario?.id) {
+        setError("Usuario no encontrado. Inicia sesión nuevamente.");
+        return;
+    }
+
+    setProcesandoPago(true);
+    setError(null);
+
+    try {
+        const ordenCreada = await crearOrdenCompra();
+        if (!ordenCreada) {
+            setProcesandoPago(false);
+            return;
+        }
+
+        if (metodoPago === "transferencia") {
+            await procesarPagoTransferencia();
+            dispatch(vaciarCarrito()); // ✅ Vaciar el carrito solo después del pago exitoso
+            dispatch(limpiarCompra());
+            setPagoCompletado(true);
+        } else if (metodoPago === "mercadopago") {
+            const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
+                id: 0, 
+                detalle,
+                cantidad
+            }));
+
+            const urlPago = await generarPago(usuario.id, carrito);
+            if (urlPago) {
+                console.log("Redirigiendo a MercadoPago:", urlPago);
+                window.location.href = urlPago;
+            } else {
+                throw new Error("Error al generar el pago con MercadoPago.");
+            }
+        }
+
+    } catch (error) {
+        console.error("Error en el proceso de compra:", error);
+        setError("Error al procesar el pago.");
+    } finally {
+        setProcesandoPago(false);
+    }
+};
+
 
 
   const limpiarDatosPago = () => {
