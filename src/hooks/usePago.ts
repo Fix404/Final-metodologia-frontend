@@ -30,15 +30,6 @@ export const usePago = () => {
   const [codigoPedido, setCodigoPedido] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  /*const calcularTotal = () => {
-    return items.reduce((total, { detalle, cantidad }) => {
-      const precioBase = detalle.precio.precioVenta;
-      const descuento = detalle.producto.descuento?.porcentaje ?? 0;
-      const precioFinal = Math.round(precioBase * (1 - descuento / 100));
-      return total + precioFinal * cantidad;
-    }, 0);
-  };*/
-
   // CORRECTO
   const crearOObtenerProductoCantidad = async (
     detalle: IDetalle,
@@ -154,21 +145,14 @@ export const usePago = () => {
     }
   };
 
-  const procesarPagoTransferencia = async () => {
+  // ✅ CORREGIDO - Recibe la orden como parámetro
+  const procesarPagoTransferencia = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
 
     try {
-      // Crear la orden de compra en la base de datos
-      const ordenCreada = await crearOrdenCompra();
-
-      if (!ordenCreada) {
-        setProcesandoPago(false);
-        return;
-      }
-
       // Guardar la orden en el estado para mostrar en CompraExitosa
-      dispatch(establecerOrdenGenerada(ordenCreada));
+      dispatch(establecerOrdenGenerada(ordenCompra));
 
       // Simular procesamiento de transferencia
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -200,16 +184,14 @@ export const usePago = () => {
     }
   };
 
-  const procesarPagoMercadoPago = async () => {
+  // ✅ CORREGIDO - Recibe la orden como parámetro
+  const procesarPagoMercadoPago = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
 
     try {
-      const ordenCreada = await crearOrdenCompra();
-      if (!ordenCreada) {
-        setProcesandoPago(false);
-        return;
-      }
+      // Guardar la orden en el estado para mostrar en CompraExitosa
+      dispatch(establecerOrdenGenerada(ordenCompra));
 
       const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
         id: 0,
@@ -219,6 +201,7 @@ export const usePago = () => {
 
       const urlPago = await generarPago(usuario?.id!, carrito);
       if (urlPago) {
+        console.log("Redirigiendo a MercadoPago:", urlPago);
         window.location.href = urlPago;
       } else {
         throw new Error("Error al generar el pago con MercadoPago.");
@@ -232,7 +215,8 @@ export const usePago = () => {
     }
   };
 
-  /*const handleFinalizarCompra = async () => {
+  // ✅ CORREGIDO - Crear orden UNA SOLA VEZ
+  const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
       return;
@@ -252,27 +236,22 @@ export const usePago = () => {
     setError(null);
 
     try {
+      // ✅ Crear la orden UNA SOLA VEZ
       const ordenCreada = await crearOrdenCompra();
       if (!ordenCreada) {
         setProcesandoPago(false);
         return;
       }
 
+      // ✅ Pasar la orden creada a las funciones de procesamiento
       if (metodoPago === "transferencia") {
-        procesarPagoTransferencia();
+        await procesarPagoTransferencia(ordenCreada);
+        dispatch(vaciarCarrito());
+        dispatch(limpiarCompra());
+        setPagoCompletado(true);
       } else if (metodoPago === "mercadopago") {
-        const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
-          id: 0, 
-          detalle,
-          cantidad
-        }));
-
-        const urlPago = await generarPago(usuario.id, carrito);
-        if (urlPago) {
-          window.location.href = urlPago;
-        } else {
-          throw new Error("Error al generar el pago con MercadoPago.");
-        }
+        await procesarPagoMercadoPago(ordenCreada);
+        // Para MercadoPago, el carrito se limpia después de la confirmación del pago
       }
 
     } catch (error) {
@@ -281,63 +260,7 @@ export const usePago = () => {
     } finally {
       setProcesandoPago(false);
     }
-  };*/
-const handleFinalizarCompra = async () => {
-    if (!metodoPago) {
-        setError("Selecciona un método de pago");
-        return;
-    }
-
-    if (items.length === 0) {
-        setError("El carrito está vacío");
-        return;
-    }
-
-    if (!usuario?.id) {
-        setError("Usuario no encontrado. Inicia sesión nuevamente.");
-        return;
-    }
-
-    setProcesandoPago(true);
-    setError(null);
-
-    try {
-        const ordenCreada = await crearOrdenCompra();
-        if (!ordenCreada) {
-            setProcesandoPago(false);
-            return;
-        }
-
-        if (metodoPago === "transferencia") {
-            await procesarPagoTransferencia();
-            dispatch(vaciarCarrito()); // ✅ Vaciar el carrito solo después del pago exitoso
-            dispatch(limpiarCompra());
-            setPagoCompletado(true);
-        } else if (metodoPago === "mercadopago") {
-            const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
-                id: 0, 
-                detalle,
-                cantidad
-            }));
-
-            const urlPago = await generarPago(usuario.id, carrito);
-            if (urlPago) {
-                console.log("Redirigiendo a MercadoPago:", urlPago);
-                window.location.href = urlPago;
-            } else {
-                throw new Error("Error al generar el pago con MercadoPago.");
-            }
-        }
-
-    } catch (error) {
-        console.error("Error en el proceso de compra:", error);
-        setError("Error al procesar el pago.");
-    } finally {
-        setProcesandoPago(false);
-    }
-};
-
-
+  };
 
   const limpiarDatosPago = () => {
     dispatch(vaciarCarrito());
