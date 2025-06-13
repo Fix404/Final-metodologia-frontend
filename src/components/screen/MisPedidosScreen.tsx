@@ -159,7 +159,7 @@ export const MisPedidosScreen: React.FC = () => {
                                 <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                                   {totalProductos} {totalProductos === 1 ? 'producto' : 'productos'}
                                 </span>
-                                {orden.productoCantidad.length > 1 && (
+                                {orden.productoCantidad.length > 0 && (
                                   <button
                                     onClick={() => toggleOrderExpansion(orden.id)}
                                     className="ml-2 text-blue-600 hover:text-blue-800 font-medium text-xs"

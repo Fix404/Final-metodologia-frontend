@@ -126,7 +126,7 @@ export const TablaAdminOrdCompra = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                           <div className="flex items-center">
-                            {orden.productoCantidad.length > 1 && (
+                            {orden.productoCantidad.length > 0 && (
                               <button
                                 onClick={() => toggleOrderExpansion(orden.id)}
                                 className="mr-3 p-1 hover:bg-gray-200 rounded transition-colors"

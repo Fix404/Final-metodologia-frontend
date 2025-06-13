@@ -31,30 +31,46 @@ export const usePago = () => {
   const [error, setError] = useState<string | null>(null);
 
   // CORRECTO
+  // CORREGIDO - Busca por detalle primero, luego filtra por cantidad
   const crearOObtenerProductoCantidad = async (
     detalle: IDetalle,
     cantidad: number
   ): Promise<number | null> => {
     try {
-      // Intentar buscar si ya existe
-      const existentes =
-        await productoCantidadService.buscarPorDetalleYCantidad(
-          detalle.id,
-          cantidad
+      console.log(`Buscando ProductoCantidad para detalle ID: ${detalle.id}, cantidad: ${cantidad}`);
+      
+      // Primero buscar todos los ProductoCantidad con el mismo detalle_id
+      const productosConMismoDetalle = await productoCantidadService.buscarPorDetalle(detalle.id);
+      
+      console.log(`Se encontraron ${productosConMismoDetalle?.length || 0} ProductoCantidad con detalle ID: ${detalle.id}`);
+      
+      // Si hay productos con el mismo detalle, buscar si alguno tiene la cantidad exacta
+      if (productosConMismoDetalle && productosConMismoDetalle.length > 0) {
+        const productoConCantidadExacta = productosConMismoDetalle.find(
+          (pc: IProductoCantidad) => pc.cantidad === cantidad
         );
-
-      if (existentes && existentes.length > 0) {
-        return existentes[0].id;
+        
+        if (productoConCantidadExacta) {
+          console.log(`ProductoCantidad existente encontrado con ID: ${productoConCantidadExacta.id}`);
+          return productoConCantidadExacta.id;
+        }
       }
 
+      console.log(`No se encontró ProductoCantidad existente, creando nuevo para detalle ${detalle.id} con cantidad ${cantidad}`);
+      const dataToSend = {
+        detalle: detalle,
+        cantidad: cantidad,
+      };
+      console.log('Datos que se enviarán para crear ProductoCantidad:', JSON.stringify(dataToSend, null, 2));
       // Si no existe, crear uno nuevo
-      const nuevoProductoCantidad =
-        await productoCantidadService.crearProductoCantidad({
-          detalle: detalle,
-          cantidad: cantidad,
-        });
+      const nuevoProductoCantidad = await productoCantidadService.crearProductoCantidad({
+        detalle: detalle,
+        cantidad: cantidad,
+      });
 
+      console.log(`Nuevo ProductoCantidad creado con ID: ${nuevoProductoCantidad.id}`);
       return nuevoProductoCantidad.id;
+      
     } catch (error) {
       console.error(
         `Error al crear/obtener ProductoCantidad para detalle ${detalle.id}:`,
@@ -145,7 +161,7 @@ export const usePago = () => {
     }
   };
 
-  // ✅ CORREGIDO - Recibe la orden como parámetro
+
   const procesarPagoTransferencia = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
@@ -184,7 +200,7 @@ export const usePago = () => {
     }
   };
 
-  // ✅ CORREGIDO - Recibe la orden como parámetro
+  
   const procesarPagoMercadoPago = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
@@ -215,7 +231,7 @@ export const usePago = () => {
     }
   };
 
-  // ✅ CORREGIDO - Crear orden UNA SOLA VEZ
+
   const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
@@ -236,14 +252,13 @@ export const usePago = () => {
     setError(null);
 
     try {
-      // ✅ Crear la orden UNA SOLA VEZ
+      
       const ordenCreada = await crearOrdenCompra();
       if (!ordenCreada) {
         setProcesandoPago(false);
         return;
       }
 
-      // ✅ Pasar la orden creada a las funciones de procesamiento
       if (metodoPago === "transferencia") {
         await procesarPagoTransferencia(ordenCreada);
         dispatch(vaciarCarrito());
