@@ -310,7 +310,7 @@ const handleFinalizarCompra = async () => {
 
         if (metodoPago === "transferencia") {
             await procesarPagoTransferencia();
-            dispatch(vaciarCarrito()); // ✅ Vaciar el carrito solo después del pago exitoso
+            dispatch(vaciarCarrito()); 
             dispatch(limpiarCompra());
             setPagoCompletado(true);
         } else if (metodoPago === "mercadopago") {
