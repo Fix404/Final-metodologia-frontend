@@ -127,7 +127,7 @@ export const TablaAdminCatalogo = () => {
     try{
       await productoService.cambiarEstadoProducto(id, estado);
       cargarProductos()
-      Swal.fire('Deshabilitado', 'El Producto fue habilitado exitosamente.', 'success');
+      Swal.fire('Habilitado', 'El Producto fue habilitado exitosamente.', 'success');
     }catch(error){
       console.log("Hubo un error al restaurar", error)
     }

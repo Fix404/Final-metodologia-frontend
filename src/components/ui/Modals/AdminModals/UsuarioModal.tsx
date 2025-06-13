@@ -16,7 +16,7 @@ const initialState: IUsuario = {
   apellido: null,
   email: '',
   contrasenia: '',
-  direccion: null,
+  //direccion: null,
   dni: null,
   rol: 'ADMIN',
   activo: true
@@ -30,7 +30,7 @@ export const UsuarioModal = ({
   const [formValues, setFormValues] = useState<IUsuario>(initialState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [direccionEnvio, setDireccionEnvio] = useState<any>(null);
+  //const [direccionEnvio, setDireccionEnvio] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -90,17 +90,17 @@ export const UsuarioModal = ({
 
   useEffect(() => {
     setFormValues(activeUser ?? initialState);
-    setDireccionEnvio(activeUser?.direccion || null);
+    //setDireccionEnvio(activeUser?.direccion || null);
     setError(null);
   }, [activeUser]);
 
-  // CORRECCIÓN: Esta es la función que faltaba
+  /* CORRECCIÓN: Esta es la función que faltaba
   const handleDireccionChange = (nuevaDireccion: any) => {
     setDireccionEnvio(nuevaDireccion);
     console.log('Dirección actualizada:', nuevaDireccion);
-  };
+  };*/
 
-  const renderDireccionSection = () => {
+  /*const renderDireccionSection = () => {
     if (openModalSee) {
       return (
         <div>
@@ -128,18 +128,18 @@ export const UsuarioModal = ({
           </div>
         </div>
       );
-    }
+    }*/
 
-    // CORRECCIÓN: Pasamos las props correctas
+    /*CORRECCIÓN: Pasamos las props correctas
     return (
-      <CreateUsuarioDireccion
+     /* <CreateUsuarioDireccion
         usuario={formValues}
         compraDireccionEnvio={direccionEnvio}
         onDireccionChange={handleDireccionChange}
         loading={loading}
       />
     );
-  };
+  };*/
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -202,10 +202,10 @@ export const UsuarioModal = ({
           </div>
 
           {/* Sección de dirección */}
-          {renderDireccionSection()}
+          {/*renderDireccionSection()*/}
 
           {/* Campo de contraseña (solo para crear/editar) */}
-          {!openModalSee && (
+          {/*!openModalSee && (
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700" htmlFor="contrasenia">
                 Contraseña {!activeUser?.id && <span className="text-red-500">*</span>}
@@ -235,7 +235,7 @@ export const UsuarioModal = ({
               </button>
             </div>
             </div>
-          )}
+          )*/}
 
           {/* Botones de acción */}
           <div className="flex justify-end space-x-4 mt-8 pt-4 border-t">
@@ -267,5 +267,4 @@ export const UsuarioModal = ({
         </form>
       </div>
     </div>
-  );
-}; //await procesarPagoMercadoPago(ordenCreada);
+  )};

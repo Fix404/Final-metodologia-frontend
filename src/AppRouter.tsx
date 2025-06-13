@@ -71,8 +71,10 @@ export const AppRouter = () => {
           <Route path="/datos-usuario" element={<EditarUsuarioScreen/>} />
           <Route path="/cambiar-contrasenia" element={<PasswordScreen/>} />
           <Route path="/mis-pedidos" element={<MisPedidosScreen />} />
-           <Route path="/paymentFailure" element={<HomeScreen/>} />
+          <Route path="/paymentFailure" element={<HomeScreen/>} />
+          <Route path="/paymentSuccess" element={<HomeScreen/>} />
         </Route>
+        
 
         {/* Rutas SIN Navbar/Footer */}
         <Route
