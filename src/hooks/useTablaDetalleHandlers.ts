@@ -39,11 +39,12 @@ export const useTablaDetalleHandlers=({
     setOpenModalSee(true);
     dispatch(setDetalleActivo(detalle));
     setActiveModalType('detalle');
-    setOpenModal(true);
+    setOpenModal(false);
   }
 
-  const handleOpenModalEditDetalle=() => {
+  const handleOpenModalEditDetalle=(detalle:IDetalle) => {
     setOpenModalSee(false)
+    dispatch(setDetalleActivo(detalle));
     setActiveModalType('detalle');
     setOpenModal(true)
   }
@@ -137,7 +138,7 @@ export const useTablaDetalleHandlers=({
             await detalleService.eliminarDetalle(id);
     
             Swal.fire('Deshabilitado', 'El detalle fue deshabilitado exitosamente.', 'success');
-            cargarCategorias(dispatch)
+            cargarDetalles(dispatch)
           } catch (error) {
             Swal.fire('Error', 'Hubo un problema al deshabilitar el detalle.', 'error');
             console.error("Hubo un error al borrar el detalle", error);
@@ -226,7 +227,7 @@ export const useTablaDetalleHandlers=({
     try{
           await detalleService.cambiarEstadoDetalle(id, estado);
           cargarDetalles(dispatch)
-          Swal.fire('Deshabilitado', 'El detalle fue habilitado exitosamente.', 'success');
+          Swal.fire('Habilitado', 'El detalle fue habilitado exitosamente.', 'success');
         }catch(error){
           console.log("Hubo un error al restaurar", error)
         }
@@ -236,7 +237,7 @@ export const useTablaDetalleHandlers=({
     try{
           await categoriaService.cambiarEstadoCategoria(id, estado);
           cargarCategorias(dispatch)
-          Swal.fire('Deshabilitado', 'La categoria fue habilitada exitosamente.', 'success');
+          Swal.fire('Habilitado', 'La categoria fue habilitada exitosamente.', 'success');
         }catch(error){
           console.log("Hubo un error al restaurar", error)
         }
@@ -246,7 +247,7 @@ export const useTablaDetalleHandlers=({
     try{
           await colorService.cambiarEstadoColor(id, estado);
           cargarColores(dispatch)
-          Swal.fire('Deshabilitado', 'El color fue habilitado exitosamente.', 'success');
+          Swal.fire('Habilitado', 'El color fue habilitado exitosamente.', 'success');
         }catch(error){
           console.log("Hubo un error al restaurar", error)
         }
@@ -256,7 +257,7 @@ export const useTablaDetalleHandlers=({
     try{
           await precioService.cambiarEstadoPrecio(id, estado);
           cargarPrecios(dispatch)
-          Swal.fire('Deshabilitado', 'El precio fue habilitado exitosamente.', 'success');
+          Swal.fire('Habilitado', 'El precio fue habilitado exitosamente.', 'success');
         }catch(error){
           console.log("Hubo un error al restaurar", error)
         }

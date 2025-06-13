@@ -13,4 +13,5 @@ export interface IDetalle {
     estado?: Estado 
     producto: IProducto | null
     version?: number
+    activo?: boolean
 }

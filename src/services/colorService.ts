@@ -15,12 +15,12 @@ export const colorService={
         const response = await api.get(`/colores/${id}`);
         return response.data;
     },
-    crearColor: async(producto:IColor) =>{
-        const response=await api.post('/colores', producto)
+    crearColor: async(color:IColor) =>{
+        const response=await api.post('/colores', color)
         return response.data;
     },
-    actualizarColor: async (id: number, producto: IColor) => {
-    const response = await api.put(`/colores/${id}`, producto);
+    actualizarColor: async (id: number, color: IColor) => {
+    const response = await api.put(`/colores/${id}`, color);
     return response.data;
   },
   eliminarColor: async (id: number) => {
