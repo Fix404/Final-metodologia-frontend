@@ -7,6 +7,7 @@ import { IImagen } from "../../../../types/IImagen";
 import { categoriaService } from "../../../../services/categoriaService";
 import { descuentoService } from "../../../../services/descuentoService";
 import { imagenService } from "../../../../services/imagenService";
+import { Cloudinary } from "../../CargarImagenes/Cloudinary";
 
 // Interfaces 
 
@@ -19,7 +20,7 @@ interface IModalProps {
 const initialState: IProducto = {
   id: null,
   nombre: '',
-  descripcion:'',
+  descripcion: '',
   categoria: null,
   tipo: null,
   sexoProducto: null,
@@ -38,20 +39,61 @@ export const ProductoModal = ({
   const [error, setError] = useState<string | null>(null);
   const tiposProducto = ['CALZADO', 'ROPA'];
   const sexosProducto = ['MUJER', 'HOMBRE', 'UNISEX'];
-  
   const [categorias, setCategorias] = useState<ICategoria[]>([]);
   const [descuentos, setDescuentos] = useState<IDescuento[]>([]);
   const [imagenes, setImagenes] = useState<IImagen[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  setLoadingImage(true);
+  setError(null);
+
+  try {
+    // Subir imagen a Cloudinary
+    const imageUrl = await Cloudinary(file);
+
+    if (!imageUrl) {
+      throw new Error("No se pudo obtener la URL de la imagen desde Cloudinary.");
+    }
+
+    // Crear imagen en el back con la url
+    const nuevaImagen: IImagen = {
+      url: imageUrl,
+      altDescripcion: file.name,
+    };
+
+    const imagenCreada = await imagenService.crearImagen(nuevaImagen);
+
+    // Actualizamos estado con la imagen completa
+    setFormValues(prev => ({
+      ...prev,
+      imagen: imagenCreada, // ahora incluye id, url y descripcion.
+    }));
+
+    setImagePreview(imagenCreada.url); // mostrar vista previa
+
+  } catch (err: any) {
+    console.error("Error al subir imagen:", err);
+    setError("Error al subir la imagen");
+  } finally {
+    setLoadingImage(false);
+  }
+};
+
 
   const cargarOpciones = async () => {
     setLoadingOptions(true);
     try {
-      
-         const categoriasRes=await categoriaService.obtenerCategoriasActivos()
-         const descuentosRes=await descuentoService.obtenerDescuentosActivos() 
-         const imagenesRes=await imagenService.obtenerImagenesActivos()
-      
+
+      const categoriasRes = await categoriaService.obtenerCategoriasActivos()
+      const descuentosRes = await descuentoService.obtenerDescuentosActivos()
+      const imagenesRes = await imagenService.obtenerImagenesActivos()
+
       setCategorias(categoriasRes);
       setDescuentos(descuentosRes);
       setImagenes(imagenesRes);
@@ -65,7 +107,7 @@ export const ProductoModal = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === 'categoria') {
       const categoria = categorias.find(cat => cat.id === parseInt(value)) || null;
       setFormValues(prev => ({ ...prev, categoria }));
@@ -87,7 +129,7 @@ export const ProductoModal = ({
 
     try {
       console.log('Enviando datos:', formValues);
-      
+
       if (activeProduct?.id) {
         const result = await productoService.actualizarProducto(activeProduct.id, formValues);
         console.log('Producto actualizado:', result);
@@ -260,32 +302,41 @@ export const ProductoModal = ({
             )}
           </div>
 
+
+          {/*Imagen */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="imagen">
               Imagen
             </label>
+
             {openModalSee ? (
               <p className="px-3 py-2 border border-gray-200 bg-gray-100 rounded">
                 {formValues.imagen?.altDescripcion || '—'}
               </p>
             ) : (
-              <select
-                id="imagen"
-                name="imagen"
-                value={formValues.imagen?.id || ''}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
-                disabled={loading || loadingOptions}
-              >
-                <option value="">Sin imagen</option>
-                {imagenes.map(imagen => (
-                  <option key={imagen.id} value={imagen.id}>
-                    {imagen.altDescripcion}
-                  </option>
-                ))}
-              </select>
+              <>
+                <input
+                  id="imagen"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  disabled={loading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+                />
+
+                {loadingImage && (
+                  <p className="text-blue-500 text-sm mt-1">Subiendo imagen...</p>
+                )}
+
+                {imagePreview && (
+                  <div className="mt-2">
+                    <img src={imagePreview} alt="Vista previa" className="max-w-xs rounded" />
+                  </div>
+                )}
+              </>
             )}
           </div>
+
 
           <div className="flex justify-end space-x-4 mt-6">
             <button
