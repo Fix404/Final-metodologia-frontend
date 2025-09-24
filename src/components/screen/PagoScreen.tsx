@@ -34,13 +34,18 @@ export const PagoScreen: React.FC = () => {
     limpiarError
   } = usePago();
 
-  useEffect(() => {
-    // Verificar que venga de la pantalla anterior con datos completos
-    if (items.length === 0 || !compraState.dni || !compraState.direccionEnvio) {
-      navigate("/pagar");
-      return;
-    }
-  }, [items, compraState, navigate]);
+useEffect(() => {
+  // SI YA HAY UNA ORDEN GENERADA, NO VERIFICAR REQUISITOS
+  if (compraState.ordenGenerada) {
+    return;
+  }
+
+  // Solo verificar requisitos si NO hay orden generada
+  if (items.length === 0 || !compraState.dni || !compraState.direccionEnvio) {
+    navigate("/pagar");
+    return;
+  }
+}, [items, compraState, navigate]);
 
   const total = calcularTotal(items);
 
@@ -301,3 +306,4 @@ export const PagoScreen: React.FC = () => {
     </div>
   );
 };
+

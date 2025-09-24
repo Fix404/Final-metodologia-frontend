@@ -9,7 +9,7 @@ interface IModalProps {
 }
 
 const initialState: IPrecio = {
-  id: 0,
+  id: null,
   precioCompra: 0,
   precioVenta: 0,
   activo: true

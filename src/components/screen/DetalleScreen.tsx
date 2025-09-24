@@ -79,14 +79,14 @@ const DetalleScreen: React.FC = () => {
   const getColoresDisponibles = (): IColor[] => {
     if (!Array.isArray(detalles) || detalles.length === 0) return [];
     return Array.from(
-      new Map(detalles.map(d => [d.color.color, d.color])).values()
+      new Map(detalles.map(d => [d.color!.color, d.color])).values()
     );
   };
 
   const getTallesDisponibles = (): ITalle[] => {
     if (!Array.isArray(detalles) || detalles.length === 0) return [];
     return Array.from(
-      new Map(detalles.map(d => [d.talle.talle, d.talle])).values()
+      new Map(detalles.map(d => [d.talle!.talle, d.talle])).values()
     );
   };
 
@@ -108,7 +108,7 @@ const DetalleScreen: React.FC = () => {
 
   const producto = detalles.length > 0 ? detalles[0]?.producto : null;
   const detalleSeleccionado = Array.isArray(detalles) ? detalles.find(
-    d => d.color.color === selectedColor && d.talle.talle === selectedTalle
+    d => d.color!.color === selectedColor && d.talle!.talle === selectedTalle
   ) : null;
   const cantidadEnCarrito = carritoItems.find(
     item => item.detalle.id === detalleSeleccionado?.id
@@ -124,7 +124,7 @@ const DetalleScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+      <div className="bg-[#ffffde] min-h-screen py-8 px-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1c4577] mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando detalles del producto...</p>
@@ -135,7 +135,7 @@ const DetalleScreen: React.FC = () => {
 
   if (error) {
     return (
-      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+      <div className="bg-[#ffffde] min-h-screen py-8 px-4 flex items-center justify-center">
         <div className="text-center bg-white p-8 rounded-lg shadow-md">
           <p className="text-red-600 font-semibold mb-4">{error}</p>
           <button
@@ -151,7 +151,7 @@ const DetalleScreen: React.FC = () => {
 
   if (detalles.length === 0) {
     return (
-      <div className="bg-[#fdfae8] min-h-screen py-8 px-4 flex items-center justify-center">
+      <div className="bg-[#ffffde] min-h-screen py-8 px-4 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">No se encontró el detalle del producto</p>
         </div>
@@ -160,7 +160,7 @@ const DetalleScreen: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#fcfcd3] min-h-screen py-8 max-xs:py-4 px-4 flex flex-col items-center justify-start">
+    <div className="bg-[#ffffde] min-h-screen py-8 max-xs:py-4 px-4 flex flex-col items-center justify-start">
       <div className="max-w-6xl w-full max-sx:pb-20">
         {/* Contenedor principal */}
         <div className="flex flex-col lg:flex-row gap-8 max-xs:gap-6 h-[400px] lg:h-[500px] max-sm:h-auto">

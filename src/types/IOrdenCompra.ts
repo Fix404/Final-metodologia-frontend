@@ -6,7 +6,7 @@ export interface IOrdenCompra {
   activo?: boolean;
   id: number;
   fecha:string;
-  precio_total: number;
+  precioTotal: number;
   usuario: IUsuario;
   movimiento?: string;
   productoCantidad: IProductoCantidad[];

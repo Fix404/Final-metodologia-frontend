@@ -30,40 +30,47 @@ export const usePago = () => {
   const [codigoPedido, setCodigoPedido] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  /*const calcularTotal = () => {
-    return items.reduce((total, { detalle, cantidad }) => {
-      const precioBase = detalle.precio.precioVenta;
-      const descuento = detalle.producto.descuento?.porcentaje ?? 0;
-      const precioFinal = Math.round(precioBase * (1 - descuento / 100));
-      return total + precioFinal * cantidad;
-    }, 0);
-  };*/
-
   // CORRECTO
+  // CORREGIDO - Busca por detalle primero, luego filtra por cantidad
   const crearOObtenerProductoCantidad = async (
     detalle: IDetalle,
     cantidad: number
   ): Promise<number | null> => {
     try {
-      // Intentar buscar si ya existe
-      const existentes =
-        await productoCantidadService.buscarPorDetalleYCantidad(
-          detalle.id,
-          cantidad
+      console.log(`Buscando ProductoCantidad para detalle ID: ${detalle.id}, cantidad: ${cantidad}`);
+
+      // Primero buscar todos los ProductoCantidad con el mismo detalle_id
+      const productosConMismoDetalle = await productoCantidadService.buscarPorDetalle(detalle.id);
+
+      console.log(`Se encontraron ${productosConMismoDetalle?.length || 0} ProductoCantidad con detalle ID: ${detalle.id}`);
+
+      // Si hay productos con el mismo detalle, buscar si alguno tiene la cantidad exacta
+      if (productosConMismoDetalle && productosConMismoDetalle.length > 0) {
+        const productoConCantidadExacta = productosConMismoDetalle.find(
+          (pc: IProductoCantidad) => pc.cantidad === cantidad
         );
 
-      if (existentes && existentes.length > 0) {
-        return existentes[0].id;
+        if (productoConCantidadExacta) {
+          console.log(`ProductoCantidad existente encontrado con ID: ${productoConCantidadExacta.id}`);
+          return productoConCantidadExacta.id;
+        }
       }
 
+      console.log(`No se encontró ProductoCantidad existente, creando nuevo para detalle ${detalle.id} con cantidad ${cantidad}`);
+      const dataToSend = {
+        detalle: detalle,
+        cantidad: cantidad,
+      };
+      console.log('Datos que se enviarán para crear ProductoCantidad:', JSON.stringify(dataToSend, null, 2));
       // Si no existe, crear uno nuevo
-      const nuevoProductoCantidad =
-        await productoCantidadService.crearProductoCantidad({
-          detalle: detalle,
-          cantidad: cantidad,
-        });
+      const nuevoProductoCantidad = await productoCantidadService.crearProductoCantidad({
+        detalle: detalle,
+        cantidad: cantidad,
+      });
 
+      console.log(`Nuevo ProductoCantidad creado con ID: ${nuevoProductoCantidad.id}`);
       return nuevoProductoCantidad.id;
+
     } catch (error) {
       console.error(
         `Error al crear/obtener ProductoCantidad para detalle ${detalle.id}:`,
@@ -110,8 +117,8 @@ export const usePago = () => {
         precioTotal: total,
         usuario: {
           id: usuario.id,
-          nombre: usuario.nombre || "", // Valor por defecto ya que usuario.nombre puede no existir
-          apellido: "", // Usuario del auth no tiene apellido
+          nombre: usuario.nombre || "", 
+          apellido: usuario.apellido || "", 
           email: usuario.email,
           contrasenia: "",
           activo: true,
@@ -154,23 +161,13 @@ export const usePago = () => {
     }
   };
 
-  const procesarPagoTransferencia = async () => {
+  const procesarPagoTransferencia = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
 
     try {
-      // Crear la orden de compra en la base de datos
-      const ordenCreada = await crearOrdenCompra();
+      dispatch(establecerOrdenGenerada(ordenCompra));
 
-      if (!ordenCreada) {
-        setProcesandoPago(false);
-        return;
-      }
-
-      // Guardar la orden en el estado para mostrar en CompraExitosa
-      dispatch(establecerOrdenGenerada(ordenCreada));
-
-      // Simular procesamiento de transferencia
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const codigo = generarCodigoPedido();
@@ -200,16 +197,12 @@ export const usePago = () => {
     }
   };
 
-  const procesarPagoMercadoPago = async () => {
+  const procesarPagoMercadoPago = async (ordenCompra: IOrdenCompra) => {
     setProcesandoPago(true);
     setError(null);
 
     try {
-      const ordenCreada = await crearOrdenCompra();
-      if (!ordenCreada) {
-        setProcesandoPago(false);
-        return;
-      }
+      dispatch(establecerOrdenGenerada(ordenCompra));
 
       const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
         id: 0,
@@ -219,6 +212,7 @@ export const usePago = () => {
 
       const urlPago = await generarPago(usuario?.id!, carrito);
       if (urlPago) {
+        console.log("Redirigiendo a MercadoPago:", urlPago);
         window.location.href = urlPago;
       } else {
         throw new Error("Error al generar el pago con MercadoPago.");
@@ -232,88 +226,7 @@ export const usePago = () => {
     }
   };
 
-const handleFinalizarCompra = async () => {
-    if (!metodoPago) {
-        setError("Selecciona un método de pago");
-        return;
-    }
-
-    if (items.length === 0) {
-        setError("El carrito está vacío");
-        return;
-    }
-
-    if (!usuario?.id) {
-        setError("Usuario no encontrado. Inicia sesión nuevamente.");
-        return;
-    }
-
-    setProcesandoPago(true);
-    setError(null);
-
-    try {
-        const ordenCreada = await crearOrdenCompra();
-        if (!ordenCreada) {
-            setProcesandoPago(false);
-            return;
-        }
-
-        if (metodoPago === "transferencia") {
-            await procesarPagoTransferencia();
-            dispatch(vaciarCarrito());
-            dispatch(limpiarCompra());
-            setPagoCompletado(true);
-        } else if (metodoPago === "mercadopago") {
-            const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
-                id: 0, 
-                detalle,
-                cantidad
-            }));
-
-            const urlPago = await generarPago(usuario.id, carrito);
-            if (urlPago) {
-                console.log("Redirigiendo a MercadoPago:", urlPago);
-                window.location.href = urlPago;
-            } else {
-                throw new Error("Error al generar el pago con MercadoPago.");
-            }
-        }
-
-    } catch (error) {
-        console.error("Error en el proceso de compra:", error);
-        setError("Error al procesar el pago.");
-    } finally {
-        setProcesandoPago(false);
-    }
-};
-
-
-
-  const limpiarDatosPago = () => {
-    dispatch(vaciarCarrito());
-    dispatch(limpiarCompra());
-    setError(null);
-  };
-
-  const limpiarError = () => {
-    setError(null);
-  };
-
-  return {
-    metodoPago,
-    setMetodoPago,
-    procesandoPago,
-    pagoCompletado,
-    codigoPedido,
-    error,
-    handleFinalizarCompra,
-    limpiarDatosPago,
-    limpiarError,
-  };
-};
-
-
-  /*const handleFinalizarCompra = async () => {
+  const handleFinalizarCompra = async () => {
     if (!metodoPago) {
       setError("Selecciona un método de pago");
       return;
@@ -340,20 +253,13 @@ const handleFinalizarCompra = async () => {
       }
 
       if (metodoPago === "transferencia") {
-        procesarPagoTransferencia();
-      } else if (metodoPago === "mercadopago") {
-        const carrito: IProductoCantidad[] = items.map(({ detalle, cantidad }) => ({
-          id: 0, 
-          detalle,
-          cantidad
-        }));
+        await procesarPagoTransferencia(ordenCreada);
+        dispatch(vaciarCarrito());
 
-        const urlPago = await generarPago(usuario.id, carrito);
-        if (urlPago) {
-          window.location.href = urlPago;
-        } else {
-          throw new Error("Error al generar el pago con MercadoPago.");
-        }
+        setPagoCompletado(true);
+      } else if (metodoPago === "mercadopago") {
+        await procesarPagoMercadoPago(ordenCreada);
+        // Carrito se limpia después de la confirmación del pago en MP
       }
 
     } catch (error) {
@@ -362,4 +268,35 @@ const handleFinalizarCompra = async () => {
     } finally {
       setProcesandoPago(false);
     }
-  };*/
+  };
+
+  const limpiarDatosPago = () => {
+    dispatch(vaciarCarrito());
+    dispatch(limpiarCompra());
+    setError(null);
+  };
+
+  const limpiarError = () => {
+    setError(null);
+  };
+
+  // Nueva función para confirmar el pago de MercadoPago
+  const confirmarPagoMercadoPago = () => {
+    dispatch(vaciarCarrito());
+    dispatch(limpiarCompra());
+    setPagoCompletado(true);
+  };
+
+  return {
+    metodoPago,
+    setMetodoPago,
+    procesandoPago,
+    pagoCompletado,
+    codigoPedido,
+    error,
+    handleFinalizarCompra,
+    limpiarDatosPago,
+    limpiarError,
+    confirmarPagoMercadoPago,
+  };
+};

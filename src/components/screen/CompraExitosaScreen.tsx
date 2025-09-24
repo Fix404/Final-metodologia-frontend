@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
@@ -20,15 +20,6 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const compraState = useSelector((state: RootState) => state.compra);
-
-  // Limpiar el carrito y los datos de compra cuando se monta este componente
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      dispatch(vaciarCarrito());
-      dispatch(limpiarCompra());
-    }, 2000); 
-    return () => clearTimeout(timeoutId);
-  }, [dispatch]);
 
   const handleVolverAInicio = () => {
     dispatch(vaciarCarrito());
@@ -81,7 +72,7 @@ export const CompraExitosa: React.FC<CompraExitosaProps> = ({
           <div className="space-y-4 text-left mb-6">
             <h3 className="text-lg font-semibold text-gray-800">Resumen del pedido:</h3>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p><strong>Total:</strong> ${ordenCompra.precio_total.toLocaleString()}</p>
+              <p><strong>Total:</strong> ${ordenCompra.precioTotal}</p>
               <p><strong>Método de pago:</strong> {metodoPago === "transferencia" ? "Transferencia bancaria" : "MercadoPago"}</p>
               <p><strong>Dirección de envío:</strong> {formatearDireccion()}</p>
             </div>

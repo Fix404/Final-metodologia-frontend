@@ -137,7 +137,7 @@ export const CarritoScreen: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="bg-[#fcfcd3] min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="bg-[#ffffde] min-h-screen flex flex-col items-center justify-center px-4">
         <div className="text-center">
           <FaShoppingBag className="text-8xl text-gray-300 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-800 mb-4">

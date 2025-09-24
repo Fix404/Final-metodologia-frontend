@@ -1,4 +1,4 @@
 export enum Estado {
-  DISPONIBLE = "Disponible",
-  NO_DISPONIBLE = "No disponible"
+  DISPONIBLE = "DISPONIBLE",
+  NO_DISPONIBLE = "NO_DISPONIBLE"
 }

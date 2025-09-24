@@ -1,6 +1,6 @@
 
 export interface IImagen {
-    id:number
+    id?:number
     url: string
     altDescripcion: string
 }
