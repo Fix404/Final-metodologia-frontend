@@ -1,54 +1,121 @@
-# React + TypeScript + Vite
+# E-commerce de Indumentaria
+ Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN: Se trata de una aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot (https://github.com/Fix404/Final-metodologia-backend.git). Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tecnologías utilizadas
+React
 
-Currently, two official plugins are available:
+TypeScript
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React Router
 
-## Expanding the ESLint configuration
+Axios
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Redux Toolkit
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+JWT para autenticación
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Tailwind-CSS
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Funcionalidades principales
+**Autenticación:**
+- Registro e inicio de sesión con validaciones
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- Uso de JWT para proteger rutas
+
+- Roles: USER y ADMIN
+
+**Catálogo y carrito:**
+- Filtros por categoría, talle, tipo y precio
+
+- Búsqueda por nombre
+
+- Detalle del producto con selector de talle y cantidad y visualización de stock, precio y/o descuento 
+
+- Carrito persistente 
+
+- Validación de stock al agregar y confirmar compra
+
+**Órdenes de compra**
+- Envío de orden al backend
+
+- Pantalla de confirmación
+
+- Limpieza automática del carrito
+
+**Panel de administración**
+- Gestión de productos, categorías y usuarios
+
+- Visualización de estadísticas de ventas
+
+**Protección de rutas**
+- Rutas protegidas según rol (ADMIN / USER)
+
+- Redirección automática si el usuario no está autenticado
+
+# Configuración y ejecución
+
+Asegurarse de tener el backend corriendo antes de iniciar el frontend, ya que la aplicación depende de la API para funcionar correctamente:
+
+## Ejecución del backend:
+
+**1. Clonar el repositorio**
+
+git clone https://github.com/Fix404/Final-metodologia-backend.git
+
+cd Final-metodologia-backend
+
+**2. Crear la base de datos**
+
+Crear base de datos persistence_db en MySQL:
+
+CREATE DATABASE persistence_db;
+
+**3. Ejecutar el proyecto**
+
+./mvnw spring-boot:run
+
+Para Maven global:
+
+mvn spring-boot:run
+
+**1. Clonar el repositorio**
+
+git clone https://github.com/Fix404/Final-metodologia-frontend.git
+
+cd ecommerce-zapatillas-frontend
+
+**2. Instalar dependencias**
+
+npm install
+
+**3. Configurar variables de entorno**
+
+Este proyecto incluye un archivo `.env` con la siguiente variable: `API_URL="http://localhost:8080/auth"` 
+
+Este valor está configurado para uso local. Si estás probando el proyecto en un entorno diferente, asegurate de que el servidor backend esté corriendo en esa URL, o modificá el valor de API_URL según corresponda.
+
+**4. Ejecutar proyecto**
+
+npm run dev
+
+La aplicación estará disponible en http://localhost:5173 (o el puerto configurado).
+
+## Vistas previas
+Landing Page
+
+Catálogo de productos
+
+Detalle del producto
+
+Carrito de compras
+
+Panel de administración
+
+## Autores
+Sofía Ferraro
+
+Maximiliano Niscola
+
+Camila Irisarri
+
+Julieta Sena
