@@ -120,7 +120,7 @@ export const CatalogoScreen = () => {
 
                     {/* Filtro Categoría */}
                     <select
-                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#748192] cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
                         value={categoria}
                         onChange={(e) => setCategoria(e.target.value)}
                         disabled={categorias.length === 0}
@@ -138,7 +138,7 @@ export const CatalogoScreen = () => {
 
                     {/* Filtro Tipo */}
                     <select
-                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#748192] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
                         value={tipo}
                         onChange={(e) => setTipo(e.target.value)}
                     >
@@ -158,7 +158,7 @@ export const CatalogoScreen = () => {
 
                     {/* Filtro Sexo */}
                     <select
-                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#748192] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
                         value={sexo}
                         onChange={(e) => setSexo(e.target.value)}
                     >
