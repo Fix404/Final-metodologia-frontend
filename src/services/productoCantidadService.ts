@@ -36,5 +36,9 @@ export const productoCantidadService = {
     buscarPorDetalleYCantidad: async (detalleId: number, cantidad: number) => {
         const response = await api.get(`/producto_cantidad?detalle_id=${detalleId}&cantidad=${cantidad}`);
         return response.data;
-    }
+    },
+    buscarPorDetalle: async (detalleId: number) => {
+    const response = await api.get(`/producto_cantidad?detalle_id=${detalleId}`);
+    return response.data;
+}
 };

@@ -9,6 +9,7 @@ import { IoEyeSharp, IoTrashBinOutline } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { ProductoModal } from "../../Modals/AdminModals/ProductoModal";
+import { GiAngelOutfit } from "react-icons/gi";
 
 export const TablaAdminCatalogo = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
@@ -21,7 +22,7 @@ export const TablaAdminCatalogo = () => {
 
   const cargarProductos = async () => {
     try {
-      const response = await productoService.obtenerProductosActivos();
+      const response = await productoService.obtenerProductos();
       console.log("Productos desde la API:", response);
       dispatch(fetchProducto(response));
     } catch (err) {
@@ -121,6 +122,16 @@ export const TablaAdminCatalogo = () => {
       }
     }
   };
+
+  const handleRestore=async (id:number, estado:boolean)=>{
+    try{
+      await productoService.cambiarEstadoProducto(id, estado);
+      cargarProductos()
+      Swal.fire('Habilitado', 'El Producto fue habilitado exitosamente.', 'success');
+    }catch(error){
+      console.log("Hubo un error al restaurar", error)
+    }
+  }
 
   useEffect(() => {
     if (activeSubMenu === "Catálogo") {
@@ -242,6 +253,13 @@ export const TablaAdminCatalogo = () => {
                         >
                           <IoTrashBinOutline size={16} />
                         </button>
+                        {!producto.activo && <button
+                          title="Restaurar"
+                          onClick={() => handleRestore(producto.id!, true)}
+                          className="p-1.5 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg transition-all duration-200"
+                        >
+                          <GiAngelOutfit size={16}/>
+                        </button>}
                       </div>
                     </td>
                   </tr>

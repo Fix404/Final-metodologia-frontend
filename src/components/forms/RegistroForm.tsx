@@ -180,9 +180,9 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <FiEyeOff className="text-gray-400 hover:text-gray-500" />
-              ) : (
                 <FiEye className="text-gray-400 hover:text-gray-500" />
+              ) : (
+                <FiEyeOff className="text-gray-400 hover:text-gray-500" />
               )}
             </button>
           </div>
@@ -220,9 +220,9 @@ export const RegistroForm = ({ onSuccess }: RegistroFormProps) => {
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? (
-                <FiEyeOff className="text-gray-400 hover:text-gray-500" />
-              ) : (
                 <FiEye className="text-gray-400 hover:text-gray-500" />
+              ) : (
+                <FiEyeOff className="text-gray-400 hover:text-gray-500" />
               )}
             </button>
           </div>

@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { IoEyeSharp, IoTrashBinOutline } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { UsuarioModal } from "../../Modals/AdminModals/UsuarioModal";
+import { TbGrave2 } from "react-icons/tb";
 
 export const TablaAdminEmpleados = () => {
   const { activeSubMenu } = useAppSelector((state) => state.menuActivoAdmin);
@@ -28,6 +29,23 @@ export const TablaAdminEmpleados = () => {
       console.log(soloEmpleados)
     } catch (err) {
       console.error('Error al cargar usuarios:', err);
+    }
+  };
+
+  const hacerCliente = async (idUsuario: number, usuario: IUsuario) => {
+    try {
+      const usuarioActualizado: IUsuario = { ...usuario, rol: "CLIENTE" };
+      const data = await usuariosService.actualizarUsuario(
+        idUsuario,
+        usuarioActualizado
+      );
+      console.log(data);
+
+      setUsuarios((prev) =>
+        prev.map((u) => (u.id === idUsuario ? { ...u, rol: "CLIENTE" } : u))
+      );
+    } catch (error) {
+      console.log("Hubo un error", error);
     }
   };
 
@@ -164,6 +182,13 @@ export const TablaAdminEmpleados = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <div className="flex justify-center gap-2">
+                        <button
+                                                  title="Ascender a cliente"
+                                                  onClick={() => hacerCliente(usuario.id!, usuario)}
+                                                  className="p-2 text-gray-500 hover:text-white hover:bg-gray-500 rounded-lg transition-all duration-200"
+                                                >
+                                                  <TbGrave2 size={18}/>
+                                                </button>
                         <button
                           title="Ver"
                           onClick={() => handleOpenModalVer(usuario)}

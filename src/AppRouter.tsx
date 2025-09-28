@@ -21,6 +21,10 @@ import { TablaAdminDetalles } from './components/ui/TablasAdmin/Productos/TablaA
 import { HomeScreen } from './components/screen/HomeScreen';
 import { EditarUsuarioScreen } from './components/screen/EditarUsuarioScreen';
 import { PasswordScreen } from './components/screen/PasswordScreen';
+import { MisPedidosScreen } from './components/screen/MisPedidosScreen';
+import AuthVerifier from './components/AuthVerifier';
+import { ToastContainer } from 'react-toastify';
+
 
 
 export const AppRouter = () => {
@@ -28,6 +32,18 @@ export const AppRouter = () => {
 
   return (
         <Router>
+          <ToastContainer 
+        position="top-right"
+        autoClose={5000}  // duración 5 segundos
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+          <AuthVerifier />
             <Routes>
         {/*Landing Page sin Footer*/}
         <Route path="/" element={
@@ -54,8 +70,11 @@ export const AppRouter = () => {
           <Route path="/pagar" element={<PagoScreen />} />
           <Route path="/datos-usuario" element={<EditarUsuarioScreen/>} />
           <Route path="/cambiar-contrasenia" element={<PasswordScreen/>} />
-
+          <Route path="/mis-pedidos" element={<MisPedidosScreen />} />
+          <Route path="/paymentFailure" element={<HomeScreen/>} />
+          <Route path="/paymentSuccess" element={<HomeScreen/>} />
         </Route>
+        
 
         {/* Rutas SIN Navbar/Footer */}
         <Route

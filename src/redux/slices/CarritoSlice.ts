@@ -13,12 +13,24 @@ interface Carrito {
   error: string | null;
 }
 
-const initialState: Carrito = {
+const cargarDesdeLocalStorage = (): Carrito | undefined => {
+  try {
+    const data = localStorage.getItem('carrito');
+    if (!data) return undefined;
+    return JSON.parse(data) as Carrito;
+  } catch (error) {
+    console.warn('Error cargando carrito desde localStorage', error);
+    return undefined;
+  }
+};
+
+const initialState: Carrito = cargarDesdeLocalStorage()  || {
   items: [],
   detallesActualizados: [],
   loading: false,
   error: null,
 };
+
 
 export const carritoSlice = createSlice({
   name: 'carrito',
@@ -34,6 +46,7 @@ export const carritoSlice = createSlice({
       } else {
         state.items.push({ detalle, cantidad: 1 });
       }
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     quitarDelCarrito: (state, action: PayloadAction<number>) => {
@@ -42,6 +55,7 @@ export const carritoSlice = createSlice({
       state.detallesActualizados = state.detallesActualizados.filter(
         detalle => detalle.id !== action.payload
       );
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     aumentarCantidad(state, action: PayloadAction<number>) {
@@ -49,6 +63,7 @@ export const carritoSlice = createSlice({
       if (item && item.cantidad < item.detalle.stock!) {
         item.cantidad += 1;
       }
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     disminuirCantidad(state, action: PayloadAction<number>) {
@@ -56,6 +71,7 @@ export const carritoSlice = createSlice({
       if (item && item.cantidad > 1) {
         item.cantidad -= 1;
       }
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     actualizarCantidad(state, action: PayloadAction<{ id: number; cantidad: number }>) {
@@ -64,31 +80,37 @@ export const carritoSlice = createSlice({
       if (item && cantidad > 0 && cantidad <= item.detalle.stock!) {
         item.cantidad = cantidad;
       }
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     limpiarCarrito(state) {
       state.items = [];
       state.detallesActualizados = [];
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     vaciarCarrito: state => {
       state.items = [];
       state.detallesActualizados = [];
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     // Nuevas acciones para manejar datos del backend
     setLoadingCarrito: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     setErrorCarrito: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     actualizarDetallesDesdeBackend: (state, action: PayloadAction<IDetalle[]>) => {
       state.detallesActualizados = action.payload;
       state.loading = false;
       state.error = null;
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     actualizarDetalleEspecifico: (state, action: PayloadAction<IDetalle>) => {
@@ -100,6 +122,7 @@ export const carritoSlice = createSlice({
       } else {
         state.detallesActualizados.push(detalleActualizado);
       }
+      localStorage.setItem('carrito', JSON.stringify(state));
     },
 
     sincronizarConStock: (state) => {
@@ -114,6 +137,7 @@ export const carritoSlice = createSlice({
       });
 
       state.items = state.items.filter(item => item.cantidad > 0);
+      localStorage.setItem('carrito', JSON.stringify(state));
     }
   }
 });

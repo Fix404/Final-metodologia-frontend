@@ -55,15 +55,7 @@ export const LoginForm = () => {
         dispatch(setUsuario(usuarioFromToken));
         console.log("USUARIO:", usuarioFromToken)
 
-        const currentTime = Date.now() / 1000;
-
-        if (decodedToken.exp < currentTime) {
-          setServerError('Sesión expirada. Por favor, iniciá sesión nuevamente.');
-          localStorage.removeItem('authToken');
-          dispatch(logout())
-          return;
-        }
-
+   
         if (decodedToken.rol && decodedToken.rol.includes('CLIENTE')) {
           navigate('/');
         } else {

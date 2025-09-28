@@ -2,10 +2,10 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/axiosConfig';
-import { PasswordForm } from '../forms/passwordForm';
+import { PasswordForm } from '../forms/PasswordForm';
 import { useAppSelector } from '../../hooks/redux';
 import { useDispatch } from 'react-redux';
-import { setUsuario } from '../../redux/slices/authSlice';
+import { logout, setUsuario } from '../../redux/slices/authSlice';
 
 interface CambioContraseniaFormData {
     contraseniaActual: string;
@@ -19,16 +19,17 @@ export const PasswordScreen = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const usuario = useAppSelector(state => state.auth.usuario);
-
+   
     const handleSuccess = () => {
         Swal.fire({
             icon: 'success',
-            title: 'Contraseña cambiada con éxito',
+            title: 'Contraseña cambiada con éxito. Por favor, volvé a ingresar',
             showConfirmButton: false,
             timer: 2000,
         });
         setTimeout(() => {
-            navigate('/');
+        dispatch(logout())
+         navigate('/login');
         }, 2000);
     };
 
