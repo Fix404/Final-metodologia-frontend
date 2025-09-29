@@ -108,16 +108,42 @@ La aplicación estará disponible en http://localhost:5173 (o el puerto configur
 
 ## Vistas previas
 **Landing Page**
-![Landing](./assets/FullLanding.png)
-![Landing](./assets/FullLanding.png)
+![Landing](./assets/Landing.png)
+
+![Descuentos](./assets/Descuentos.png)
+
 
 **Catálogo de productos**
+![Catalogo](./assets/Gallery.png)
+
 
 **Detalle del producto**
+![Detalle Producto](./assets/DetalleProducto.png)
+
 
 **Carrito de compras**
+![Carrito](./assets/Carrito.png)
+
+
+**Pantalla de pago**
+![Metodo de pago](./assets/MetodoPagoMP.png)
+![Finalizar compra](./assets/FinalizarCompra.png)
+![Pago con MercadoPago](./assets/PagoConMP.png)
+![Compra exitosa](./assets/CompaExitosa.png)
+
 
 **Panel de administración**
+![Admin detalles](./assets/AdminDetalles.png)
+![Admin productos](./assets/AdminProductos.png)
+
+**Otros**
+![Login](./assets/Login.png)
+![Registrarse](./assets/Registrarse.png)
+
+![Menú usuario](./assets/User2.png)
+![Menú usuario](./assets/User.png)
+
+![Barra de búsqueda](./assets/SearchBar.png)
 
 ## Autores
 Sofía Ferraro
