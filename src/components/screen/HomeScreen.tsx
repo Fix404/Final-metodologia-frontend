@@ -47,10 +47,10 @@ export const HomeScreen: React.FC = () => {
       <section className="flex flex-row items-center justify-center text-white pt-16 mb-4  max-sm:pt-0">
         <div className="flex flex-row items-start max-w-screen-lg flex-wrap max-xs:flex-col max-sm:p-8 max-xs:items-center max-sm:flex-row max-sm:justify-between">
           <div className="max-w-lg max-xs:w-full max-xs:px-4 max-sm:w-2/3 max-sm:px-6">
-            <h1 className="text-5xl font-bold mb-4 w-full max-xs:text-3xl max-sm:text-4xl">
+            <h1 className="text-5xl font-bold mb-4 w-full max-xs:text-3xl max-sm:text-4xl [text-shadow:2px_2px_4px_rgba(0,0,0,0.6)]">
               ¡ATREVETE A MARCAR LA DIFERENCIA!
             </h1>
-            <p className="text-3xl mb-8 w-full max-xs:text-[17px] max-sm:text-[20px]">
+            <p className="text-3xl mb-8 w-full max-xs:text-[17px] max-sm:text-[20px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.6)]">
               ¡Aprovechá las ofertas exclusivas que tenemos para vos!
             </p>
 

@@ -275,7 +275,7 @@ export const CatalogoScreen = () => {
 
                     {/* Filtro Talle - NUEVO */}
                     <select
-                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#1c4577] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
+                        className="w-32 bg-white text-[#25374d] font-medium rounded-lg border border-[#748192] hover:cursor-pointer px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1c4577] focus:ring-opacity-50 transition"
                         value={talle}
                         onChange={(e) => setTalle(e.target.value)}
                         disabled={tallesDisponibles.length === 0}
