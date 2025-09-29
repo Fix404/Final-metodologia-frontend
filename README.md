@@ -1,7 +1,7 @@
 # E-commerce de Indumentaria
  Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN: Se trata de una aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot (https://github.com/Fix404/Final-metodologia-backend.git). Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
 
-![Landing](./assets/Landing.png)
+![Landing](./assets/FullLanding.png)
 
 ## Tecnologías utilizadas
 - React
@@ -107,15 +107,17 @@ npm run dev
 La aplicación estará disponible en http://localhost:5173 (o el puerto configurado).
 
 ## Vistas previas
-Landing Page
+**Landing Page**
+![Landing](./assets/FullLanding.png)
+![Landing](./assets/FullLanding.png)
 
-Catálogo de productos
+**Catálogo de productos**
 
-Detalle del producto
+**Detalle del producto**
 
-Carrito de compras
+**Carrito de compras**
 
-Panel de administración
+**Panel de administración**
 
 ## Autores
 Sofía Ferraro
