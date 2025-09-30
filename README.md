@@ -1,5 +1,5 @@
 # E-commerce de Indumentaria
- Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN: Se trata de una aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot (https://github.com/Fix404/Final-metodologia-backend.git). Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
+ Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN: Se trata de una aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot. Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
 
 ![Landing](./assets/FullLanding.png)
 
@@ -19,6 +19,9 @@
 - Tailwind-CSS
 
 - MercadoPago SDK para procesamiento de pagos
+
+## Backend:
+https://github.com/Fix404/Final-metodologia-backend.git
 
 ## Funcionalidades principales
 **Autenticación:**
