@@ -1,5 +1,6 @@
 # E-commerce de Indumentaria
- Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN: Se trata de una aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot. Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
+ Aplicación web (E-commerce) de venta de indumentaria, construida con React - TypeScript, conectada a un backend en Java - Spring Boot. Incluye autenticación, panel de administración y las funcionalidades esenciales de un e-commerce moderno.
+Proyecto desarrollado en la Tecnicatura Universitaria en Programación - UTN.
 
 ![Landing](./assets/FullLanding.png)
 
